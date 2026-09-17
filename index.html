@@ -501,7 +501,7 @@ body.dragging-active .ct-card{cursor:grabbing}
 <script type="module">
 /* ===================== utilities ===================== */
 const CFG = window.APP_CONFIG || {};
-const BUILD = '2026-09-17b';   // shown in Settings, so you can confirm which version is live
+const BUILD = '2026-09-17c';   // shown in Settings, so you can confirm which version is live
 const FB_URL = 'https://www.gstatic.com/firebasejs/10.12.2/';
 const COLS = ['projects', 'sections', 'tasks', 'events', 'meta', 'members', 'accounts', 'campaigns'];
 // Collections added after the first release. If the security rules haven't been updated yet,
@@ -1350,13 +1350,21 @@ function findDraggable(target) {
   }
   return null;
 }
-document.addEventListener('mousedown', e => {
-  if (e.button !== 0 || topModal()) return;
+document.addEventListener('pointerdown', e => {
+  if (e.button !== 0 || !e.isPrimary || e.pointerType === 'touch' || topModal()) return;
   if (e.target.closest && e.target.closest('input,textarea,select,.menu')) return;
   const hit = findDraggable(e.target);
   if (!hit) return;
-  pd = { ...hit, x0: e.clientX, y0: e.clientY, started: false, ghost: null, target: null, after: false, zone: null, idx: 0 };
+  pd = { ...hit, x0: e.clientX, y0: e.clientY, started: false, ghost: null, target: null, after: false,
+         zone: null, idx: 0, pointerId: e.pointerId, startedAt: Date.now(), capture: e.target };
+  // Pointer capture guarantees we still receive the move and release even if the pointer
+  // leaves the window or the element underneath changes.
+  try { e.target.setPointerCapture(e.pointerId); } catch { }
 });
+function releaseCapture() {
+  if (!pd || !pd.capture) return;
+  try { pd.capture.releasePointerCapture(pd.pointerId); } catch { }
+}
 function startPointerDrag(e) {
   pd.started = true;
   S.drag = { kind: pd.kind, id: pd.id, ref: pd.kind === 'cal' ? pd.id : undefined };
@@ -1421,6 +1429,7 @@ function updatePointerDrag(e) {
   }
 }
 async function finishPointerDrag() {
+  releaseCapture();
   const d = pd; pd = null;
   if (!d || !d.started) { pd = null; return; }
   suppressClick = true; setTimeout(() => suppressClick = false, 60);
@@ -1470,6 +1479,7 @@ async function finishPointerDrag() {
 }
 function cancelPointerDrag() {
   if (!pd) return;
+  releaseCapture();
   const d = pd; pd = null;
   if (d.ghost) d.ghost.remove();
   resetDrag();
@@ -1482,8 +1492,12 @@ function resetDrag() {
   document.body.classList.remove('dragging-active');
   if (S.renderPending) { S.renderPending = false; render(); }
 }
-document.addEventListener('mousemove', e => {
+document.addEventListener('pointermove', e => {
   if (!pd) return;
+  // The button is no longer held: a release we never saw. End it on the very next movement,
+  // whatever device the event came from — this check runs before any pointer-id filtering.
+  if (e.buttons === 0) { if (pd.started) finishPointerDrag(); else pd = null; return; }
+  if (e.pointerId != null && pd.pointerId != null && e.pointerId !== pd.pointerId) return;
   if (!pd.started) {
     if (Math.abs(e.clientX - pd.x0) + Math.abs(e.clientY - pd.y0) < 6) return;   // a click, not a drag
     startPointerDrag(e);
@@ -1491,11 +1505,22 @@ document.addEventListener('mousemove', e => {
   e.preventDefault();
   updatePointerDrag(e);
 });
-document.addEventListener('mouseup', () => { if (pd) finishPointerDrag(); });
+['pointerup', 'pointercancel'].forEach(ev => document.addEventListener(ev, e => {
+  if (!pd || (e.pointerId != null && pd.pointerId != null && e.pointerId !== pd.pointerId)) return;
+  if (ev === 'pointercancel') return cancelPointerDrag();
+  finishPointerDrag();
+}));
+document.addEventListener('mouseup', () => { if (pd) finishPointerDrag(); });   // belt and braces
+document.addEventListener('mousemove', e => {   // same guard for plain mouse events
+  if (pd && e.buttons === 0) { if (pd.started) finishPointerDrag(); else pd = null; }
+});
 window.addEventListener('blur', cancelPointerDrag);
 document.addEventListener('visibilitychange', () => { if (document.hidden) cancelPointerDrag(); });
-// Last resort: a drag that somehow stops reporting is cleared so the app never stays stuck.
-setInterval(() => { if (S.drag && Date.now() - (S.dragAt || 0) > 3000) { pd = null; resetDrag(); } }, 1000);
+// Last resorts, so a drag can never leave the app stuck: no movement for 3s, or 20s in total.
+setInterval(() => {
+  if (pd && pd.started && Date.now() - pd.startedAt > 20000) { cancelPointerDrag(); toast('Drag cancelled'); return; }
+  if (S.drag && Date.now() - (S.dragAt || 0) > 3000) { pd = null; resetDrag(); }
+}, 1000);
 // Swallow the click that follows a real drag (so dropping a card doesn't also open it).
 document.addEventListener('click', e => {
   if (!suppressClick) return;
