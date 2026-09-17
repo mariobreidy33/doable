@@ -857,6 +857,13 @@ window.addEventListener('hashchange', () => { S.inlineAdd = null; S.addingSectio
 /* ===================== render ===================== */
 function render(opts = {}) {
   if (!S.ready) return;
+  // Never rebuild the page while something is being dragged: replacing the DOM destroys
+  // the element the browser is carrying, so the drag never ends and the page feels frozen.
+  // Anything that arrives mid-drag is painted the moment the drag finishes.
+  if (S.drag) {
+    if (Date.now() - (S.dragAt || 0) < 4000) { S.renderPending = true; return; }
+    resetDrag();   // stale drag state (a dragend we never heard about) — clean up and carry on
+  }
   // don't blow away a half-typed inline form: capture & restore
   const keep = {}; let focusId = null, selStart = null;
   $$('[data-keep]').forEach(el => keep[el.id] = el.value);
@@ -1273,6 +1280,7 @@ document.addEventListener('submit', async e => {
 });
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
+    if (dragStuck()) resetDrag();
     if (menuEl) return closeMenu();
     const m = topModal(); if (m) { e.preventDefault(); return (m.onDismiss || m.close)(); }
     if (S.inlineAdd) return ACTIONS['inline-cancel']();
@@ -1330,15 +1338,38 @@ document.addEventListener('dragstart', e => {
   else if (card) { S.drag = { kind: 'card', id: card.dataset.task }; setTimeout(() => card.classList.add('dragging'), 0); }
   else return;
   document.body.classList.add('dragging-active');
+  S.dragAt = Date.now();
   e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', S.drag.ref || S.drag.id);
   if (S.drag.kind === 'campaign') ctEnsureManualSort();
 });
-document.addEventListener('dragend', () => {
+function resetDrag() {
+  S.drag = null; S.dragAt = 0;
   $$('.dragging').forEach(x => x.classList.remove('dragging'));
-  clearDropUI(); clearGripDrag(); document.body.classList.remove('dragging-active'); S.drag = null;
-});
+  clearDropUI(); clearGripDrag();
+  document.body.classList.remove('dragging-active');
+  if (S.renderPending) { S.renderPending = false; render(); }
+}
+document.addEventListener('dragend', resetDrag);
+// Safety net: if the browser never reports the end of a drag (its element was replaced,
+// it was dropped outside the window, the tab was switched), clear it once it has clearly
+// gone quiet. Chrome fires pointercancel *at the start* of every drag, so staleness is
+// judged on the last dragover, never on the pointer events themselves.
+const dragStuck = () => !!S.drag || document.body.classList.contains('dragging-active');
+let dragWatch = 0;
+function checkStaleDrag(quiet = 700) {
+  clearTimeout(dragWatch);
+  dragWatch = setTimeout(() => {
+    if (!dragStuck()) return;
+    if (Date.now() - (S.dragAt || 0) < quiet) return checkStaleDrag(quiet);  // still live
+    resetDrag();
+  }, quiet);
+}
+['mouseup', 'pointerup'].forEach(ev => window.addEventListener(ev, () => { if (dragStuck()) checkStaleDrag(700); }));
+window.addEventListener('blur', () => { if (dragStuck()) checkStaleDrag(900); });
+document.addEventListener('visibilitychange', () => { if (document.hidden && dragStuck()) checkStaleDrag(300); });
 document.addEventListener('dragover', e => {
   if (!S.drag) return;
+  S.dragAt = Date.now();
   if (S.drag.kind === 'section') {
     const col = e.target.closest('.col'); if (!col || !col.dataset.sec) return;
     e.preventDefault();
