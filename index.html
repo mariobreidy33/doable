@@ -280,6 +280,22 @@ a{color:var(--accent-text)}
 .menu button.danger .i{color:var(--c-over)}
 .menu hr{border:0;border-top:1px solid var(--line);margin:4px 0}
 .menu .menu-title{font-size:11px;color:var(--faint);padding:4px 9px 2px;font-weight:600}
+.check-menu{max-height:min(60vh,420px);overflow-y:auto;min-width:220px}
+.check-menu button .box{width:15px;flex:none;display:inline-grid;place-items:center;color:var(--accent-text)}
+.check-menu button.on{color:var(--text);font-weight:600}
+.obj-row{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
+.obj-row:last-child{border-bottom:0}
+.obj-row .pf{width:74px;flex:none;font-size:12px;font-weight:600;color:var(--text);padding-top:3px}
+.obj-row .objs{flex:1;display:flex;flex-wrap:wrap;gap:4px;align-items:center;min-width:0}
+.obj-chip{font-size:11px;padding:2px 7px;border-radius:5px;background:color-mix(in srgb,var(--sw-teal) 16%,transparent);color:var(--text);
+  display:inline-flex;align-items:center;gap:5px;max-width:100%}
+.obj-chip button{color:var(--faint);display:inline-grid;place-items:center;border-radius:3px}
+.obj-chip button:hover{color:var(--c-over)}
+.obj-add{font-size:11.5px;color:var(--muted);border:1px dashed var(--line2);border-radius:6px;padding:2px 8px}
+.obj-add:hover{color:var(--accent-text);border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+.obj-none{font-size:11.5px;color:var(--faint)}
+.tag.plat .oo{opacity:.72;font-weight:400}
+.d-objs{display:flex;flex-direction:column;gap:2px}
 
 #toasts{position:fixed;left:18px;bottom:18px;z-index:95;display:flex;flex-direction:column;gap:8px}
 .toast{background:#333;color:#f2f2f2;border-radius:8px;padding:10px 12px 10px 14px;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow);font-size:12.5px;animation:tin .18s ease-out}
@@ -501,7 +517,7 @@ body.dragging-active .ct-card{cursor:grabbing}
 <script type="module">
 /* ===================== utilities ===================== */
 const CFG = window.APP_CONFIG || {};
-const BUILD = '2026-09-17c';   // shown in Settings, so you can confirm which version is live
+const BUILD = '2026-09-17d';   // shown in Settings, so you can confirm which version is live
 const FB_URL = 'https://www.gstatic.com/firebasejs/10.12.2/';
 const COLS = ['projects', 'sections', 'tasks', 'events', 'meta', 'members', 'accounts', 'campaigns'];
 // Collections added after the first release. If the security rules haven't been updated yet,
@@ -511,6 +527,47 @@ const COLORS = ['red', 'orange', 'yellow', 'green', 'teal', 'blue', 'purple', 'p
 const MARKETS = ['KSA', 'UAE', 'QAT', 'KWT', 'BAH', 'OMN'];
 const PLATFORMS = ['Search', 'PMax', 'YouTube', 'Meta', 'Snap', 'TikTok', 'LinkedIn', 'X'];
 const C_STATUS = ['Live', 'Pending', 'Ended'];
+/* Objective library — what each platform can actually be bought on. Canonical names only;
+   the campaign card abbreviates for space but never changes what's stored. */
+const OBJECTIVES = {
+  Meta: ['Awareness', 'Reach', 'Impressions', 'Video Views', 'Engagement', 'Profile Visits', 'Followers / Page Growth',
+    'Link Clicks', 'Traffic', 'Landing Page Views', 'Conversion', 'Website Conversion', 'Lead Generation',
+    'Lead Gen / Conversion (Auto Opt)', 'Messages', 'WhatsApp', 'Calls', 'App Installs', 'App Engagement',
+    'Catalog / Product Sales', 'Sales', 'Store Visits', 'Other'],
+  Snap: ['Awareness', 'Reach', 'Impressions', 'Video Views', 'Engagement', 'Profile Visits', 'Link Clicks', 'Traffic',
+    'Landing Page Views', 'Conversion', 'Website Conversion', 'Lead Generation', 'App Installs', 'App Engagement',
+    'Catalog / Product Sales', 'Sales', 'Other'],
+  TikTok: ['Awareness', 'Reach', 'Video Views', 'Community Interaction', 'Profile Visits', 'Followers / Page Growth',
+    'Engagement', 'Link Clicks', 'Traffic', 'Landing Page Views', 'Conversion', 'Website Conversion', 'Lead Generation',
+    'App Installs', 'App Engagement', 'Catalog / Product Sales', 'Sales', 'Other'],
+  YouTube: ['Awareness', 'Reach', 'Impressions', 'Video Views', 'Video Reach', 'Engagement', 'Traffic', 'Link Clicks',
+    'Website Conversion', 'Conversion', 'Lead Generation', 'Demand Generation', 'Sales', 'Other'],
+  Search: ['Traffic', 'Link Clicks', 'Website Conversion', 'Conversion', 'Search Conversions', 'Lead Generation',
+    'Calls', 'Sales', 'Store Visits', 'Other'],
+  PMax: ['Website Conversion', 'Conversion', 'Lead Generation', 'Calls', 'Sales', 'Store Visits',
+    'Performance / Automated Conversion', 'Other'],
+  LinkedIn: ['Awareness', 'Reach', 'Impressions', 'Video Views', 'Engagement', 'Followers / Page Growth',
+    'Website Visits', 'Link Clicks', 'Traffic', 'Website Conversion', 'Conversion', 'Lead Generation',
+    'Job Applicants', 'Other'],
+  X: ['Awareness', 'Reach', 'Impressions', 'Video Views', 'Engagement', 'Followers / Page Growth', 'Profile Visits',
+    'Link Clicks', 'Traffic', 'Website Conversion', 'Conversion', 'App Installs', 'App Engagement', 'Other'],
+};
+// Every objective in the library, in a stable order, for the filter list.
+const ALL_OBJECTIVES = [...new Set(PLATFORMS.flatMap(p => OBJECTIVES[p] || []))].filter(o => o !== 'Other').sort();
+// Short forms used only on the compact campaign card.
+const OBJ_SHORT = {
+  'Lead Generation': 'Lead Gen', 'Lead Gen / Conversion (Auto Opt)': 'Lead Gen (Auto)', 'Website Conversion': 'Web Conv',
+  'Conversion': 'Conv', 'Search Conversions': 'Search Conv', 'Performance / Automated Conversion': 'Auto Conv',
+  'Landing Page Views': 'LP Views', 'Catalog / Product Sales': 'Catalog', 'Followers / Page Growth': 'Followers',
+  'Community Interaction': 'Community', 'Profile Visits': 'Profile', 'Impressions': 'Impr', 'Engagement': 'Engage',
+  'Demand Generation': 'Demand Gen', 'App Installs': 'Installs', 'App Engagement': 'App Eng', 'Website Visits': 'Site Visits',
+  'Job Applicants': 'Applicants', 'Store Visits': 'Store', 'Link Clicks': 'Clicks', 'Video Views': 'Video Views',
+};
+const CUSTOM_PREFIX = 'Other: ';
+// objFull: the canonical name (custom objectives show the text you typed).
+// objLabel: the short form used only on the compact card.
+const objFull = o => (o.startsWith(CUSTOM_PREFIX) ? o.slice(CUSTOM_PREFIX.length) : o);
+const objLabel = o => (o.startsWith(CUSTOM_PREFIX) ? o.slice(CUSTOM_PREFIX.length) : (OBJ_SHORT[o] || o));
 const C_PACING = ['Pending', 'Healthy', 'Under-pacing', 'Over-pacing', 'Unstable'];
 const C_CREATIVE = ['All Live', 'Partially Missing', 'Fully Missing'];
 const C_RESULTS = ['Pending', 'Healthy', 'Needs Attention'];
@@ -566,6 +623,14 @@ function deadlineInfo(k) {
   return { label: fmtDay(k), cls: '' };
 }
 function longDay(k) { const d = parseKey(k); return `${WDS[d.getDay()]} ${d.getDate()} ${MON[d.getMonth()]}`; }
+// "17 Sep 2026, 3:24 PM" — used for the created date inside task details.
+function fmtDateTime(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  if (isNaN(d)) return '';
+  let h = d.getHours(); const ampm = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
+  return `${d.getDate()} ${MON[d.getMonth()]} ${d.getFullYear()}, ${h}:${pad(d.getMinutes())} ${ampm}`;
+}
 function timeAgo(ts) {
   const s = (Date.now() - ts) / 1000;
   if (s < 60) return 'just now'; if (s < 3600) return `${Math.floor(s / 60)}m ago`;
@@ -650,7 +715,7 @@ const S = {
   showCompleted: {}, cal: null, calTasks: lsGet('tb:calTasks') !== '0', calLeave: lsGet('tb:calLeave') !== '0',
   inlineAdd: null, addingSection: false, drag: null,
   ct: { account: lsGet('tb:ctAccount') || 'all', q: '', sort: lsGet('tb:ctSort') || 'attention', archived: false, limit: 80,
-        f: { status: 'All', market: 'All', platform: 'All', pacing: 'All', creative: 'All', results: 'All', weekly: 'All' } },
+        f: { status: 'All', market: 'All', platform: 'All', objective: 'All', pacing: 'All', creative: 'All', results: 'All', weekly: 'All' } },
   rulesMissing: false,
 };
 let store = null;
@@ -692,6 +757,14 @@ function attentionReasons(c) {
   return r;
 }
 const needsAttention = c => attentionReasons(c).length > 0;
+/* ---------- platform objectives ---------- */
+// Objectives are stored per platform: { Meta: ['Lead Generation', 'Reach'], Search: ['Conversion'] }.
+// Objectives of a platform that's been deselected stay in the record, but are never shown or
+// filtered on — so turning a platform back on brings its objectives back with it.
+const objOf = (c, p) => ((c.objectives || {})[p] || []);
+const liveObjectives = c => (c.platforms || []).flatMap(p => objOf(c, p));
+const hasObjective = (c, obj, platform) => (platform && platform !== 'All' ? [platform] : (c.platforms || []))
+  .some(p => objOf(c, p).some(o => o === obj || (obj === 'Other' && o.startsWith(CUSTOM_PREFIX))));
 const attentionCount = () => Object.values(S.data.campaigns).filter(c => !c.archived && needsAttention(c)).length;
 
 /* ===================== stores ===================== */
@@ -839,11 +912,38 @@ function openMenu(anchor, items, align = 'left') {
     m.appendChild(b);
   });
   document.body.appendChild(m); menuEl = m;
+  placeMenu(m, anchor, align);
+}
+function placeMenu(m, anchor, align = 'left') {
   const r = anchor.getBoundingClientRect(), mw = m.offsetWidth, mh = m.offsetHeight;
   let x = align === 'right' ? r.right - mw : r.left, y = r.bottom + 4;
   if (x + mw > innerWidth - 8) x = innerWidth - mw - 8; if (x < 8) x = 8;
   if (y + mh > innerHeight - 8) y = Math.max(8, r.top - mh - 4);
   m.style.left = x + 'px'; m.style.top = y + 'px';
+}
+// A menu that stays open while you tick several things (platform objectives).
+function openCheckMenu(anchor, { title, options, selected, onToggle, extra, align }) {
+  closeMenu();
+  const m = document.createElement('div'); m.className = 'menu check-menu';
+  const paint = () => {
+    const sel = selected();
+    m.innerHTML = (title ? `<div class="menu-title">${esc(title)}</div>` : '') +
+      options().map(o => `<button data-v="${esc(o)}" class="${sel.includes(o) ? 'on' : ''}">
+        <span class="box">${sel.includes(o) ? ico('check', 'i-sm') : ''}</span><span class="lbl">${esc(objFull(o))}</span></button>`).join('') +
+      (extra ? `<hr><button data-extra="1">${ico('plus', 'i-sm')}<span>${esc(extra.label)}</span></button>` : '');
+    if (anchor.isConnected) placeMenu(m, anchor, align);
+  };
+  m.addEventListener('mousedown', e => e.stopPropagation());
+  m.addEventListener('click', async e => {
+    const b = e.target.closest('button'); if (!b) return;
+    e.stopPropagation(); e.preventDefault();
+    if (b.dataset.extra) { closeMenu(); await extra.onClick(); return; }
+    await onToggle(b.dataset.v);
+    paint();
+  });
+  document.body.appendChild(m); menuEl = m;
+  paint();
+  return m;
 }
 document.addEventListener('mousedown', e => { if (menuEl && !menuEl.contains(e.target)) closeMenu(); });
 window.addEventListener('resize', closeMenu);
@@ -1136,6 +1236,24 @@ async function toggleTask(id, btn) {
     toast('1 task completed', () => store.update('tasks', id, { done: false, completedAt: null }));
   }
 }
+// An independent copy: new id, fresh timestamps, its own sub-task ids, no shared history.
+async function duplicateTask(id) {
+  const t = S.data.tasks[id]; if (!t) return null;
+  const copy = {
+    ...clone(t),
+    id: uid(),
+    title: `${t.title} (copy)`,
+    subtasks: (t.subtasks || []).map(s => ({ ...s, id: uid() })),
+    comments: [],                       // a copy starts its own conversation
+    done: false, completedAt: null, completedBy: null,
+    createdAt: Date.now(), createdBy: me(), createdApprox: false,
+    updatedAt: Date.now(), updatedBy: me(),
+    order: (t.order ?? 1000) + 1,       // sits directly under the original
+  };
+  await store.put('tasks', copy);
+  toast('Task duplicated', () => store.del('tasks', copy.id));
+  return copy.id;
+}
 async function deleteTask(id) {
   const t = S.data.tasks[id]; if (!t) return false;
   if (!await confirmBox(`Delete <b>${esc(t.title)}</b>?`)) return false;
@@ -1298,6 +1416,21 @@ document.addEventListener('keydown', e => {
   if (typing || e.metaKey || e.ctrlKey || e.altKey || topModal() || !S.ready || !store) return;
   if (e.key === 'q') { e.preventDefault(); openTask(null, { projectId: curProjectId() }); }
   else if (e.key === '/') { e.preventDefault(); openSearch(); }
+});
+
+// Right-click a task card for its actions without adding clutter to the card itself.
+document.addEventListener('contextmenu', e => {
+  const card = e.target.closest && e.target.closest('[data-task]');
+  if (!card) return;
+  const t = S.data.tasks[card.dataset.task]; if (!t) return;
+  e.preventDefault();
+  const anchor = { getBoundingClientRect: () => ({ left: e.clientX, right: e.clientX, top: e.clientY, bottom: e.clientY }) };
+  openMenu(anchor, [
+    { label: 'Open task', icon: 'eye', onClick: () => openTask(t.id) },
+    { label: 'Duplicate task', icon: 'copy', onClick: () => duplicateTask(t.id) },
+    '-',
+    { label: 'Delete task', icon: 'trash', danger: true, onClick: () => deleteTask(t.id) },
+  ]);
 });
 
 /* =====================================================================
@@ -1576,10 +1709,11 @@ function openTask(id, def = {}) {
         <div class="prop"><span class="lbl-sm">Priority</span><select class="sel" data-f="priority">${[[1, 'Priority 1 — urgent'], [2, 'Priority 2 — high'], [3, 'Priority 3 — medium'], [4, 'Priority 4 — none']].map(([v, l]) => `<option value="${v}" ${+d.priority === v ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
         <div class="prop"><span class="lbl-sm">Assignee</span><select class="sel" data-f="assignee"><option value="">Unassigned</option>${ppl.map(p => `<option value="${p.id}" ${d.assignee === p.id ? 'selected' : ''}>${esc(p.name)}</option>`).join('')}</select>
           ${ppl.length ? '' : '<div class="hint">Add teammates in Settings to assign tasks.</div>'}</div>
-        ${ex ? `<div class="prop tm-foot-info">Added ${ex.createdAt ? timeAgo(ex.createdAt) : ''}${ex.createdBy ? ' by ' + esc(ex.createdBy) : ''}${ex.lastDoneAt ? `<br>Last done ${timeAgo(ex.lastDoneAt)}${ex.lastDoneBy ? ' by ' + esc(ex.lastDoneBy) : ''}` : ''}${ex.done && ex.completedAt ? `<br>Completed ${timeAgo(ex.completedAt)}${ex.completedBy ? ' by ' + esc(ex.completedBy) : ''}` : ''}</div>` : ''}
+        ${ex ? `<div class="prop tm-foot-info">${ex.createdAt ? `Added ${ex.createdApprox ? 'around ' : ''}${esc(fmtDateTime(ex.createdAt))}` : 'Added date not recorded'}${ex.createdBy ? ' by ' + esc(ex.createdBy) : ''}${ex.lastDoneAt ? `<br>Last done ${timeAgo(ex.lastDoneAt)}${ex.lastDoneBy ? ' by ' + esc(ex.lastDoneBy) : ''}` : ''}${ex.done && ex.completedAt ? `<br>Completed ${timeAgo(ex.completedAt)}${ex.completedBy ? ' by ' + esc(ex.completedBy) : ''}` : ''}</div>` : ''}
       </div>
     </div>
-    <div class="modal-foot">${ex ? `<button class="btn btn-danger" data-m="delete">${ico('trash', 'i-sm')} Delete</button>` : ''}<span class="spacer"></span>
+    <div class="modal-foot">${ex ? `<button class="btn btn-danger" data-m="delete">${ico('trash', 'i-sm')} Delete</button>
+      <button class="btn" data-m="duplicate">${ico('copy', 'i-sm')} Duplicate</button>` : ''}<span class="spacer"></span>
       ${ex ? '' : '<button class="btn" data-m="x">Cancel</button>'}<button class="btn btn-primary" data-m="save">${ex ? 'Save' : 'Add task'}</button></div>`, 'wide');
 
   const q = s => w.querySelector(s);
@@ -1670,6 +1804,11 @@ function openTask(id, def = {}) {
     if (m === 'clear-due') { q('[data-f=due]').value = ''; q('[data-f=time]').value = ''; q('[data-f=recurType]').value = ''; recurUI(); }
     if (m === 'clear-deadline') q('[data-f=deadline]').value = '';
     if (m === 'delete') { if (await deleteTask(d.id)) w.close(); }
+    if (m === 'duplicate') {
+      if (dirty()) await save(); else w.close();
+      const nid = await duplicateTask(d.id);
+      if (nid) openTask(nid);
+    }
     if (m === 'complete') { if (dirty()) { if (!await save()) return; } else w.close(); toggleTask(d.id); }
     if (m === 'comment') {
       const ta = q('[data-cnew]'), text = ta.value.trim(); if (!text) return ta.focus();
@@ -1908,7 +2047,7 @@ const CT_FIELDS = {
 function newCampaign(accountId) {
   return {
     id: uid(), accountId, name: '', description: '', startDate: todayKey(), endDate: addDays(todayKey(), 30),
-    status: 'Pending', markets: [], platforms: [], pacing: 'Pending', creative: 'All Live', results: 'Pending',
+    status: 'Pending', markets: [], platforms: [], objectives: {}, pacing: 'Pending', creative: 'All Live', results: 'Pending',
     notes: '', weeklyChecks: [], archived: false, order: 1000, createdAt: Date.now(), createdBy: me(), updatedAt: Date.now(),
   };
 }
@@ -1934,6 +2073,8 @@ function ctFiltered() {
     if (f.status !== 'All' && c.status !== f.status) return false;
     if (f.market !== 'All' && !(c.markets || []).includes(f.market)) return false;
     if (f.platform !== 'All' && !(c.platforms || []).includes(f.platform)) return false;
+    // With a platform chosen too, the objective must belong to THAT platform.
+    if (f.objective !== 'All' && !hasObjective(c, f.objective, f.platform)) return false;
     if (f.pacing !== 'All' && c.pacing !== f.pacing) return false;
     if (f.creative !== 'All' && c.creative !== f.creative) return false;
     if (f.results !== 'All' && c.results !== f.results) return false;
@@ -1941,7 +2082,7 @@ function ctFiltered() {
     if (f.weekly === 'Completed' && !weeklyDone(c)) return false;
     return true;
   });
-  if (q) list = list.filter(c => `${c.name} ${c.description || ''} ${c.notes || ''}`.toLowerCase().includes(q));
+  if (q) list = list.filter(c => `${c.name} ${c.description || ''} ${c.notes || ''} ${liveObjectives(c).join(' ')}`.toLowerCase().includes(q));
   const rank = { Live: 0, Pending: 1, Ended: 2 };
   const byName = (a, b) => a.name.localeCompare(b.name);
   const sorters = {
@@ -1994,6 +2135,16 @@ function metricBtn(c, key) {
   return `<button class="ct-m ${tone || ''}" data-action="ct-set" data-f="${key}" data-id="${c.id}" title="${f.label}: ${esc(v)}">
     ${ico(icon || f.icon, 'i-sm')}<span style="color:var(--faint)">${f.label}</span><span class="v">${esc(v)}</span></button>`;
 }
+// Platform chips on the card: "Meta · Lead Gen +1" — full list on hover and in the drawer.
+function platformChips(c, max = 4) {
+  const list = c.platforms || [];
+  const shown = list.length > max + 1 ? list.slice(0, max) : list;
+  return shown.map(p => {
+    const objs = objOf(c, p);
+    const tail = objs.length ? ` <span class="oo">· ${esc(objLabel(objs[0]))}${objs.length > 1 ? ` +${objs.length - 1}` : ''}</span>` : '';
+    return `<span class="tag plat" title="${esc(p)}${objs.length ? ' — ' + esc(objs.join(', ')) : ''}">${esc(p)}${tail}</span>`;
+  }).join('') + (list.length > shown.length ? `<span class="tag more">+${list.length - shown.length}</span>` : '');
+}
 function campaignCard(c, showAccount) {
   const notes = (c.notes || '').trim();
   return `<article class="ct-card ${needsAttention(c) ? 'attention' : ''} ${c.status === 'Ended' ? 'ended' : ''} ${c.archived ? 'archived' : ''}"
@@ -2006,7 +2157,7 @@ function campaignCard(c, showAccount) {
     </div>
     <div class="ct-dates">${ico('cal', 'i-sm')}${flightLabel(c)}</div>
     ${(c.description || '').trim() ? `<div class="ct-desc">${esc(c.description)}</div>` : ''}
-    ${(c.markets || []).length || (c.platforms || []).length ? `<div class="ct-chips">${tagList(c.markets, 'mkt', 4)}${tagList(c.platforms, 'plat', 4)}</div>` : ''}
+    ${(c.markets || []).length || (c.platforms || []).length ? `<div class="ct-chips">${tagList(c.markets, 'mkt', 4)}${platformChips(c)}</div>` : ''}
     <div class="ct-metrics">${metricBtn(c, 'weekly')}${metricBtn(c, 'pacing')}${metricBtn(c, 'creative')}${metricBtn(c, 'results')}</div>
     ${notes ? `<div class="ct-notes">${ico('comment', 'i-sm')}<span class="txt">${esc(notes)}</span></div>` : ''}
   </article>`;
@@ -2064,6 +2215,7 @@ function renderCampaigns() {
     <div class="ct-filters">
       ${filt('status', 'Status', C_STATUS)}${filt('market', 'Market', MARKETS)}${filt('platform', 'Platform', PLATFORMS)}
       ${filt('pacing', 'Pacing', C_PACING)}${filt('creative', 'Creatives', C_CREATIVE)}${filt('results', 'Results', C_RESULTS)}
+      ${filt('objective', 'Objective', [...ALL_OBJECTIVES, 'Other'])}
       ${filt('weekly', 'Weekly check', ['Completed', 'Due'])}
       ${ctCanDrag() ? `<span style="font-size:11.5px;color:var(--faint)">${ctManual() ? 'Drag a card by its handle to arrange' : 'Drag a card by its handle to switch to your own order'}</span>`
         : '<span style="font-size:11.5px;color:var(--faint)">Open an account to drag campaigns into your own order</span>'}
@@ -2127,6 +2279,14 @@ async function ctMaintenance() {
   if (Date.now() - ctMaintRun < 30000) return;
   ctMaintRun = Date.now();
   const today = todayKey(), ops = [];
+  // Tasks saved before createdAt existed: fall back to the earliest timestamp we genuinely
+  // have for them, and mark it approximate so the detail view can say so.
+  Object.values(S.data.tasks).forEach(t => {
+    if (t.createdAt) return;
+    const known = [t.updatedAt, t.completedAt, t.lastDoneAt].filter(Boolean);
+    if (!known.length) return;
+    ops.push({ type: 'update', col: 'tasks', id: t.id, data: { createdAt: Math.min(...known), createdApprox: true } });
+  });
   Object.values(S.data.campaigns).forEach(c => {
     const fix = {};
     // 1. a campaign whose end date has passed is Ended — everything else is kept as it was
@@ -2237,8 +2397,17 @@ function drawerHTML(c) {
       <div class="d-sec"><h4>Flight</h4>
         <div class="d-row"><span class="k">Dates</span><span class="v">${flightLabel(c)}</span></div>
         <div class="d-row"><span class="k">Status</span><span class="v">${pickRow(c, 'status')}</span></div>
-        <div class="d-row"><span class="k">Markets live</span><span class="v">${(c.markets || []).length ? tagList(c.markets, 'mkt', 99) : '<span style="color:var(--faint)">None selected</span>'}</span></div>
-        <div class="d-row" style="border-bottom:0"><span class="k">Platforms live</span><span class="v">${(c.platforms || []).length ? tagList(c.platforms, 'plat', 99) : '<span style="color:var(--faint)">None selected</span>'}</span></div>
+        <div class="d-row" style="border-bottom:0"><span class="k">Markets live</span><span class="v">${(c.markets || []).length ? tagList(c.markets, 'mkt', 99) : '<span style="color:var(--faint)">None selected</span>'}</span></div>
+      </div>
+      <div class="d-sec"><h4>Platforms &amp; objectives</h4>
+        ${(c.platforms || []).length ? (c.platforms).map(p => `<div class="obj-row">
+            <span class="pf">${esc(p)}</span>
+            <span class="objs">
+              ${objOf(c, p).map(o => `<span class="obj-chip">${esc(objFull(o))}<button data-objdel="${esc(p)}|${esc(o)}" title="Remove">${ico('x', 'i-sm')}</button></span>`).join('')
+                || '<span class="obj-none">No objective set</span>'}
+              <button class="obj-add" data-objadd="${esc(p)}">${objOf(c, p).length ? 'Edit' : '+ Objective'}</button>
+            </span>
+          </div>`).join('') : '<span style="color:var(--faint);font-size:12.5px">No platforms selected yet — add them with Edit.</span>'}
       </div>
       <div class="d-sec"><h4>Health</h4>
         <div class="d-row"><span class="k">Pacing</span><span class="v">${pickRow(c, 'pacing')}</span></div>
@@ -2294,6 +2463,15 @@ function openCampaignDrawer(id) {
       if (set.dataset.locked) return toast('Set the campaign to Live first — pacing and results stay Pending until then');
       return ctUpdate(id, { [set.dataset.set]: set.dataset.v });
     }
+    const objAdd = e.target.closest('[data-objadd]');
+    if (objAdd) return openObjectiveMenu(objAdd, objAdd.dataset.objadd, () => S.data.campaigns[id], next => ctUpdate(id, { objectives: next }));
+    const objDel = e.target.closest('[data-objdel]');
+    if (objDel) {
+      const [p, o] = objDel.dataset.objdel.split('|');
+      const objs = { ...(c.objectives || {}) };
+      objs[p] = objOf(c, p).filter(x => x !== o);
+      return ctUpdate(id, { objectives: objs });
+    }
     const wkdel = e.target.closest('[data-wkdel]');
     if (wkdel) { const keep = (c.weeklyChecks || []).filter(x => x.id !== wkdel.dataset.wkdel); await ctUpdate(id, { weeklyChecks: keep }); toast('Check removed', () => ctUpdate(id, { weeklyChecks: c.weeklyChecks })); return; }
     const b = e.target.closest('[data-act]'); if (!b) return;
@@ -2315,13 +2493,43 @@ function openCampaignDrawer(id) {
   });
 }
 
+/* ---------- objective picker (used by the drawer and by the add/edit form) ---------- */
+// getC() returns the current holder of objectives (a live campaign, or the form's draft);
+// save(nextObjectives) persists them wherever they belong.
+function openObjectiveMenu(anchor, platform, getC, save) {
+  const custom = () => objOf(getC(), platform).filter(o => o.startsWith(CUSTOM_PREFIX));
+  openCheckMenu(anchor, {
+    title: `${platform} objectives`,
+    options: () => [...(OBJECTIVES[platform] || []).filter(o => o !== 'Other'), ...custom()],
+    selected: () => objOf(getC(), platform),
+    onToggle: v => {
+      const c = getC(), objs = { ...(c.objectives || {}) }, cur = objOf(c, platform);
+      objs[platform] = cur.includes(v) ? cur.filter(x => x !== v) : [...cur, v];
+      // keep the library's own order so cards and details read consistently
+      const order = [...(OBJECTIVES[platform] || []), ...custom()];
+      objs[platform].sort((a, b) => order.indexOf(a) - order.indexOf(b));
+      return save(objs);
+    },
+    extra: {
+      label: 'Other…',
+      onClick: async () => {
+        const r = await promptBox({ title: `Custom objective for ${platform}`, label: 'Objective name', placeholder: 'e.g. CTV Retargeting', ok: 'Add' });
+        if (!r || !r.value.trim()) return;
+        const c = getC(), objs = { ...(c.objectives || {}) };
+        objs[platform] = [...objOf(c, platform), CUSTOM_PREFIX + r.value.trim()];
+        await save(objs);
+      },
+    },
+  });
+}
+
 /* ---------- add / edit form ---------- */
 function openCampaignForm(id, accountId) {
   const ex = id ? S.data.campaigns[id] : null;
   const accs = accounts(true);
   if (!accs.length) { toast('Add an account first'); return ctAddAccount(); }
   const d = ex ? clone(ex) : newCampaign(accountId || accs[0].id);
-  d.markets = d.markets || []; d.platforms = d.platforms || [];
+  d.markets = d.markets || []; d.platforms = d.platforms || []; d.objectives = d.objectives || {};
   const picks = (field, options) => options.map(o =>
     `<button type="button" class="pick ${d[field].includes(o) ? 'on' : ''}" data-multi="${field}" data-v="${esc(o)}">${esc(o)}</button>`).join('');
   const sel = (field, options) => `<select class="sel" data-f="${field}">${options.map(o => `<option ${d[field] === o ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select>`;
@@ -2340,6 +2548,7 @@ function openCampaignForm(id, accountId) {
       </div>
       <div class="field"><label>Markets live</label><div class="picker">${picks('markets', MARKETS)}</div></div>
       <div class="field"><label>Platforms live</label><div class="picker">${picks('platforms', PLATFORMS)}</div></div>
+      <div class="field" data-objwrap></div>
       <div class="row2">
         <div class="field"><label>Pacing</label>${sel('pacing', C_PACING)}</div>
         <div class="field"><label>Creatives</label>${sel('creative', C_CREATIVE)}</div>
@@ -2352,6 +2561,18 @@ function openCampaignForm(id, accountId) {
       <span class="spacer"></span><button class="btn" data-m="x">Cancel</button>
       <button class="btn btn-primary" data-m="save">${ex ? 'Save changes' : 'Add campaign'}</button></div>`, 'wide');
   const q = s => w.querySelector(s);
+  // Objective rows appear for the platforms that are ticked, and only for those.
+  const paintObjectives = () => {
+    const box = q('[data-objwrap]');
+    if (!d.platforms.length) { box.innerHTML = ''; return; }
+    box.innerHTML = `<label>Objectives per platform</label>` + d.platforms.map(p => `<div class="obj-row">
+        <span class="pf">${esc(p)}</span>
+        <span class="objs">
+          ${objOf(d, p).map(o => `<span class="obj-chip">${esc(objFull(o))}<button type="button" data-fobjdel="${esc(p)}|${esc(o)}" title="Remove">${ico('x', 'i-sm')}</button></span>`).join('')
+            || '<span class="obj-none">No objective yet</span>'}
+          <button type="button" class="obj-add" data-fobjadd="${esc(p)}">${objOf(d, p).length ? 'Edit' : '+ Objective'}</button>
+        </span></div>`).join('');
+  };
   const syncLock = () => {
     const pending = q('[data-f="status"]').value === 'Pending';
     ['pacing', 'results'].forEach(f => {
@@ -2362,7 +2583,7 @@ function openCampaignForm(id, accountId) {
       el.parentElement.style.opacity = pending ? '.6' : '';
     });
   };
-  syncLock();
+  syncLock(); paintObjectives();
   q('[data-f="status"]').addEventListener('change', syncLock);
   w.onDismiss = () => w.close();
   q('form').onsubmit = e => { e.preventDefault(); save(); };
@@ -2375,7 +2596,16 @@ function openCampaignForm(id, accountId) {
       const order = f === 'markets' ? MARKETS : PLATFORMS;
       d[f].sort((a, b) => order.indexOf(a) - order.indexOf(b));
       multi.classList.toggle('on', d[f].includes(v));
+      if (f === 'platforms') paintObjectives();   // objectives of a removed platform are kept, just hidden
       return;
+    }
+    const objAdd = e.target.closest('[data-fobjadd]');
+    if (objAdd) return openObjectiveMenu(objAdd, objAdd.dataset.fobjadd, () => d, next => { d.objectives = next; paintObjectives(); });
+    const objDel = e.target.closest('[data-fobjdel]');
+    if (objDel) {
+      const [pf, o] = objDel.dataset.fobjdel.split('|');
+      d.objectives = { ...d.objectives, [pf]: objOf(d, pf).filter(x => x !== o) };
+      return paintObjectives();
     }
     const b = e.target.closest('[data-m]'); if (!b) return;
     if (b.dataset.m === 'x') w.close();
