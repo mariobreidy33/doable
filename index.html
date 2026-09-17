@@ -355,8 +355,7 @@ a{color:var(--accent-text)}
 .col-drop.after::before{left:auto;right:-8px}
 .col.dragging{opacity:.4}
 .col-head{border-radius:6px}
-.col-head[draggable=true]{cursor:grab}
-.col-head[draggable=true]:active{cursor:grabbing}
+.col-head[data-sechead]:active{cursor:grabbing}
 .col-head:hover{background:color-mix(in srgb,var(--hover) 60%,transparent)}
 .proj-item.drop-above{box-shadow:inset 0 2px 0 var(--accent)}
 .proj-item.drop-below{box-shadow:inset 0 -2px 0 var(--accent)}
@@ -464,7 +463,14 @@ a{color:var(--accent-text)}
 .pick.locked:hover{border-color:var(--line2);color:var(--muted)}
 .ct-card.drop-l{box-shadow:inset 3px 0 0 var(--accent),0 0 0 1px color-mix(in srgb,var(--accent) 35%,transparent)}
 .ct-card.drop-r{box-shadow:inset -3px 0 0 var(--accent),0 0 0 1px color-mix(in srgb,var(--accent) 35%,transparent)}
-.ct-card.dragging{opacity:.4;transform:scale(.985)}
+.ct-card.dragging{opacity:.35}
+.drag-ghost{opacity:.92;border-radius:10px;box-shadow:0 22px 60px rgba(0,0,0,.55);transform-origin:center;
+  transition:none!important;animation:none!important;cursor:grabbing;overflow:hidden}
+.drag-ghost .ct-grip,.drag-ghost .icon-btn{opacity:0}
+.col-head[data-sechead]{cursor:grab}
+.ct-tab[data-tab]{cursor:grab}
+.proj-item{cursor:grab}
+.card{cursor:pointer}
 .ct-grip{position:absolute;left:3px;top:9px;width:18px;height:22px;display:grid;place-items:center;color:var(--faint);border-radius:5px;opacity:0;cursor:grab;transition:opacity .15s var(--ease-out),background-color .15s}
 .ct-card:hover .ct-grip,.ct-grip:focus-visible{opacity:1}
 .ct-grip:hover{background:var(--hover);color:var(--text)}
@@ -495,6 +501,7 @@ body.dragging-active .ct-card{cursor:grabbing}
 <script type="module">
 /* ===================== utilities ===================== */
 const CFG = window.APP_CONFIG || {};
+const BUILD = '2026-09-17b';   // shown in Settings, so you can confirm which version is live
 const FB_URL = 'https://www.gstatic.com/firebasejs/10.12.2/';
 const COLS = ['projects', 'sections', 'tasks', 'events', 'meta', 'members', 'accounts', 'campaigns'];
 // Collections added after the first release. If the security rules haven't been updated yet,
@@ -905,7 +912,7 @@ function renderSidebar(r) {
     <button class="nav-item ${r.view === 'upcoming' ? 'active' : ''}" data-go="#/upcoming">${ico('upcoming')}<span class="lbl">Upcoming</span></button>
     <div class="side-group">
       <div class="side-group-head"><span>My Projects</span><button class="icon-btn" data-action="add-project" title="Add project">${ico('plus')}</button></div>
-      ${projects().map(p => `<div class="proj-item" draggable="true" data-proj="${p.id}">
+      ${projects().map(p => `<div class="proj-item" data-proj="${p.id}">
         <button class="nav-item ${r.view === 'project' && r.id === p.id ? 'active' : ''}" data-go="#/project/${p.id}"><span class="hash tx-${esc(p.color || 'grey')}">#</span><span class="lbl">${esc(p.name)}</span><span class="cnt">${counts[p.id] || ''}</span></button>
         <button class="icon-btn more" data-action="project-menu" data-id="${p.id}" title="More">${ico('dots')}</button>
       </div>`).join('') || '<div class="mode-note" style="border:0">No projects yet.</div>'}
@@ -945,7 +952,7 @@ function taskMeta(t, opts = {}) {
 const checkBtn = t => `<button class="check p${t.priority || 4} ${t.done ? 'checked' : ''}" data-action="toggle-task" data-id="${t.id}" title="${t.done ? 'Mark as not done' : 'Complete'}">${ico('check')}</button>`;
 function cardHTML(t) {
   const desc = (t.description || '').trim();
-  return `<article class="card ${t.done ? 'done' : ''}" draggable="true" data-task="${t.id}" data-action="open-task" data-id="${t.id}">
+  return `<article class="card ${t.done ? 'done' : ''}" data-task="${t.id}" data-action="open-task" data-id="${t.id}">
     ${checkBtn(t)}
     <div class="card-body"><div class="card-title">${esc(t.title)}</div>${desc ? `<div class="card-desc">${esc(desc)}</div>` : ''}${taskMeta(t)}</div>
   </article>`;
@@ -975,7 +982,7 @@ function columnHTML(p, sid, name, list) {
   const secKey = sid || '';
   const isAdding = S.inlineAdd && S.inlineAdd.pid === p.id && S.inlineAdd.sec === secKey;
   return `<section class="col" data-sec="${secKey}">
-    <header class="col-head" ${sid ? `draggable="true" data-sechead="${sid}"` : ''} title="${sid ? 'Drag to reorder' : ''}">
+    <header class="col-head" ${sid ? `data-sechead="${sid}"` : ''} title="${sid ? 'Drag to reorder' : ''}">
       <h3 ${sid ? `data-action="rename-section" data-id="${sid}"` : ''} title="${esc(name)}">${esc(name)}</h3><span class="col-count">${active}</span>
       ${sid ? `<button class="icon-btn" data-action="section-menu" data-id="${sid}">${ico('dots')}</button>` : ''}
     </header>
@@ -1099,11 +1106,11 @@ function renderUpcoming() {
 function calItemHTML(it) {
   if (it.kind === 'task') {
     const t = it.t;
-    return `<button class="cal-item task" draggable="true" data-drag="task:${t.id}:${it.d}" data-action="open-task" data-id="${t.id}" title="${esc(t.title)}"><span class="ring p${t.priority || 4}"></span><span class="txt">${esc(t.title)}</span>${t.recur ? ico('repeat', 'i-sm') : ''}</button>`;
+    return `<button class="cal-item task" data-drag="task:${t.id}:${it.d}" data-action="open-task" data-id="${t.id}" title="${esc(t.title)}"><span class="ring p${t.priority || 4}"></span><span class="txt">${esc(t.title)}</span>${t.recur ? ico('repeat', 'i-sm') : ''}</button>`;
   }
   const ev = it.ev, ty = typeById(ev.type), rep = ev.repeat && ev.repeat.type && ev.repeat.type !== 'none';
   const time = ev.time ? `${ev.time}${ev.timeEnd ? '-' + ev.timeEnd : ''}` : '';
-  return `<button class="cal-item ev-${esc(ty.color)}" ${rep ? '' : 'draggable="true"'} data-drag="ev:${ev.id}:${it.d}" data-action="open-event" data-id="${ev.id}" data-day="${it.d}" title="${esc(evTitle(ev))}${ev.note ? ' — ' + esc(ev.note) : ''}"><span class="ring"></span><span class="txt">${esc(evTitle(ev))}</span>${time ? `<span class="tm">${esc(time)}</span>` : ''}</button>`;
+  return `<button class="cal-item ev-${esc(ty.color)}" ${rep ? 'data-nodrag="1"' : ''} data-drag="ev:${ev.id}:${it.d}" data-action="open-event" data-id="${ev.id}" data-day="${it.d}" title="${esc(evTitle(ev))}${ev.note ? ' — ' + esc(ev.note) : ''}"><span class="ring"></span><span class="txt">${esc(evTitle(ev))}</span>${time ? `<span class="tm">${esc(time)}</span>` : ''}</button>`;
 }
 
 /* ===================== data actions ===================== */
@@ -1280,7 +1287,7 @@ document.addEventListener('submit', async e => {
 });
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
-    if (dragStuck()) resetDrag();
+    if (pd) { cancelPointerDrag(); return; }
     if (menuEl) return closeMenu();
     const m = topModal(); if (m) { e.preventDefault(); return (m.onDismiss || m.close)(); }
     if (S.inlineAdd) return ACTIONS['inline-cancel']();
@@ -1293,24 +1300,13 @@ document.addEventListener('keydown', e => {
   else if (e.key === '/') { e.preventDefault(); openSearch(); }
 });
 
-/* ---------- drag & drop ---------- */
-// Campaign cards are only draggable while their handle is held, so a normal click
-// always opens the campaign and never starts a drag.
-document.addEventListener('mousedown', e => {
-  const g = e.target.closest && e.target.closest('[data-grip]');
-  if (!g) return;
-  const card = g.closest('[data-camp]');
-  if (card) card.setAttribute('draggable', 'true');
-});
-const clearGripDrag = () => $$('.ct-card[draggable]').forEach(c => c.removeAttribute('draggable'));
-document.addEventListener('mouseup', clearGripDrag);
-document.addEventListener('keydown', e => {
-  const g = document.activeElement && document.activeElement.closest && document.activeElement.closest('[data-grip]');
-  if (!g || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) return;
-  e.preventDefault();
-  ctNudgeCampaign(g.dataset.grip, e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 1);
-});
-
+/* =====================================================================
+   DRAG & DROP — pointer based.
+   The browser's native drag-and-drop can be left hanging (its element gets
+   replaced, it's dropped outside the window, a pointer event is swallowed) and
+   the page then feels frozen. This uses plain mouse/touch events instead: a
+   release, an Escape, a lost window or a stale timer always ends it.
+   ===================================================================== */
 function clearDropUI() {
   $$('.drop-line').forEach(x => x.remove());
   $$('.drag-over,.col-drop,.drop-above,.drop-below,.tab-drop,.drop-l,.drop-r').forEach(x =>
@@ -1327,138 +1323,191 @@ async function reorderList(list, col, dragId, targetId, after) {
   if (ops.length) await store.batch(ops);
 }
 function edgeMark(el, after, cls) { clearDropUI(); el.classList.add(cls); if (after) el.classList.add('after'); }
-document.addEventListener('dragstart', e => {
-  const q = sel => e.target.closest && e.target.closest(sel);
-  const ci = q('[data-drag]'), head = q('[data-sechead]'), tab = q('[data-tab]'), proj = q('[data-proj]'), camp = q('[data-camp]'), card = q('[data-task]');
-  if (ci) { S.drag = { kind: 'cal', ref: ci.dataset.drag }; }
-  else if (head) { S.drag = { kind: 'section', id: head.dataset.sechead }; setTimeout(() => head.closest('.col').classList.add('dragging'), 0); }
-  else if (tab) { S.drag = { kind: 'tab', id: tab.dataset.tab }; setTimeout(() => tab.classList.add('dragging'), 0); }
-  else if (proj) { S.drag = { kind: 'project', id: proj.dataset.proj }; setTimeout(() => proj.classList.add('dragging'), 0); }
-  else if (camp) { S.drag = { kind: 'campaign', id: camp.dataset.camp }; setTimeout(() => camp.classList.add('dragging'), 0); }
-  else if (card) { S.drag = { kind: 'card', id: card.dataset.task }; setTimeout(() => card.classList.add('dragging'), 0); }
-  else return;
-  document.body.classList.add('dragging-active');
-  S.dragAt = Date.now();
-  e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', S.drag.ref || S.drag.id);
-  if (S.drag.kind === 'campaign') ctEnsureManualSort();
+
+// What can be dragged, and by which part of it. Order matters: most specific first.
+const DRAGGABLES = [
+  { kind: 'campaign', handle: '[data-grip]',   item: '[data-camp]', id: el => el.dataset.camp },
+  { kind: 'cal',      handle: '[data-drag]',   item: '[data-drag]', id: el => el.dataset.drag, skip: el => el.hasAttribute('data-nodrag') },
+  { kind: 'section',  handle: '[data-sechead]',item: '.col',        id: el => el.querySelector('[data-sechead]')?.dataset.sechead || el.dataset.sec,
+    ignore: '.icon-btn' },
+  { kind: 'tab',      handle: '[data-tab]',    item: '[data-tab]',  id: el => el.dataset.tab },
+  { kind: 'project',  handle: '[data-proj]',   item: '[data-proj]', id: el => el.dataset.proj, ignore: '.more' },
+  { kind: 'card',     handle: '[data-task]',   item: '[data-task]', id: el => el.dataset.task, ignore: '.check' },
+];
+let pd = null;              // pointer-drag state
+let suppressClick = false;  // a completed drag must not also fire a click
+
+function findDraggable(target) {
+  for (const d of DRAGGABLES) {
+    const h = target.closest && target.closest(d.handle);
+    if (!h) continue;
+    if (d.ignore && target.closest(d.ignore)) return null;
+    const item = h.closest(d.item) || h;
+    if (d.skip && d.skip(item)) return null;
+    const id = d.id(item);
+    if (!id) return null;
+    return { kind: d.kind, item, id };
+  }
+  return null;
+}
+document.addEventListener('mousedown', e => {
+  if (e.button !== 0 || topModal()) return;
+  if (e.target.closest && e.target.closest('input,textarea,select,.menu')) return;
+  const hit = findDraggable(e.target);
+  if (!hit) return;
+  pd = { ...hit, x0: e.clientX, y0: e.clientY, started: false, ghost: null, target: null, after: false, zone: null, idx: 0 };
 });
-function resetDrag() {
-  S.drag = null; S.dragAt = 0;
-  $$('.dragging').forEach(x => x.classList.remove('dragging'));
-  clearDropUI(); clearGripDrag();
-  document.body.classList.remove('dragging-active');
-  if (S.renderPending) { S.renderPending = false; render(); }
-}
-document.addEventListener('dragend', resetDrag);
-// Safety net: if the browser never reports the end of a drag (its element was replaced,
-// it was dropped outside the window, the tab was switched), clear it once it has clearly
-// gone quiet. Chrome fires pointercancel *at the start* of every drag, so staleness is
-// judged on the last dragover, never on the pointer events themselves.
-const dragStuck = () => !!S.drag || document.body.classList.contains('dragging-active');
-let dragWatch = 0;
-function checkStaleDrag(quiet = 700) {
-  clearTimeout(dragWatch);
-  dragWatch = setTimeout(() => {
-    if (!dragStuck()) return;
-    if (Date.now() - (S.dragAt || 0) < quiet) return checkStaleDrag(quiet);  // still live
-    resetDrag();
-  }, quiet);
-}
-['mouseup', 'pointerup'].forEach(ev => window.addEventListener(ev, () => { if (dragStuck()) checkStaleDrag(700); }));
-window.addEventListener('blur', () => { if (dragStuck()) checkStaleDrag(900); });
-document.addEventListener('visibilitychange', () => { if (document.hidden && dragStuck()) checkStaleDrag(300); });
-document.addEventListener('dragover', e => {
-  if (!S.drag) return;
+function startPointerDrag(e) {
+  pd.started = true;
+  S.drag = { kind: pd.kind, id: pd.id, ref: pd.kind === 'cal' ? pd.id : undefined };
   S.dragAt = Date.now();
-  if (S.drag.kind === 'section') {
-    const col = e.target.closest('.col'); if (!col || !col.dataset.sec) return;
-    e.preventDefault();
-    const r = col.getBoundingClientRect(), after = e.clientX > r.left + r.width / 2;
-    if (S.drag.target === col.dataset.sec && S.drag.after === after) return;
-    S.drag.target = col.dataset.sec; S.drag.after = after; edgeMark(col, after, 'col-drop');
-    return;
-  }
-  if (S.drag.kind === 'campaign') {
-    const el = e.target.closest('[data-camp]'); if (!el) return;
-    e.preventDefault();
-    const r = el.getBoundingClientRect(), after = e.clientX > r.left + r.width / 2;
-    if (S.drag.target === el.dataset.camp && S.drag.after === after) return;
-    S.drag.target = el.dataset.camp; S.drag.after = after;
-    clearDropUI(); el.classList.add(after ? 'drop-r' : 'drop-l');
-    return;
-  }
-  if (S.drag.kind === 'project' || S.drag.kind === 'tab') {
-    const el = e.target.closest(S.drag.kind === 'project' ? '[data-proj]' : '[data-tab]'); if (!el) return;
-    e.preventDefault();
+  const r = pd.item.getBoundingClientRect();
+  const g = pd.item.cloneNode(true);
+  g.classList.add('drag-ghost');
+  g.style.cssText += `position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;margin:0;z-index:9999;pointer-events:none;`;
+  document.body.appendChild(g);
+  pd.ghost = g; pd.gx = r.left; pd.gy = r.top;
+  pd.item.classList.add('dragging');
+  document.body.classList.add('dragging-active');
+  if (pd.kind === 'campaign') ctEnsureManualSort();
+}
+function autoScroll(e) {
+  const box = $('.content'); if (!box) return;
+  const r = box.getBoundingClientRect(), edge = 90;
+  if (e.clientX > r.right - edge) box.scrollLeft += 18;
+  else if (e.clientX < r.left + edge) box.scrollLeft -= 18;
+  if (e.clientY > r.bottom - edge) box.scrollTop += 14;
+  else if (e.clientY < r.top + edge) box.scrollTop -= 14;
+}
+function underPointer(e, sel) {
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  return el && el.closest ? el.closest(sel) : null;
+}
+function updatePointerDrag(e) {
+  S.dragAt = Date.now();
+  pd.ghost.style.transform = `translate(${e.clientX - pd.x0}px, ${e.clientY - pd.y0}px)`;
+  autoScroll(e);
+  pd.target = null;
+  if (pd.kind === 'section') {
+    const col = underPointer(e, '.col'); if (!col || !col.dataset.sec) return clearDropUI();
+    const r = col.getBoundingClientRect(); pd.after = e.clientX > r.left + r.width / 2;
+    pd.target = col.dataset.sec; edgeMark(col, pd.after, 'col-drop');
+  } else if (pd.kind === 'tab' || pd.kind === 'campaign' || pd.kind === 'project') {
+    const sel = pd.kind === 'tab' ? '[data-tab]' : pd.kind === 'campaign' ? '[data-camp]' : '[data-proj]';
+    const el = underPointer(e, sel); if (!el || el === pd.item) return clearDropUI();
     const r = el.getBoundingClientRect();
-    const after = S.drag.kind === 'project' ? e.clientY > r.top + r.height / 2 : e.clientX > r.left + r.width / 2;
-    const id = S.drag.kind === 'project' ? el.dataset.proj : el.dataset.tab;
-    if (S.drag.target === id && S.drag.after === after) return;
-    S.drag.target = id; S.drag.after = after;
-    if (S.drag.kind === 'tab') edgeMark(el, after, 'tab-drop');
-    else { clearDropUI(); el.classList.add(after ? 'drop-below' : 'drop-above'); }
-    return;
-  }
-  if (S.drag.kind === 'card') {
-    const col = e.target.closest('.col'); if (!col) return;
-    const zone = col.querySelector('.cards'); e.preventDefault();
+    const vertical = pd.kind === 'project';
+    pd.after = vertical ? e.clientY > r.top + r.height / 2 : e.clientX > r.left + r.width / 2;
+    pd.target = pd.kind === 'tab' ? el.dataset.tab : pd.kind === 'campaign' ? el.dataset.camp : el.dataset.proj;
+    if (pd.kind === 'tab') edgeMark(el, pd.after, 'tab-drop');
+    else if (pd.kind === 'campaign') { clearDropUI(); el.classList.add(pd.after ? 'drop-r' : 'drop-l'); }
+    else { clearDropUI(); el.classList.add(pd.after ? 'drop-below' : 'drop-above'); }
+  } else if (pd.kind === 'card') {
+    const col = underPointer(e, '.col'); if (!col) return clearDropUI();
+    const zone = col.querySelector('.cards'); if (!zone) return clearDropUI();
     const cards = $$('.card:not(.dragging)', zone);
     let idx = cards.findIndex(c => { const r = c.getBoundingClientRect(); return e.clientY < r.top + r.height / 2; });
     if (idx < 0) idx = cards.length;
-    if (S.drag.zone === zone && S.drag.idx === idx && $('.drop-line')) return;
+    pd.target = zone; pd.zone = zone; pd.idx = idx;          // keep the target even when the marker doesn't move
+    if ($('.drop-line') && zone.classList.contains('drag-over') && pd.markIdx === idx) return;
     clearDropUI(); zone.classList.add('drag-over');
     const line = document.createElement('div'); line.className = 'drop-line';
     idx < cards.length ? zone.insertBefore(line, cards[idx]) : zone.appendChild(line);
-    S.drag.zone = zone; S.drag.idx = idx;
-  } else {
-    const cell = e.target.closest('.cal-cell'); if (!cell) return;
-    e.preventDefault();
+    pd.markIdx = idx;
+  } else if (pd.kind === 'cal') {
+    const cell = underPointer(e, '.cal-cell'); if (!cell) return clearDropUI();
     if (!cell.classList.contains('drag-over')) { clearDropUI(); cell.classList.add('drag-over'); }
+    pd.target = cell.dataset.day;
   }
-});
-document.addEventListener('drop', async e => {
-  if (!S.drag) return; e.preventDefault();
-  const drag = S.drag; clearDropUI();
-  if (['section', 'project', 'tab', 'campaign'].includes(drag.kind)) {
-    S.drag = null;
-    if (!drag.target || drag.target === drag.id) return;
-    if (drag.kind === 'section') {
-      const sec = S.data.sections[drag.id]; if (!sec) return;
-      return reorderList(sectionsOf(sec.projectId), 'sections', drag.id, drag.target, drag.after);
-    }
-    if (drag.kind === 'project') return reorderList(projects(), 'projects', drag.id, drag.target, drag.after);
-    if (drag.kind === 'campaign') {
-      const c = S.data.campaigns[drag.id], t = S.data.campaigns[drag.target];
-      if (!c || !t || t.accountId !== c.accountId) return;   // ordering is per account
-      return reorderList(campaignsOf(c.accountId, true), 'campaigns', drag.id, drag.target, drag.after);
-    }
-    return reorderList(accounts(true), 'accounts', drag.id, drag.target, drag.after);
+}
+async function finishPointerDrag() {
+  const d = pd; pd = null;
+  if (!d || !d.started) { pd = null; return; }
+  suppressClick = true; setTimeout(() => suppressClick = false, 60);
+  if (d.ghost) d.ghost.remove();
+  const target = d.target, after = d.after, zone = d.zone, idx = d.idx;
+  resetDrag();                                   // always leaves a clean state, then repaints
+  if (!target) return;
+  if (d.kind === 'section') {
+    if (target === d.id) return;
+    const sec = S.data.sections[d.id]; if (!sec) return;
+    return reorderList(sectionsOf(sec.projectId), 'sections', d.id, target, after);
   }
-  if (drag.kind === 'card' && drag.zone) {
-    const pid = drag.zone.dataset.dropPid, sec = drag.zone.dataset.dropSec || null;
-    const list = tasksIn(pid, sec, !!S.showCompleted[pid]).filter(t => t.id !== drag.id);
-    list.splice(Math.min(drag.idx, list.length), 0, S.data.tasks[drag.id]);
+  if (d.kind === 'project') { if (target === d.id) return; return reorderList(projects(), 'projects', d.id, target, after); }
+  if (d.kind === 'tab') { if (target === d.id) return; return reorderList(accounts(true), 'accounts', d.id, target, after); }
+  if (d.kind === 'campaign') {
+    if (target === d.id) return;
+    const c = S.data.campaigns[d.id], t = S.data.campaigns[target];
+    if (!c || !t || t.accountId !== c.accountId) return;      // ordering is per account
+    return reorderList(campaignsOf(c.accountId, true), 'campaigns', d.id, target, after);
+  }
+  if (d.kind === 'card') {
+    const pid = zone.dataset.dropPid, sec = zone.dataset.dropSec || null;
+    const list = tasksIn(pid, sec, !!S.showCompleted[pid]).filter(t => t.id !== d.id);
+    list.splice(Math.min(idx, list.length), 0, S.data.tasks[d.id]);
     const ops = [];
     list.forEach((t, i) => {
       const data = { order: (i + 1) * 1000 };
-      if (t.id === drag.id) { data.sectionId = sec; data.projectId = pid; }
-      if (t.order !== data.order || t.id === drag.id) ops.push({ type: 'update', col: 'tasks', id: t.id, data });
+      if (t.id === d.id) { data.sectionId = sec; data.projectId = pid; }
+      if (t.order !== data.order || t.id === d.id) ops.push({ type: 'update', col: 'tasks', id: t.id, data });
     });
-    S.drag = null; await store.batch(ops);
-  } else if (drag.kind === 'cal') {
-    const cell = e.target.closest('.cal-cell'); if (!cell) return;
-    const [kind, id, from] = drag.ref.split(':'), day = cell.dataset.day; S.drag = null;
+    return store.batch(ops);
+  }
+  if (d.kind === 'cal') {
+    const [kind, id, from] = d.id.split(':'), day = target;
     if (from === day) return;
     if (kind === 'task') {
-      const t = S.data.tasks[id]; const data = { due: day };
+      const t = S.data.tasks[id]; if (!t) return;
+      const data = { due: day };
       if (t.recur && ['monthly', 'yearly'].includes(t.recur.type)) data.recur = { ...t.recur, day: parseKey(day).getDate() };
       if (t.deadline && t.due) data.deadline = addDays(t.deadline, dayDiff(t.due, day));
-      await store.update('tasks', id, data);
-    } else {
-      const ev = S.data.events[id]; const n = dayDiff(from, day);
-      await store.update('events', id, { start: addDays(ev.start, n), end: addDays(ev.end || ev.start, n) });
+      return store.update('tasks', id, data);
     }
+    const ev = S.data.events[id]; if (!ev) return;
+    const n = dayDiff(from, day);
+    return store.update('events', id, { start: addDays(ev.start, n), end: addDays(ev.end || ev.start, n) });
   }
+}
+function cancelPointerDrag() {
+  if (!pd) return;
+  const d = pd; pd = null;
+  if (d.ghost) d.ghost.remove();
+  resetDrag();
+}
+function resetDrag() {
+  S.drag = null; S.dragAt = 0;
+  $$('.dragging').forEach(x => x.classList.remove('dragging'));
+  $$('.drag-ghost').forEach(x => x.remove());
+  clearDropUI();
+  document.body.classList.remove('dragging-active');
+  if (S.renderPending) { S.renderPending = false; render(); }
+}
+document.addEventListener('mousemove', e => {
+  if (!pd) return;
+  if (!pd.started) {
+    if (Math.abs(e.clientX - pd.x0) + Math.abs(e.clientY - pd.y0) < 6) return;   // a click, not a drag
+    startPointerDrag(e);
+  }
+  e.preventDefault();
+  updatePointerDrag(e);
+});
+document.addEventListener('mouseup', () => { if (pd) finishPointerDrag(); });
+window.addEventListener('blur', cancelPointerDrag);
+document.addEventListener('visibilitychange', () => { if (document.hidden) cancelPointerDrag(); });
+// Last resort: a drag that somehow stops reporting is cleared so the app never stays stuck.
+setInterval(() => { if (S.drag && Date.now() - (S.dragAt || 0) > 3000) { pd = null; resetDrag(); } }, 1000);
+// Swallow the click that follows a real drag (so dropping a card doesn't also open it).
+document.addEventListener('click', e => {
+  if (!suppressClick) return;
+  e.preventDefault(); e.stopPropagation(); suppressClick = false;
+}, true);
+
+// Keyboard reordering for campaign cards (the handle is focusable).
+document.addEventListener('keydown', e => {
+  const g = document.activeElement && document.activeElement.closest && document.activeElement.closest('[data-grip]');
+  if (!g || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) return;
+  e.preventDefault();
+  ctNudgeCampaign(g.dataset.grip, e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 1);
 });
 
 /* ===================== task modal ===================== */
@@ -1963,7 +2012,7 @@ function renderCampaigns() {
     ${S.rulesMissing ? `<div class="ct-banner">${ico('alert')}<div><b>Campaign Tracker can't save yet.</b><br>Your Firebase security rules don't cover the new <code>accounts</code> and <code>campaigns</code> collections. Paste the updated <code>firestore.rules</code> in Firebase → Firestore → Rules → Publish, then reload this page.</div></div>` : ''}
     <div class="ct-tabs">
       <button class="ct-tab ${sel === 'all' ? 'on' : ''}" data-action="ct-acc" data-id="all">All accounts <span class="n">${all.length}</span></button>
-      ${accs.map(a => `<button class="ct-tab ${sel === a.id ? 'on' : ''} ${a.archived ? 'archived' : ''}" draggable="true" data-tab="${a.id}" data-action="ct-acc" data-id="${a.id}" title="Drag to reorder">
+      ${accs.map(a => `<button class="ct-tab ${sel === a.id ? 'on' : ''} ${a.archived ? 'archived' : ''}" data-tab="${a.id}" data-action="ct-acc" data-id="${a.id}" title="Drag to reorder">
         ${esc(a.name)}${a.archived ? ' <span style="color:var(--faint)">(archived)</span>' : ''} <span class="n">${accCount(a.id)}</span>${accAttn(a.id) ? '<span class="warn" title="Needs attention"></span>' : ''}</button>`).join('')}
       <button class="ct-tab" data-action="ct-add-acc" title="Add account">${ico('plus', 'i-sm')} Account</button>
     </div>
@@ -2489,6 +2538,7 @@ async function bootCloud() {
 }
 
 function boot() {
+  console.info(`%c${CFG.appName || 'Doable'} build ${BUILD}`, 'color:#dc4c3e;font-weight:700');
   const fb = CFG.firebase || {};
   if (!fb.apiKey) {
     S.mode = 'local';
