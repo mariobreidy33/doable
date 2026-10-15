@@ -915,6 +915,104 @@ kbd{font:600 10.5px/1 var(--font);padding:2px 5px;border-radius:4px;border:1px s
 .db-tip b{color:var(--text);font-size:12px;display:block}
 @media (max-width:900px){ .db-grid2,.db-grid3,.db-health{grid-template-columns:1fr} }
 @media (max-width:640px){ .db-tiles.c6,.db-tiles.c4{grid-template-columns:repeat(2,minmax(0,1fr))} .db-v{font-size:22px} .db-row{grid-template-columns:minmax(70px,34%) 1fr 30px} .db-row .nt{display:none} }
+
+/* ---------- notebook ---------- */
+.content.nb-content{display:flex;flex-direction:column;overflow:hidden;padding-bottom:16px}
+.nb-wrap{display:flex;flex-direction:column;flex:1;min-height:0}
+.nb-head{display:flex;align-items:center;gap:8px}
+.nb-head .spacer{flex:1}
+.nb{flex:1;min-height:0;display:grid;grid-template-columns:minmax(250px,320px) 1fr;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card);margin-top:4px}
+.nb-list{display:flex;flex-direction:column;min-height:0;border-right:1px solid var(--line);background:color-mix(in srgb,var(--side) 60%,var(--card))}
+.nb-lhead{padding:10px 10px 8px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.nb-lhead .ct-search{max-width:none;width:100%}
+.nb-lctl{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.nb-lctl .filt select{max-width:120px}
+.nb-cnt{margin-left:auto;font-size:11px;color:var(--faint)}
+.nb-items{flex:1;overflow-y:auto;padding:6px}
+.nb-item{display:block;padding:10px 11px;border-radius:9px;cursor:pointer;color:var(--text);text-decoration:none;border:1px solid transparent;margin-bottom:2px;transition:background .15s}
+.nb-item:hover{background:var(--hover)}
+.nb-item.on{background:var(--sel);border-color:color-mix(in srgb,var(--accent) 35%,transparent)}
+.nb-it{display:flex;align-items:center;gap:5px;font-size:13px}
+.nb-it b{font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nb-it .i{color:var(--accent-text)}
+.nb-sn{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.45;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.nb-sn.mut{color:var(--faint);font-style:italic}
+.nb-im{display:flex;gap:6px;align-items:center;margin-top:6px;font-size:11px;color:var(--faint);flex-wrap:wrap}
+.nb-ac{padding:1px 6px;border-radius:5px;background:color-mix(in srgb,var(--sw-blue) 14%,transparent);color:var(--muted)}
+.nb-tg{color:var(--faint)}
+.nb-none{padding:24px 10px;text-align:center;color:var(--faint);font-size:12.5px}
+.nb-edit{display:flex;flex-direction:column;min-height:0;min-width:0}
+.nb-ehead{display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.nb-ehead .spacer{flex:1}
+.nb-ehead .icon-btn.on{color:var(--accent-text)}
+.nb-sel select{max-width:170px}
+.nb-back{display:none}
+.nb-status{font-size:11.5px;color:var(--faint);min-width:44px;text-align:right}
+.nb-toolbar{display:flex;align-items:center;gap:2px;padding:5px 10px;border-bottom:1px solid var(--line);flex-wrap:wrap;background:var(--card)}
+.nb-toolbar button{min-width:28px;height:28px;padding:0 6px;border-radius:6px;color:var(--muted);font-size:12.5px;font-weight:600;display:inline-grid;place-items:center}
+.nb-toolbar button:hover{background:var(--hover);color:var(--text)}
+.nb-toolbar button.on{background:var(--sel);color:var(--accent-text)}
+.nb-sep{width:1px;height:18px;background:var(--line2);margin:0 4px}
+.nb-scroll{flex:1;overflow-y:auto;padding:22px clamp(18px,5vw,56px) 40px}
+.nb-title{width:100%;border:0;outline:0;background:transparent;color:var(--text);font-size:26px;font-weight:750;letter-spacing:-.02em;padding:0;font-family:inherit}
+.nb-title::placeholder{color:var(--faint)}
+.nb-meta{display:flex;gap:6px;flex-wrap:wrap;font-size:11.5px;color:var(--faint);margin-top:6px}
+.nb-tags{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin:10px 0 14px}
+.nb-chip{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;padding:2px 4px 2px 8px;border-radius:20px;background:var(--hover);color:var(--muted)}
+.nb-chip button{display:inline-grid;place-items:center;color:var(--faint);border-radius:50%;width:16px;height:16px}
+.nb-chip button:hover{color:var(--c-over)}
+.nb-tagin{border:0;outline:0;background:transparent;color:var(--text);font-size:12px;width:110px;padding:3px 2px}
+.nb-tagin::placeholder{color:var(--faint)}
+.nb-body{outline:0;min-height:50vh;font-size:15px;line-height:1.7;color:var(--text);word-wrap:break-word;caret-color:var(--accent)}
+.nb-body:empty::before{content:attr(data-placeholder);color:var(--faint);pointer-events:none}
+.nb-body p,.nb-body div{margin:0 0 .45em}
+.nb-body h1{font-size:22px;margin:1em 0 .35em;letter-spacing:-.015em;line-height:1.3}
+.nb-body h2{font-size:17.5px;margin:1em 0 .3em;line-height:1.35}
+.nb-body h3{font-size:15px;margin:.9em 0 .25em}
+.nb-body > :first-child{margin-top:0}
+.nb-body ul,.nb-body ol{margin:0 0 .5em;padding-left:1.5em}
+.nb-body li{margin:.15em 0}
+.nb-body ul.nb-check{list-style:none;padding-left:.2em}
+.nb-body ul.nb-check > li{position:relative;padding-left:28px}
+.nb-body ul.nb-check > li::before{content:"";position:absolute;left:0;top:.36em;width:16px;height:16px;border-radius:5px;border:1.6px solid var(--muted);cursor:pointer;box-sizing:border-box;transition:background .15s,border-color .15s}
+.nb-body ul.nb-check > li:hover::before{border-color:var(--accent-text)}
+.nb-body ul.nb-check > li[data-done]{color:var(--faint);text-decoration:line-through}
+.nb-body ul.nb-check > li[data-done]::before{background:var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m5 12.5 4.5 4.5L19 7.5' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat;border-color:var(--accent)}
+.nb-body ul.nb-check > li[data-task]::after{content:"→ task";margin-left:8px;font-size:10.5px;font-weight:600;color:var(--c-today);background:color-mix(in srgb,var(--c-today) 12%,transparent);padding:1px 6px;border-radius:10px;text-decoration:none;display:inline-block;vertical-align:1px}
+.nb-body blockquote{margin:.4em 0 .7em;padding:2px 0 2px 14px;border-left:3px solid var(--accent);color:var(--muted)}
+.nb-body pre{background:var(--input);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;margin:.4em 0 .7em}
+.nb-body code{font:13px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--hover);padding:1px 4px;border-radius:4px}
+.nb-body mark{background:color-mix(in srgb,#ffd84d 45%,transparent);color:inherit;border-radius:3px;padding:0 2px}
+.nb-body a{color:var(--accent-text);text-decoration:underline;text-underline-offset:2px;cursor:text}
+.nb-body hr{border:0;border-top:1px solid var(--line2);margin:1.1em 0}
+.nb-foot{display:flex;justify-content:space-between;gap:10px;padding:6px 14px;border-top:1px solid var(--line);font-size:11px;color:var(--faint)}
+.nb-empty{margin:auto;max-width:520px;text-align:center;padding:30px 20px;color:var(--muted)}
+.nb-empty > .i{width:34px;height:34px;color:var(--faint)}
+.nb-empty h3{margin:10px 0 6px;color:var(--text);font-size:16px}
+.nb-empty p{font-size:13px;line-height:1.6;margin:0 0 18px}
+.nb-tpls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.nb-tpl{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;border:1px solid var(--line2);background:var(--card);text-align:left;font-size:13px;transition:border-color .15s,transform .2s var(--ease)}
+.nb-tpl:hover{border-color:color-mix(in srgb,var(--accent) 45%,transparent);transform:translateY(-1px)}
+.nb-tpl .i{color:var(--accent-text)}
+.d-note{display:flex;align-items:center;gap:8px;width:100%;padding:7px 2px;border-bottom:1px solid var(--line);font-size:12.5px;text-align:left;color:var(--text)}
+.d-note:hover{color:var(--accent-text)}
+.d-note span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.d-note em{font-style:normal;font-size:11px;color:var(--faint)}
+.d-note + .obj-add,.d-sec > div + .obj-add{margin-top:8px}
+.search-list .row[data-note] > .i{color:var(--muted);margin:2px 4px 0 2px;flex:none}
+@media (max-width:820px){
+  .content.nb-content{padding:4px 10px 10px}
+  .nb{grid-template-columns:1fr}
+  .nb-wrap.open .nb-list{display:none}
+  .nb-wrap:not(.open) .nb-edit{display:none}
+  .nb-back{display:inline-grid}
+  .nb-list{border-right:0}
+  .nb-ehead .top-btn{padding:5px}
+  .nb-scroll{padding:16px 14px 30px}
+  .nb-title{font-size:21px}
+  .nb-tpls{grid-template-columns:1fr}
+  .nb-foot span:last-child{display:none}
+}
 </style>
 </head>
 <body>
@@ -924,12 +1022,12 @@ kbd{font:600 10.5px/1 var(--font);padding:2px 5px;border-radius:4px;border:1px s
 <script type="module">
 /* ===================== utilities ===================== */
 const CFG = window.APP_CONFIG || {};
-const BUILD = '2026-10-15e';   // shown in Settings, so you can confirm which version is live
+const BUILD = '2026-10-15f';   // shown in Settings, so you can confirm which version is live
 const FB_URL = 'https://www.gstatic.com/firebasejs/10.12.2/';
-const COLS = ['projects', 'sections', 'tasks', 'events', 'meta', 'members', 'accounts', 'campaigns', 'trash'];
+const COLS = ['projects', 'sections', 'tasks', 'events', 'meta', 'members', 'accounts', 'campaigns', 'trash', 'notes'];
 // Collections added after the first release. If the security rules haven't been updated yet,
 // the app still runs — only the feature that needs them shows a notice.
-const OPTIONAL_COLS = ['accounts', 'campaigns', 'trash'];
+const OPTIONAL_COLS = ['accounts', 'campaigns', 'trash', 'notes'];
 const TRASH_DAYS = 30;   // Recently deleted empties itself after this many days
 const COLORS = ['red', 'orange', 'yellow', 'green', 'teal', 'blue', 'purple', 'pink', 'grey'];
 const MARKETS = ['KSA', 'UAE', 'QAT', 'KWT', 'BAH', 'OMN', 'IRQ', 'EGY'];
@@ -1119,6 +1217,17 @@ const P = {
   ext: '<path d="M14 4h6v6M20 4l-9 9M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/>',
   link: '<path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/>',
   people: '<circle cx="9" cy="8.5" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 5.2a3.5 3.5 0 0 1 0 6.6M18.5 14.2a6.5 6.5 0 0 1 3 5.8"/>',
+  notebook: '<rect x="5" y="3.5" width="14.5" height="17" rx="2.5"/><path d="M9 3.5v17M12.5 8h4M12.5 11.5h4"/><path d="M3.5 7.5H6M3.5 12H6M3.5 16.5H6"/>',
+  pin: '<path d="M9 3.5h6l-1 6 3.5 3.5v1.5h-11V13L10 9.5Z"/><path d="M12 14.5v6"/>',
+  tag: '<path d="M3.5 11.6V4.5a1 1 0 0 1 1-1h7.1l9 9a1 1 0 0 1 0 1.4l-7.1 7.1a1 1 0 0 1-1.4 0Z"/><circle cx="8" cy="8" r="1.4"/>',
+  listUl: '<circle cx="5" cy="7" r="1.3" fill="currentColor" stroke="none"/><circle cx="5" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="5" cy="17" r="1.3" fill="currentColor" stroke="none"/><path d="M9.5 7H20M9.5 12H20M9.5 17H20"/>',
+  listOl: '<path d="M10 7h10M10 12h10M10 17h10"/><path d="M4 5.2h1.4v4M3.8 9.2h3M3.9 13.6c.3-.6.9-.9 1.5-.9.8 0 1.3.5 1.3 1.1 0 .6-.4 1-1 1.5L4 17.8h2.8"/>',
+  checklist: '<rect x="3.5" y="4.5" width="5.5" height="5.5" rx="1.3"/><path d="m4.3 16.4 1.6 1.6 2.9-3.1M12.5 7.2H20M12.5 16.5H20"/>',
+  quote: '<path d="M5 6.5h5v5c0 3.3-1.7 5.4-4.5 6.2M14 6.5h5v5c0 3.3-1.7 5.4-4.5 6.2"/>',
+  code: '<path d="m8.5 7-5 5 5 5M15.5 7l5 5-5 5M13.5 4.5l-3 15"/>',
+  highlight: '<path d="m14 4 6 6-8.5 8.5H5.5v-6Z"/><path d="M3.5 21h17"/>',
+  hr: '<path d="M3.5 12h17M7 7.5h10M7 16.5h10" opacity=".9"/>',
+  clearf: '<path d="M6 5h11M11.5 5 9 15M5.5 19.5h6M15 14l5 5M20 14l-5 5"/>',
   chart: '<path d="M4 20h16"/><rect x="5.5" y="11" width="3" height="6.5" rx="1"/><rect x="10.5" y="6.5" width="3" height="11" rx="1"/><rect x="15.5" y="13.5" width="3" height="4" rx="1"/>',
   swap: '<path d="M7 4 3.5 7.5 7 11"/><path d="M3.5 7.5h13M17 13l3.5 3.5L17 20"/><path d="M20.5 16.5h-13"/>',
 };
@@ -1126,7 +1235,7 @@ const ico = (n, cls = '') => `<svg class="i ${cls}" viewBox="0 0 24 24" aria-hid
 
 /* ===================== state ===================== */
 const S = {
-  data: { projects: {}, sections: {}, tasks: {}, events: {}, meta: {}, members: {}, accounts: {}, campaigns: {}, trash: {} },
+  data: { projects: {}, sections: {}, tasks: {}, events: {}, meta: {}, members: {}, accounts: {}, campaigns: {}, trash: {}, notes: {} },
   missing: new Set(),      // collections the security rules don't cover yet
   ws: null, workspaces: [], // cloud workspaces: the one open now, and every one you can open
   user: null, mode: 'local', ready: false,
@@ -1135,6 +1244,7 @@ const S = {
   ct: { account: lsGet('tb:ctAccount') || 'all', q: '', sort: lsGet('tb:ctSort') || 'attention', archived: false, limit: 80,
         f: { status: 'All', market: 'All', platform: 'All', objective: 'All', pacing: 'All', creative: 'All', results: 'All', weekly: 'All', paused: 'All' } },
   rulesMissing: false,
+  nb: { tab: lsGet('tb:nbTab') || 'all', q: '', sort: lsGet('tb:nbSort') || 'updated', tag: 'all' },
   db: Object.assign({ period: '30', project: 'all', account: 'all', view: 'all' }, (() => { try { return JSON.parse(lsGet('tb:db') || '{}'); } catch { return {}; } })()),
 };
 let store = null;
@@ -1262,7 +1372,7 @@ class CloudStore {
       }, err => {
         // A newer collection the security rules don't cover yet must not lock the whole app out.
         if (OPTIONAL_COLS.includes(col) && err.code === 'permission-denied') {
-          S.missing.add(col); if (col !== 'trash') S.rulesMissing = true;
+          S.missing.add(col); if (col === 'accounts' || col === 'campaigns') S.rulesMissing = true;
           S.data[col] = {}; loaded.add(col); this.fresh.add(col); fire(); return;
         }
         onErr && onErr(err);
@@ -1406,6 +1516,7 @@ function route() {
   if (h[0] === 'campaigns') return { view: 'campaigns' };
   if (h[0] === 'archive') return { view: 'archive' };
   if (h[0] === 'dashboard') return { view: 'dashboard' };
+  if (h[0] === 'notes') return { view: 'notes', id: h[1] && S.data.notes[h[1]] ? h[1] : null };
   if (h[0] === 'trash') return { view: 'trash' };
   if (h[0] === 'home') return { view: 'home' };
   const first = projects()[0];
@@ -1433,6 +1544,14 @@ function render(opts = {}) {
   const content = $('.content'), scrollT = content ? content.scrollTop : 0;
 
   const r = route(); S.route = r;
+  // The note being typed in survives the rebuild untouched (caret, selection and undo history).
+  const edEl = $('#nb-editor'); let keepEd = null, keepRange = null;
+  const edScroll = $('.nb-scroll') ? $('.nb-scroll').scrollTop : 0, listScroll = $('.nb-items') ? $('.nb-items').scrollTop : 0, wasNotes = !!$('.nb');
+  if (edEl && r.view === 'notes' && r.id === edEl.dataset.note && (edEl.contains(document.activeElement) || NB.dirty)) {
+    // plain node/offset pairs, not a live Range: a Range collapses when its nodes leave the page
+    keepEd = edEl; const sel = getSelection(); if (sel.rangeCount && edEl.contains(sel.anchorNode)) keepRange = [sel.anchorNode, sel.anchorOffset, sel.focusNode, sel.focusOffset];
+  }
+  nbBeforeRender(r.view === 'notes' ? r.id : null);
   const routeChanged = S.lastRouteKey !== (r.view + (r.id || ''));
   S.lastRouteKey = r.view + (r.id || '');
   // View-only changes (filters, search, sort, account tabs) repaint the main pane only —
@@ -1449,8 +1568,19 @@ function render(opts = {}) {
   if (focusId) { const el = document.getElementById(focusId); if (el) { el.focus(); try { if (selStart != null) el.setSelectionRange(selStart, selStart); } catch { } } }
   const nb = $('#board'); if (nb) nb.parentElement.scrollLeft = scrollL;
   const nc = $('.content'); if (nc) { nc.scrollTop = routeChanged ? 0 : scrollT; if (routeChanged) nc.classList.add('route-enter'); }
+  if (keepEd) {
+    const ph = $('#nb-editor');
+    if (ph && ph.dataset.note === keepEd.dataset.note) {
+      ph.replaceWith(keepEd);
+      if (keepRange) { keepEd.focus({ preventScroll: true }); try { getSelection().setBaseAndExtent(...keepRange); } catch { } }
+    }
+  }
+  if (wasNotes && r.view === 'notes') {
+    const li = $('.nb-items'); if (li) li.scrollTop = listScroll;
+    const es = $('.nb-scroll'); if (es && !routeChanged) es.scrollTop = edScroll;
+  }
   if (S.drawerPaint) S.drawerPaint();
-  document.title = (r.view === 'project' ? S.data.projects[r.id]?.name + ' – ' : { today: 'Today – ', upcoming: 'Upcoming – ', campaigns: 'Campaign Tracker – ', archive: 'Archive – ', dashboard: 'Dashboard – ', trash: 'Recently deleted – ' }[r.view] || '') + (CFG.appName || 'Tasks');
+  document.title = (r.view === 'project' ? S.data.projects[r.id]?.name + ' – ' : { today: 'Today – ', upcoming: 'Upcoming – ', campaigns: 'Campaign Tracker – ', archive: 'Archive – ', dashboard: 'Dashboard – ', notes: (r.id && S.data.notes[r.id] ? (S.data.notes[r.id].title || 'Untitled') + ' – ' : 'Notebook – '), trash: 'Recently deleted – ' }[r.view] || '') + (CFG.appName || 'Tasks');
 }
 
 function renderSidebar(r) {
@@ -1480,6 +1610,7 @@ function renderSidebar(r) {
         <button class="icon-btn more" data-action="project-menu" data-id="${p.id}" title="More">${ico('dots')}</button>
       </div>`).join('') || '<div class="mode-note" style="border:0">No projects yet.</div>'}
       <button class="nav-item ${r.view === 'campaigns' ? 'active' : ''}" data-go="#/campaigns">${ico('campaign')}<span class="lbl">Campaign Tracker</span>${(() => { const n = attentionCount(); return n ? `<span class="cnt" title="${n} campaign${n === 1 ? '' : 's'} need attention" style="color:var(--sw-orange)">${n}</span>` : ''; })()}</button>
+      <button class="nav-item ${r.view === 'notes' ? 'active' : ''}" data-go="#/notes">${ico('notebook')}<span class="lbl">Notebook</span><span class="cnt">${Object.keys(S.data.notes).length || ''}</span></button>
     </div>
     <div class="side-group side-tools">
       <button class="nav-item ${r.view === 'archive' ? 'active' : ''}" data-go="#/archive">${ico('archive')}<span class="lbl">Archive</span><span class="cnt">${archN || ''}</span></button>
@@ -1498,6 +1629,7 @@ function renderMain(r) {
   if (r.view === 'campaigns') return renderCampaigns();
   if (r.view === 'archive') return renderArchive();
   if (r.view === 'dashboard') return renderDashboard();
+  if (r.view === 'notes') return renderNotebook(r);
   if (r.view === 'trash') return renderTrash();
   return '';
 }
@@ -1835,6 +1967,419 @@ document.addEventListener('change', e => {
   S.db[s.dataset.dbf] = s.value; lsSet('tb:db', JSON.stringify(S.db)); dbTipHide(); render({ mainOnly: true });
 });
 
+
+/* =====================================================================
+   NOTEBOOK — rich-text notes for meetings and everything else.
+   Sectioned by the same accounts as the Campaign Tracker (plus "General"),
+   with a note list on the left and the editor on the right.
+   ===================================================================== */
+const NB = { timer: 0, dirty: false, id: null, fresh: null, open: null };
+const NB_ALLOWED = new Set(['P', 'DIV', 'BR', 'B', 'STRONG', 'I', 'EM', 'U', 'S', 'STRIKE', 'DEL', 'H1', 'H2', 'H3', 'UL', 'OL', 'LI',
+  'BLOCKQUOTE', 'PRE', 'CODE', 'A', 'MARK', 'HR', 'SPAN', 'SUB', 'SUP']);
+const NB_DROP = new Set(['SCRIPT', 'STYLE', 'IFRAME', 'OBJECT', 'EMBED', 'SVG', 'MATH', 'TEMPLATE', 'LINK', 'META', 'TITLE', 'NOSCRIPT', 'FORM', 'INPUT', 'BUTTON', 'SELECT', 'TEXTAREA', 'VIDEO', 'AUDIO', 'IMG', 'CANVAS']);
+// Notes are shared with everyone in the workspace, so whatever is stored or pasted is cleaned to a
+// short list of formatting tags first: no scripts, no styles, no event handlers, only web/mail links.
+function cleanHTML(html) {
+  const doc = new DOMParser().parseFromString(`<div>${html || ''}</div>`, 'text/html');
+  const walk = el => {
+    [...el.childNodes].forEach(n => {
+      if (n.nodeType === 3) return;
+      if (n.nodeType !== 1) { n.remove(); return; }
+      if (NB_DROP.has(n.tagName)) { n.remove(); return; }
+      walk(n);
+      if (!NB_ALLOWED.has(n.tagName)) { n.replaceWith(...n.childNodes); return; }
+      [...n.attributes].forEach(a => {
+        const k = a.name, t = n.tagName;
+        const keep = (t === 'A' && k === 'href' && /^(https?:|mailto:)/i.test(a.value.trim()))
+          || (t === 'UL' && k === 'class' && a.value === 'nb-check')
+          || (t === 'LI' && (k === 'data-done' || k === 'data-task'));
+        if (!keep) n.removeAttribute(k);
+      });
+      if (n.tagName === 'A') { n.setAttribute('target', '_blank'); n.setAttribute('rel', 'noopener noreferrer'); }
+    });
+  };
+  const root = doc.body.firstChild; walk(root);
+  return root.innerHTML;
+}
+const htmlText = html => { const d = new DOMParser().parseFromString(`<div>${html || ''}</div>`, 'text/html'); d.querySelectorAll('p,div,li,h1,h2,h3,blockquote,pre,br').forEach(e => e.append('\n')); return d.body.textContent.replace(/\n{3,}/g, '\n\n').trim(); };
+const wordCount = t => (t.match(/\S+/g) || []).length;
+function nbWhen(ts) {
+  if (!ts) return '';
+  const k = tsKey(ts), d = new Date(ts);
+  if (k === todayKey()) { let h = d.getHours(); const ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12; return `${h}:${pad(d.getMinutes())} ${ap}`; }
+  if (k === addDays(todayKey(), -1)) return 'Yesterday';
+  return fmtDay(k);
+}
+
+/* ---------- templates ---------- */
+const NB_TEMPLATES = {
+  meeting: { label: 'Meeting notes', icon: 'people', title: () => `Meeting — ${fmtDay(todayKey())}`,
+    html: () => `<p><b>Date:</b> ${esc(longDay(todayKey()))}</p><p><b>Attendees:</b> </p><h2>Agenda</h2><ul><li><br></li></ul><h2>Notes</h2><p><br></p><h2>Action items</h2><ul class="nb-check"><li><br></li></ul><h2>Next steps</h2><p><br></p>` },
+  call: { label: 'Client call recap', icon: 'comment', title: () => `Client call — ${fmtDay(todayKey())}`,
+    html: () => `<p><b>Client:</b> </p><p><b>On the call:</b> </p><h2>What they asked for</h2><ul><li><br></li></ul><h2>Performance discussed</h2><p><br></p><h2>Decisions</h2><ul><li><br></li></ul><h2>Follow-ups</h2><ul class="nb-check"><li><br></li></ul>` },
+  brief: { label: 'Campaign brief', icon: 'campaign', title: () => 'Campaign brief',
+    html: () => `<h2>Objective</h2><p><br></p><h2>Markets</h2><p><br></p><h2>Platforms &amp; objectives</h2><ul><li><br></li></ul><h2>Budget &amp; flight</h2><p><b>Budget:</b> </p><p><b>Flight:</b> </p><h2>KPIs</h2><ul><li><br></li></ul><h2>Creatives</h2><p><br></p><h2>Open questions</h2><ul class="nb-check"><li><br></li></ul>` },
+};
+
+/* ---------- selectors ---------- */
+function nbTab() {
+  const t = S.nb.tab;
+  if (t !== 'all' && t !== 'general' && !(S.data.accounts[t] && !S.data.accounts[t].archived)) { S.nb.tab = 'all'; lsSet('tb:nbTab', 'all'); }
+  return S.nb.tab;
+}
+const nbAccOf = n => (n.accountId && S.data.accounts[n.accountId]) || null;
+const nbInTab = (n, t) => (t === 'all' ? true : t === 'general' ? !nbAccOf(n) : n.accountId === t);
+function nbList() {
+  const t = nbTab(), q = S.nb.q.trim().toLowerCase(), tag = S.nb.tag;
+  let list = Object.values(S.data.notes).filter(n => nbInTab(n, t));
+  if (tag !== 'all') list = list.filter(n => (n.tags || []).includes(tag));
+  if (q) list = list.filter(n => `${n.title || ''} ${n.text || ''} ${(n.tags || []).join(' ')}`.toLowerCase().includes(q));
+  const by = { updated: (a, b) => (b.updatedAt || 0) - (a.updatedAt || 0), created: (a, b) => (b.createdAt || 0) - (a.createdAt || 0),
+    title: (a, b) => (a.title || 'Untitled').localeCompare(b.title || 'Untitled') }[S.nb.sort] || ((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+  return list.sort((a, b) => (!!b.pinned - !!a.pinned) || by(a, b));
+}
+const nbAllTags = () => [...new Set(Object.values(S.data.notes).flatMap(n => n.tags || []))].sort((a, b) => a.localeCompare(b));
+
+/* ---------- page ---------- */
+function renderNotebook(r) {
+  const tab = nbTab(), note = r.id ? S.data.notes[r.id] : null;
+  const accs = accounts();
+  const count = t => Object.values(S.data.notes).filter(n => nbInTab(n, t)).length;
+  const list = nbList(), tags = nbAllTags();
+  if (S.nb.tag !== 'all' && !tags.includes(S.nb.tag)) S.nb.tag = 'all';
+  const item = n => {
+    const acc = nbAccOf(n), snip = (n.text || '').replace(/\s+/g, ' ').trim().slice(0, 150);
+    return `<a class="nb-item ${note && note.id === n.id ? 'on' : ''}" data-go="#/notes/${n.id}" data-nbitem="${n.id}">
+      <div class="nb-it">${n.pinned ? ico('pin', 'i-xs') : ''}<b>${esc(n.title || 'Untitled')}</b></div>
+      ${snip ? `<div class="nb-sn">${esc(snip)}</div>` : '<div class="nb-sn mut">No text yet</div>'}
+      <div class="nb-im"><span>${esc(nbWhen(n.updatedAt || n.createdAt))}</span>${tab === 'all' && acc ? `<span class="nb-ac">${esc(acc.name)}</span>` : ''}
+        ${(n.tags || []).slice(0, 3).map(t => `<span class="nb-tg">#${esc(t)}</span>`).join('')}${n.campaignId && S.data.campaigns[n.campaignId] ? `<span class="nb-tg">${ico('campaign', 'i-xs')}</span>` : ''}</div></a>`;
+  };
+  const newBtns = `<button class="btn btn-primary" data-action="nb-new">${ico('plus', 'i-sm')} New note</button>
+    <button class="btn" data-action="nb-tpl-menu" title="Start from a template">${ico('down', 'i-sm')} Templates</button>`;
+  return topbar('My Projects /') + `<div class="content nb-content"><div class="nb-wrap ${note ? 'open' : ''}">
+    <div class="ct-head nb-head"><h1>Notebook</h1><span class="spacer"></span>${newBtns}</div>
+    ${S.missing.has('notes') ? `<div class="ct-banner">${ico('alert')}<div><b>The notebook can't save yet.</b><br>Paste the updated <code>firestore.rules</code> in Firebase → Firestore → Rules → Publish, then reload this page.</div></div>` : ''}
+    <div class="ct-tabs nb-tabs">
+      <button class="ct-tab ${tab === 'all' ? 'on' : ''}" data-action="nb-tab" data-id="all">All notes <span class="n">${count('all')}</span></button>
+      <button class="ct-tab ${tab === 'general' ? 'on' : ''}" data-action="nb-tab" data-id="general">General <span class="n">${count('general')}</span></button>
+      ${accs.map(a => `<button class="ct-tab ${tab === a.id ? 'on' : ''}" data-tab="${a.id}" data-action="nb-tab" data-id="${a.id}" title="Drag to reorder">${esc(a.name)} <span class="n">${count(a.id)}</span></button>`).join('')}
+      <button class="ct-tab" data-action="nb-add-acc" title="Add account">${ico('plus', 'i-sm')} Account</button>
+    </div>
+    <div class="nb">
+      <aside class="nb-list">
+        <div class="nb-lhead">
+          <div class="ct-search">${ico('search', 'i-sm')}<input id="nb-q" data-keep value="${esc(S.nb.q)}" placeholder="Search notes" autocomplete="off"></div>
+          <div class="nb-lctl">
+            <label class="filt">${ico('sort', 'i-sm')}<select data-nbs="sort">${[['updated', 'Last edited'], ['created', 'Date created'], ['title', 'Title']].map(([v, l]) => `<option value="${v}" ${S.nb.sort === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+            ${tags.length ? `<label class="filt ${S.nb.tag !== 'all' ? 'on' : ''}">${ico('tag', 'i-sm')}<select data-nbs="tag"><option value="all">All tags</option>${tags.map(t => `<option value="${esc(t)}" ${S.nb.tag === t ? 'selected' : ''}>#${esc(t)}</option>`).join('')}</select></label>` : ''}
+            <span class="nb-cnt">${list.length} note${list.length === 1 ? '' : 's'}</span>
+          </div>
+        </div>
+        <div class="nb-items">${list.map(item).join('') || `<div class="nb-none">${S.nb.q || S.nb.tag !== 'all' ? 'No notes match.' : 'No notes here yet.'}</div>`}</div>
+      </aside>
+      <section class="nb-edit">${note ? nbEditorHTML(note) : `<div class="nb-empty">${ico('notebook')}<h3>${list.length ? 'Pick a note, or start a new one' : 'Your notebook is empty'}</h3>
+        <p>Jot things down in meetings, keep client call recaps, or draft a campaign brief. Notes can sit under an account or in General.</p>
+        <div class="nb-tpls"><button class="nb-tpl" data-action="nb-new">${ico('plus')}<b>Blank note</b></button>
+          ${Object.entries(NB_TEMPLATES).map(([k, t]) => `<button class="nb-tpl" data-action="nb-new" data-tpl="${k}">${ico(t.icon)}<b>${esc(t.label)}</b></button>`).join('')}</div></div>`}</section>
+    </div></div></div>`;
+}
+const NB_TOOLS = [['h1', 'H1', 'Heading'], ['h2', 'H2', 'Subheading'], '|', ['bold', '<b>B</b>', 'Bold (Ctrl+B)'], ['italic', '<i>I</i>', 'Italic (Ctrl+I)'],
+  ['underline', '<u>U</u>', 'Underline (Ctrl+U)'], ['strikeThrough', '<s>S</s>', 'Strikethrough'], ['mark', 'highlight', 'Highlight'], '|',
+  ['ul', 'listUl', 'Bulleted list (type "- ")'], ['ol', 'listOl', 'Numbered list (type "1. ")'], ['check', 'checklist', 'Checklist (type "[] ")'], '|',
+  ['quote', 'quote', 'Quote (type "> ")'], ['code', 'code', 'Code block'], ['link', 'link', 'Link (Ctrl+K)'], ['hr', 'hr', 'Divider'], '|', ['clear', 'clearf', 'Clear formatting']];
+function nbEditorHTML(n) {
+  const accs = accounts(true).filter(a => !a.archived || a.id === n.accountId);
+  const camps = n.accountId ? campaignsOf(n.accountId, true).filter(c => !c.archived || c.id === n.campaignId) : [];
+  const camp = n.campaignId && S.data.campaigns[n.campaignId];
+  const words = wordCount(n.text || '');
+  return `<div class="nb-ehead">
+      <button class="icon-btn nb-back" data-go="#/notes" title="All notes">${ico('left')}</button>
+      <label class="filt nb-sel">${ico('campaign', 'i-sm')}<select data-nbf="accountId" title="Account"><option value="">General</option>${accs.map(a => `<option value="${a.id}" ${n.accountId === a.id ? 'selected' : ''}>${esc(a.name)}</option>`).join('')}</select></label>
+      ${n.accountId ? `<label class="filt nb-sel ${camp ? 'on' : ''}">Campaign<select data-nbf="campaignId"><option value="">None</option>${camps.map(c => `<option value="${c.id}" ${n.campaignId === c.id ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}</select></label>` : ''}
+      ${camp ? `<button class="icon-btn" data-action="ct-open" data-id="${camp.id}" title="Open ${esc(camp.name)}">${ico('arrowRight', 'i-sm')}</button>` : ''}
+      <span class="spacer"></span>
+      <span class="nb-status" id="nb-status">${S.missing.has('notes') ? 'Not saved' : 'Saved'}</span>
+      <button class="top-btn" data-action="nb-tasks" title="Turn open checklist items into tasks">${ico('check', 'i-sm')}Send to To-do</button>
+      <button class="icon-btn ${n.pinned ? 'on' : ''}" data-action="nb-pin" title="${n.pinned ? 'Unpin' : 'Pin to top'}">${ico('pin')}</button>
+      <button class="icon-btn" data-action="nb-more" data-align="right" title="More">${ico('dots')}</button>
+    </div>
+    <div class="nb-toolbar" role="toolbar" aria-label="Formatting">${NB_TOOLS.map(t => t === '|' ? '<i class="nb-sep"></i>'
+      : `<button type="button" data-nbcmd="${t[0]}" title="${esc(t[2])}">${P[t[1]] ? ico(t[1], 'i-sm') : t[1]}</button>`).join('')}</div>
+    <div class="nb-scroll">
+      <input id="nb-title-${n.id}" class="nb-title" data-keep data-nbtitle="${n.id}" value="${esc(n.title || '')}" placeholder="Title" maxlength="200" autocomplete="off">
+      <div class="nb-meta"><span>Created ${esc(fmtDateTime(n.createdAt))}${n.createdBy ? ' by ' + esc(n.createdBy) : ''}</span>
+        ${n.updatedAt && n.updatedAt - (n.createdAt || 0) > 60000 ? `<span>· Edited ${esc(timeAgo(n.updatedAt))}${n.updatedBy ? ' by ' + esc(n.updatedBy) : ''}</span>` : ''}</div>
+      <div class="nb-tags">${(n.tags || []).map(t => `<span class="nb-chip">#${esc(t)}<button data-nbtagdel="${esc(t)}" title="Remove tag">${ico('x', 'i-xs')}</button></span>`).join('')}
+        <input id="nb-tag-${n.id}" data-keep class="nb-tagin" data-nbtag placeholder="${(n.tags || []).length ? 'Add tag' : '+ Add tag'}" maxlength="30" autocomplete="off"></div>
+      <div id="nb-editor" class="nb-body" contenteditable="true" spellcheck="true" data-note="${n.id}" data-placeholder="Start writing… type “# ” for a heading, “- ” for bullets or “[] ” for a checklist">${cleanHTML(n.html || '')}</div>
+    </div>
+    <div class="nb-foot"><span id="nb-words">${words} word${words === 1 ? '' : 's'}</span><span>Ctrl+S saves now · changes save automatically</span></div>`;
+}
+
+/* ---------- saving ---------- */
+const nbStatus = t => { const el = $('#nb-status'); if (el) el.textContent = t; };
+function nbSchedule(id) {
+  if (id) NB.id = id;
+  NB.dirty = true; nbStatus('Saving…');
+  clearTimeout(NB.timer); NB.timer = setTimeout(nbFlush, 700);
+}
+// Reads the editor synchronously (so it is safe to call right before the page is rebuilt), then saves.
+function nbFlush() {
+  clearTimeout(NB.timer);
+  if (!NB.dirty || !NB.id) return;
+  NB.dirty = false;
+  const id = NB.id, n = S.data.notes[id]; if (!n) return;
+  const ed = $(`#nb-editor[data-note="${id}"]`), ti = $(`#nb-title-${id}`);
+  const html = ed ? cleanHTML(ed.innerHTML) : n.html || '';
+  const title = ti ? ti.value.trim() : n.title || '';
+  const text = htmlText(html).slice(0, 20000);
+  if (html === (n.html || '') && title === (n.title || '')) { nbStatus('Saved'); return; }
+  if (S.missing.has('notes')) { nbStatus('Not saved'); return; }
+  return store.update('notes', id, { title, html, text, updatedAt: Date.now(), updatedBy: me() }).then(() => nbStatus('Saved'));
+}
+window.addEventListener('beforeunload', () => nbFlush());
+document.addEventListener('visibilitychange', () => { if (document.hidden) nbFlush(); });
+// Called at the start of every render: drop a brand-new note that was left completely empty,
+// and save any pending edits (read from the page before it is rebuilt).
+function nbBeforeRender(nextId) {
+  if (NB.open && NB.open !== nextId && NB.fresh === NB.open) {
+    const id = NB.open, n = S.data.notes[id];
+    const ed = $(`#nb-editor[data-note="${id}"]`), ti = $(`#nb-title-${id}`);
+    const title = ti ? ti.value.trim() : ((n && n.title) || '').trim();
+    const text = ed ? ed.innerText.trim() : ((n && n.text) || '').trim();
+    NB.fresh = null;
+    if (n && !title && !text) { NB.dirty = false; clearTimeout(NB.timer); store.del('notes', id); }
+  }
+  if (NB.dirty) nbFlush();
+  NB.open = nextId || null;
+  if (nextId) NB.id = nextId;
+}
+
+/* ---------- actions ---------- */
+async function nbNew(tpl) {
+  const t = S.nb.tab, T = NB_TEMPLATES[tpl];
+  const accountId = t !== 'all' && t !== 'general' ? t : null;
+  const html = T ? T.html() : '';
+  const n = { id: uid(), accountId, campaignId: null, title: T ? T.title() : '', html, text: htmlText(html), tags: [], pinned: false,
+    createdAt: Date.now(), createdBy: me(), updatedAt: Date.now(), updatedBy: me() };
+  return nbCreate(n, !T);
+}
+async function nbCreate(n, focusTitle = true) {
+  if (S.missing.has('notes')) return toast('The notebook needs the updated security rules first');
+  await store.put('notes', n);
+  NB.fresh = n.id;
+  go('#/notes/' + n.id);
+  setTimeout(() => {
+    if (focusTitle) { const ti = $(`#nb-title-${n.id}`); if (ti) ti.focus(); return; }
+    const ed = $('#nb-editor'); if (!ed) return;
+    ed.focus();
+    const first = ed.querySelector('p b'), r = document.createRange();
+    if (first && first.parentElement.lastChild) { r.setStartAfter(first.parentElement.lastChild); } else { r.selectNodeContents(ed); r.collapse(false); }
+    const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+  }, 60);
+}
+async function nbDelete(id) {
+  const n = S.data.notes[id]; if (!n) return;
+  nbFlush();
+  const live = S.data.notes[id] || n;
+  NB.fresh = null;
+  if (curNoteId() === id) go('#/notes');
+  await trashItems('note', live.title || 'Untitled', [{ col: 'notes', data: live }], nbAccOf(live) ? nbAccOf(live).name : 'General');
+}
+async function nbDuplicate(id) {
+  nbFlush();
+  const n = S.data.notes[id]; if (!n) return;
+  const copy = { ...clone(n), id: uid(), title: `${n.title || 'Untitled'} (copy)`, pinned: false, createdAt: Date.now(), createdBy: me(), updatedAt: Date.now(), updatedBy: me() };
+  await store.put('notes', copy);
+  undoable('Note duplicated', `duplicate “${n.title || 'Untitled'}”`, () => store.del('notes', copy.id));
+  go('#/notes/' + copy.id);
+}
+async function nbPin(id) {
+  const n = S.data.notes[id]; if (!n) return;
+  await store.update('notes', id, { pinned: !n.pinned });
+  undoable(n.pinned ? 'Note unpinned' : 'Note pinned to the top', n.pinned ? 'unpin note' : 'pin note', () => store.update('notes', id, { pinned: !!n.pinned }));
+}
+const curNoteId = () => (S.route && S.route.view === 'notes' ? S.route.id : null);
+async function nbSetTags(id, tags) { nbFlush(); await store.update('notes', id, { tags, updatedAt: Date.now(), updatedBy: me() }); }
+async function nbAddAccount() {
+  const r = await promptBox({ title: 'Add account', label: 'Account name', placeholder: 'e.g. Cadillac', ok: 'Add' });
+  if (!r) return;
+  const a = { id: uid(), name: r.value, order: nextOrder(accounts(true)), archived: false, createdAt: Date.now(), createdBy: me() };
+  await store.put('accounts', a);
+  S.nb.tab = a.id; lsSet('tb:nbTab', a.id); render({ mainOnly: true });
+}
+// Open checklist items → tasks. The project's section with the account's name is used when there is one.
+function nbSendTasks(anchor) {
+  const ed = $('#nb-editor'), note = ed && S.data.notes[ed.dataset.note]; if (!note) return;
+  const firstLine = li => { const c = li.cloneNode(true); c.querySelectorAll('ul,ol').forEach(x => x.remove()); return c.textContent.trim(); };
+  const items = [...ed.querySelectorAll('ul.nb-check > li')].filter(li => !li.hasAttribute('data-done') && !li.dataset.task && firstLine(li));
+  if (!items.length) return toast('No open checklist items to send — add some with the checklist button (or type “[] ”)');
+  const acc = nbAccOf(note);
+  openMenu(anchor, [{ title: `Send ${items.length} open item${items.length === 1 ? '' : 's'} to…` }, ...projects().map(p => {
+    const sec = acc ? sectionsOf(p.id).find(s => s.name.trim().toLowerCase() === acc.name.trim().toLowerCase()) : null;
+    return { label: `${p.name}${sec ? ' / ' + sec.name : ''}`, icon: 'inbox', onClick: () => nbMakeTasks(note.id, items.map(li => ({ li, title: firstLine(li) })), p, sec) };
+  })], 'right');
+}
+async function nbMakeTasks(noteId, items, p, sec) {
+  const note = S.data.notes[noteId]; if (!note) return;
+  const base = nextOrder(tasksIn(p.id, sec ? sec.id : null, true));
+  const ts = items.map((it, i) => newTask({ projectId: p.id, sectionId: sec ? sec.id : null, title: it.title.slice(0, 300),
+    description: `From note “${note.title || 'Untitled'}”`, order: base + i * 10, noteId }));
+  ts.forEach((t, i) => { items[i].li.dataset.task = t.id; });
+  await store.batch(ts.map(t => ({ type: 'put', col: 'tasks', data: t })));
+  nbSchedule(noteId); nbFlush();
+  const ids = new Set(ts.map(t => t.id));
+  undoable(`${ts.length} task${ts.length === 1 ? '' : 's'} added to ${p.name}${sec ? ' / ' + sec.name : ''}`, 'send action items to To-do', async () => {
+    await store.batch(ts.map(t => ({ type: 'del', col: 'tasks', id: t.id })));
+    const ed = $(`#nb-editor[data-note="${noteId}"]`);
+    if (ed) { ed.querySelectorAll('li[data-task]').forEach(li => { if (ids.has(li.dataset.task)) li.removeAttribute('data-task'); }); nbSchedule(noteId); nbFlush(); return; }
+    const n = S.data.notes[noteId]; if (!n) return;
+    const d = new DOMParser().parseFromString(`<div>${n.html || ''}</div>`, 'text/html');
+    d.querySelectorAll('li[data-task]').forEach(li => { if (ids.has(li.dataset.task)) li.removeAttribute('data-task'); });
+    await store.update('notes', noteId, { html: cleanHTML(d.body.firstChild.innerHTML) });
+  });
+}
+
+/* ---------- editor commands ---------- */
+const nbEd = () => $('#nb-editor');
+// Loose text typed straight into the editor gets wrapped in a paragraph, so headings and lists
+// always have a block to work on (browsers otherwise produce odd nesting).
+function nbEnsureBlocks() {
+  const ed = nbEd(); if (!ed) return;
+  document.execCommand('defaultParagraphSeparator', false, 'p');
+  const loose = [...ed.childNodes].filter(n => n.nodeType === 3 ? n.textContent.length : n.nodeType === 1 && !/^(P|DIV|H1|H2|H3|UL|OL|BLOCKQUOTE|PRE|HR)$/.test(n.tagName));
+  if (!loose.length) return;
+  const s = getSelection(); const keep = s.rangeCount ? [s.anchorNode, s.anchorOffset] : null;
+  let p = null;
+  [...ed.childNodes].forEach(n => {
+    const inline = loose.includes(n);
+    if (inline) { if (!p) { p = document.createElement('p'); ed.insertBefore(p, n); } p.appendChild(n); } else p = null;
+  });
+  if (keep) try { s.setBaseAndExtent(keep[0], keep[1], keep[0], keep[1]); } catch { }
+}
+function nbClosest(sel) {
+  const ed = nbEd(), s = getSelection(); if (!ed || !s.rangeCount) return null;
+  let n = s.anchorNode; n = n && n.nodeType === 3 ? n.parentElement : n;
+  const el = n && n.closest && n.closest(sel);
+  return el && ed.contains(el) && el !== ed ? el : null;
+}
+function nbBlockToggle(tag) {
+  const cur = String(document.queryCommandValue('formatBlock') || '').toUpperCase();
+  document.execCommand('formatBlock', false, cur === tag ? 'P' : tag);
+}
+// Turn the paragraph at the caret into a list item ourselves — browsers' own list command nests
+// lists inside paragraphs in some cases. Joins a list of the same kind right above it.
+function nbWrapList(tag, check) {
+  const s = getSelection(), blk = nbClosest('p,div,h1,h2,h3,blockquote');
+  const multi = s.rangeCount && !s.isCollapsed && blk && !blk.contains(s.focusNode);
+  if (!blk || multi) {
+    document.execCommand(tag === 'OL' ? 'insertOrderedList' : 'insertUnorderedList');
+    const l = nbClosest(tag.toLowerCase()); if (l) l.classList.toggle('nb-check', !!check);
+    return;
+  }
+  const list = document.createElement(tag); if (check) list.className = 'nb-check';
+  const li = document.createElement('li');
+  while (blk.firstChild) li.appendChild(blk.firstChild);
+  if (!li.textContent && !li.querySelector('br')) li.appendChild(document.createElement('br'));
+  list.appendChild(li);
+  const prev = blk.previousElementSibling;
+  blk.replaceWith(list);
+  if (prev && prev.tagName === tag && prev.classList.contains('nb-check') === !!check) { prev.appendChild(li); list.remove(); }
+  const r = document.createRange(); r.selectNodeContents(li); r.collapse(!li.textContent); s.removeAllRanges(); s.addRange(r);
+}
+function nbChecklist() {
+  const ul = nbClosest('ul');
+  if (ul && ul.classList.contains('nb-check')) { document.execCommand('insertUnorderedList'); return; }
+  if (ul) { ul.classList.add('nb-check'); return; }
+  if (nbClosest('ol')) { document.execCommand('insertOrderedList'); }
+  nbWrapList('UL', true);
+}
+function nbBullets() {
+  const ul = nbClosest('ul');
+  if (ul && ul.classList.contains('nb-check')) { ul.classList.remove('nb-check'); return; }
+  if (ul) { document.execCommand('insertUnorderedList'); return; }
+  if (nbClosest('ol')) { document.execCommand('insertOrderedList'); }
+  nbWrapList('UL', false);
+}
+function nbNumbers() {
+  if (nbClosest('ol')) { document.execCommand('insertOrderedList'); return; }
+  if (nbClosest('ul')) { document.execCommand('insertUnorderedList'); }
+  nbWrapList('OL', false);
+}
+function nbMark() {
+  const m = nbClosest('mark'); if (m) { m.replaceWith(...m.childNodes); return; }
+  const s = getSelection(); if (!s.rangeCount || s.isCollapsed) return toast('Select some text to highlight');
+  const r = s.getRangeAt(0), mk = document.createElement('mark');
+  try { mk.appendChild(r.extractContents()); r.insertNode(mk); const nr = document.createRange(); nr.selectNodeContents(mk); s.removeAllRanges(); s.addRange(nr); } catch { }
+}
+async function nbLink() {
+  const ed = nbEd(), s = getSelection();
+  const range = s.rangeCount && ed.contains(s.anchorNode) ? s.getRangeAt(0).cloneRange() : null;
+  const a = nbClosest('a');
+  const r = await promptBox({ title: a ? 'Edit link' : 'Add link', label: 'Web link (leave empty to remove)', value: a ? a.getAttribute('href') : '', placeholder: 'https://…', ok: 'Save' });
+  ed.focus();
+  if (range) { s.removeAllRanges(); s.addRange(range); }
+  if (!r) return;
+  if (!r.value.trim()) { if (a) { const rr = document.createRange(); rr.selectNodeContents(a); s.removeAllRanges(); s.addRange(rr); } document.execCommand('unlink'); nbSchedule(); return; }
+  const u = /^mailto:/i.test(r.value.trim()) ? r.value.trim() : cleanUrl(r.value);
+  if (!u) return toast('That doesn’t look like a web link');
+  if (a) a.setAttribute('href', u);
+  else if (!range || range.collapsed) document.execCommand('insertHTML', false, `<a href="${esc(u)}">${esc(u.replace(/^https?:\/\//, ''))}</a>&nbsp;`);
+  else document.execCommand('createLink', false, u);
+  nbSchedule();
+}
+function nbCmd(cmd) {
+  const ed = nbEd(); if (!ed) return;
+  if (document.activeElement !== ed && !ed.contains(document.activeElement)) {
+    ed.focus(); const r = document.createRange(); r.selectNodeContents(ed); r.collapse(false); const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
+  nbEnsureBlocks();
+  switch (cmd) {
+    case 'h1': case 'h2': case 'h3': nbBlockToggle(cmd.toUpperCase()); break;
+    case 'bold': case 'italic': case 'underline': case 'strikeThrough': document.execCommand(cmd); break;
+    case 'ul': nbBullets(); break;
+    case 'ol': nbNumbers(); break;
+    case 'check': nbChecklist(); break;
+    case 'quote': nbBlockToggle('BLOCKQUOTE'); break;
+    case 'code': nbBlockToggle('PRE'); break;
+    case 'hr': document.execCommand('insertHorizontalRule'); break;
+    case 'mark': nbMark(); break;
+    case 'link': nbLink(); return;
+    case 'clear': document.execCommand('removeFormat'); document.execCommand('formatBlock', false, 'P'); break;
+  }
+  nbSchedule(ed.dataset.note); nbToolState();
+}
+// Light up the toolbar buttons that match where the caret is.
+function nbToolState() {
+  const bar = $('.nb-toolbar'); if (!bar || !nbEd()) return;
+  const block = String(document.queryCommandValue('formatBlock') || '').toLowerCase();
+  const ul = nbClosest('ul'), on = {
+    h1: block === 'h1', h2: block === 'h2', quote: block === 'blockquote', code: block === 'pre',
+    bold: document.queryCommandState('bold'), italic: document.queryCommandState('italic'), underline: document.queryCommandState('underline'),
+    strikeThrough: document.queryCommandState('strikeThrough'), mark: !!nbClosest('mark'), link: !!nbClosest('a'),
+    ul: !!ul && !ul.classList.contains('nb-check'), check: !!ul && ul.classList.contains('nb-check'), ol: !!nbClosest('ol') };
+  $$('[data-nbcmd]', bar).forEach(b => b.classList.toggle('on', !!on[b.dataset.nbcmd]));
+}
+// Markdown-style shortcuts at the start of a line, the way most note apps do it.
+const NB_MD = { '#': 'h1', '##': 'h2', '###': 'h3', '-': 'ul', '*': 'ul', '1.': 'ol', '[]': 'check', '[ ]': 'check', '>': 'quote', '```': 'code' };
+function nbShortcut(e) {
+  const ed = nbEd(), s = getSelection(); if (!s.rangeCount || !s.isCollapsed) return false;
+  if (nbClosest('li') || nbClosest('pre')) return false;
+  nbEnsureBlocks();
+  const blk = nbClosest('p,div,h1,h2,h3,blockquote'); if (!blk) return false;
+  const r = document.createRange(); r.setStart(blk, 0); r.setEnd(s.anchorNode, s.anchorOffset);
+  const cmd = NB_MD[r.toString()];
+  if (!cmd) return false;
+  e.preventDefault();
+  r.deleteContents();
+  if (!blk.textContent && !blk.querySelector('br')) blk.appendChild(document.createElement('br'));
+  const c = document.createRange(); c.setStart(blk, 0); c.collapse(true); s.removeAllRanges(); s.addRange(c);
+  nbCmd(cmd);
+  return true;
+}
+
+
 /* ---------- archive ---------- */
 function renderArchive() {
   const ps = archivedProjects();
@@ -1875,8 +2420,8 @@ function renderArchive() {
 }
 
 /* ---------- recently deleted ---------- */
-const TRASH_ICON = { task: 'check', section: 'menu', project: 'inbox', campaign: 'campaign', account: 'campaign', event: 'cal' };
-const TRASH_KIND = { task: 'Task', section: 'Section', project: 'Project', campaign: 'Campaign', account: 'Campaign account', event: 'Calendar entry' };
+const TRASH_ICON = { note: 'notebook', task: 'check', section: 'menu', project: 'inbox', campaign: 'campaign', account: 'campaign', event: 'cal' };
+const TRASH_KIND = { note: 'Note', task: 'Task', section: 'Section', project: 'Project', campaign: 'Campaign', account: 'Campaign account', event: 'Calendar entry' };
 function renderTrash() {
   const groups = trashGroups();
   return topbar('', groups.length ? `<button class="top-btn" data-action="trash-empty">${ico('trash', 'i-sm')}Empty</button>` : '') + `<div class="content"><div class="list">
@@ -2119,7 +2664,7 @@ async function trashItems(kind, label, items, context = '') {
     ops.push({ type: 'del', col: it.col, id: it.data.id });
   });
   await store.batch(ops);
-  const what = { task: 'Task', section: 'Section', project: 'Project', campaign: 'Campaign', account: 'Account', event: 'Entry' }[kind] || 'Item';
+  const what = { note: 'Note', task: 'Task', section: 'Section', project: 'Project', campaign: 'Campaign', account: 'Account', event: 'Entry' }[kind] || 'Item';
   undoable(trashOn() ? `${what} moved to Recently deleted` : `${what} deleted`, `delete “${label}”`, () => restoreEntries(entries));
 }
 // Puts trashed documents back. Anything whose parent is gone lands somewhere sensible.
@@ -2151,6 +2696,7 @@ async function restoreEntries(entries) {
     }
     if (t.col === 'sections' && !has('projects', d.projectId)) d.projectId = project();
     if (t.col === 'campaigns' && !has('accounts', d.accountId)) d.accountId = account();
+    if (t.col === 'notes') { if (d.accountId && !has('accounts', d.accountId)) d.accountId = null; if (d.campaignId && !has('campaigns', d.campaignId)) d.campaignId = null; }
     ops.push({ type: 'put', col: t.col, data: d });
     if (S.data.trash[t.id] || trashOn()) ops.push({ type: 'del', col: 'trash', id: t.id });
   }
@@ -2959,21 +3505,27 @@ function openDay(day) {
 
 /* ===================== search ===================== */
 function openSearch() {
-  const w = openModal(`<div class="modal-head">${ico('search')}<input class="inp" data-q placeholder="Search tasks…" autofocus style="border:0;background:transparent;padding:4px 0"><button class="icon-btn" data-x>${ico('x')}</button></div>
+  const w = openModal(`<div class="modal-head">${ico('search')}<input class="inp" data-q placeholder="Search tasks and notes…" autofocus style="border:0;background:transparent;padding:4px 0"><button class="icon-btn" data-x>${ico('x')}</button></div>
     <div class="modal-body"><div class="search-list" data-res></div></div>`, 'wide');
   const inp = w.querySelector('[data-q]'), res = w.querySelector('[data-res]');
   const run = () => {
     const v = inp.value.trim().toLowerCase();
-    if (!v) { res.innerHTML = '<div style="color:var(--faint);padding:6px 0">Type to search task names, descriptions and sub-tasks.</div>'; return; }
+    if (!v) { res.innerHTML = '<div style="color:var(--faint);padding:6px 0">Type to search tasks and notes.</div>'; return; }
+    const notes = Object.values(S.data.notes).filter(n => `${n.title || ''} ${n.text || ''} ${(n.tags || []).join(' ')}`.toLowerCase().includes(v))
+      .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0)).slice(0, 20);
     const hits = Object.values(S.data.tasks).filter(t => !inArchivedProject(t) && (t.title + ' ' + (t.description || '') + ' ' + (t.subtasks || []).map(s => s.title).join(' ')).toLowerCase().includes(v))
       .sort((a, b) => a.done - b.done).slice(0, 60);
-    res.innerHTML = hits.map(rowHTML).join('') || '<div style="color:var(--faint);padding:6px 0">No matching tasks.</div>';
+    res.innerHTML = (hits.map(rowHTML).join('') || '<div style="color:var(--faint);padding:6px 0">No matching tasks.</div>')
+      + (notes.length ? `<div class="group-head" style="padding-top:16px">Notes <span class="cnt">${notes.length}</span></div>` + notes.map(n => {
+        const t = (n.text || '').replace(/\s+/g, ' '), i = t.toLowerCase().indexOf(v), snip = i < 0 ? t.slice(0, 120) : (i > 40 ? '…' : '') + t.slice(Math.max(0, i - 40), i + 80);
+        return `<div class="row" data-note="${n.id}">${ico('notebook')}<div class="card-body"><div class="card-title">${esc(n.title || 'Untitled')}</div><div class="card-desc">${esc(snip)}</div></div></div>`; }).join('') : '');
   };
   run(); inp.oninput = run;
   w.querySelector('[data-x]').onclick = () => w.close();
   res.addEventListener('click', e => {
     const chk = e.target.closest('[data-action=toggle-task]'); if (chk) { e.stopPropagation(); toggleTask(chk.dataset.id, chk).then(() => setTimeout(run, 50)); return; }
-    const row = e.target.closest('[data-action=open-task]'); if (row) { e.stopPropagation(); w.close(); openTask(row.dataset.id); }
+    const row = e.target.closest('[data-action=open-task]'); if (row) { e.stopPropagation(); w.close(); openTask(row.dataset.id); return; }
+    const nr = e.target.closest('[data-note]'); if (nr) { e.stopPropagation(); w.close(); go('#/notes/' + nr.dataset.note); }
   });
 }
 
@@ -3068,7 +3620,7 @@ function openSettings(focus) {
 
 /* ===================== backup ===================== */
 function exportData() {
-  const data = {}; ['projects', 'sections', 'tasks', 'events', 'meta'].forEach(c => data[c] = S.data[c]);
+  const data = {}; ['projects', 'sections', 'tasks', 'events', 'meta', 'notes'].forEach(c => data[c] = S.data[c]);
   const blob = new Blob([JSON.stringify({ app: 'tasks', version: 1, exportedAt: new Date().toISOString(), data }, null, 1)], { type: 'application/json' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `tasks-backup-${todayKey()}.json`;
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
@@ -3079,7 +3631,8 @@ async function importData(file) {
   const n = Object.keys(data.tasks || {}).length;
   if (!await confirmBox(`Replace everything currently in the app with this backup (${Object.keys(data.projects).length} projects, ${n} tasks)?`, 'Replace')) return;
   const ops = [];
-  ['projects', 'sections', 'tasks', 'events', 'meta'].forEach(c => {
+  // notes are only touched when the backup has them (older backups don't)
+  ['projects', 'sections', 'tasks', 'events', 'meta', ...(data.notes ? ['notes'] : [])].forEach(c => {
     Object.keys(S.data[c]).forEach(id => ops.push({ type: 'del', col: c, id }));
     Object.entries(data[c] || {}).forEach(([id, v]) => ops.push({ type: 'put', col: c, data: { ...v, id } }));
   });
@@ -3403,9 +3956,10 @@ async function ctArchiveAccount(a, on) {
 }
 async function ctDeleteAccount(a) {
   const camps = Object.values(S.data.campaigns).filter(c => c.accountId === a.id);
-  if (!await confirmBox(`Delete <b>${esc(a.name)}</b> and its ${camps.length} campaign${camps.length === 1 ? '' : 's'}, including their weekly check history?${trashOn() ? `<br><span class="muted-note">You can restore it from Recently deleted for ${TRASH_DAYS} days.</span>` : ''}`)) return;
-  await trashItems('account', a.name, [{ col: 'accounts', data: a }, ...camps.map(c => ({ col: 'campaigns', data: c }))],
-    `Campaign Tracker · ${camps.length} campaign${camps.length === 1 ? '' : 's'}`);
+  const notes = Object.values(S.data.notes).filter(n => n.accountId === a.id);
+  if (!await confirmBox(`Delete <b>${esc(a.name)}</b> and its ${camps.length} campaign${camps.length === 1 ? '' : 's'}${notes.length ? ` and ${notes.length} note${notes.length === 1 ? '' : 's'}` : ''}, including their weekly check history?${trashOn() ? `<br><span class="muted-note">You can restore it from Recently deleted for ${TRASH_DAYS} days.</span>` : ''}`)) return;
+  await trashItems('account', a.name, [{ col: 'accounts', data: a }, ...camps.map(c => ({ col: 'campaigns', data: c })), ...notes.map(n => ({ col: 'notes', data: n }))],
+    `${camps.length} campaign${camps.length === 1 ? '' : 's'}${notes.length ? ` · ${notes.length} note${notes.length === 1 ? '' : 's'}` : ''}`);
   S.ct.account = 'all'; lsSet('tb:ctAccount', 'all'); render();
 }
 
@@ -3604,6 +4158,12 @@ function drawerHTML(c) {
             : '<div style="color:var(--faint);font-size:12.5px">No checks logged yet.</div>'}
         </div>
       </div>
+      <div class="d-sec"><h4>Notes</h4>
+        ${(() => { const ns = Object.values(S.data.notes).filter(n => n.campaignId === c.id).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+          return (ns.map(n => `<button class="d-note" data-act="note" data-id="${n.id}">${ico('notebook', 'i-sm')}<span>${esc(n.title || 'Untitled')}</span><em>${esc(nbWhen(n.updatedAt || n.createdAt))}</em></button>`).join('')
+            || '<div style="color:var(--faint);font-size:12.5px;margin-bottom:6px">No notes linked to this campaign yet.</div>')
+            + `<button class="obj-add" data-act="new-note">+ New note for this campaign</button>`; })()}
+      </div>
       <div class="d-sec"><h4>Description</h4>
         <div class="d-text">${(c.description || '').trim() ? esc(c.description) : '<span style="color:var(--faint)">No description</span>'}</div>
       </div>
@@ -3662,6 +4222,13 @@ function openCampaignDrawer(id) {
     if (act === 'dup') { const nid = await ctDuplicate(id); w.close(); if (nid) openCampaignForm(nid); }
     if (act === 'move') ctMoveMenu(b, id);
     if (act === 'link') ctEditCampaignLink(id);
+    if (act === 'note') { w.close(); go('#/notes/' + b.dataset.id); }
+    if (act === 'new-note') {
+      w.close();
+      const html = NB_TEMPLATES.meeting.html();
+      nbCreate({ id: uid(), accountId: c.accountId, campaignId: c.id, title: `${c.name} — ${fmtDay(todayKey())}`, html, text: htmlText(html), tags: [], pinned: false,
+        createdAt: Date.now(), createdBy: me(), updatedAt: Date.now(), updatedBy: me() }, false);
+    }
     if (act === 'archive') await ctArchive(id, !c.archived);
     if (act === 'del') { if (await ctDelete(id)) w.close(); }
   });
@@ -3860,6 +4427,99 @@ document.addEventListener('input', e => {
   clearTimeout(S.ctTimer); S.ctTimer = setTimeout(ctRepaint, 120);
 });
 
+/* ---------- notebook wiring (needs ACTIONS) ---------- */
+Object.assign(ACTIONS, {
+  'nb-tab': a => { S.nb.tab = a.dataset.id; lsSet('tb:nbTab', a.dataset.id); render({ mainOnly: true }); },
+  'nb-new': a => nbNew(a.dataset.tpl),
+  'nb-tpl-menu': a => openMenu(a, [{ title: 'New from a template' }, { label: 'Blank note', icon: 'plus', onClick: () => nbNew() },
+    ...Object.entries(NB_TEMPLATES).map(([k, t]) => ({ label: t.label, icon: t.icon, onClick: () => nbNew(k) }))], 'right'),
+  'nb-add-acc': () => nbAddAccount(),
+  'nb-pin': () => curNoteId() && nbPin(curNoteId()),
+  'nb-tasks': a => nbSendTasks(a),
+  'nb-more': a => {
+    const id = curNoteId(), n = S.data.notes[id]; if (!n) return;
+    openMenu(a, [
+      { label: n.pinned ? 'Unpin' : 'Pin to top', icon: 'pin', onClick: () => nbPin(id) },
+      { label: 'Duplicate', icon: 'copy', onClick: () => nbDuplicate(id) },
+      { label: 'Copy as text', icon: 'copy', onClick: () => { nbFlush(); const x = S.data.notes[id]; navigator.clipboard.writeText(`${x.title || 'Untitled'}\n\n${htmlText($('#nb-editor') ? $('#nb-editor').innerHTML : x.html)}`).then(() => toast('Copied to clipboard'), () => toast('Couldn’t copy')); } },
+      '-',
+      { label: 'Delete note', icon: 'trash', danger: true, onClick: () => nbDelete(id) },
+    ], 'right');
+  },
+});
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.closest && t.closest('#nb-editor')) {
+    const ed = t.closest('#nb-editor'); nbSchedule(ed.dataset.note);
+    const w = $('#nb-words'); if (w) { const n = wordCount(ed.innerText); w.textContent = `${n} word${n === 1 ? '' : 's'}`; }
+    return;
+  }
+  if (t.dataset && t.dataset.nbtitle) { nbSchedule(t.dataset.nbtitle); return; }
+  if (t.id === 'nb-q') { S.nb.q = t.value; clearTimeout(S.nbTimer); S.nbTimer = setTimeout(() => render({ mainOnly: true }), 120); }
+});
+document.addEventListener('change', async e => {
+  const t = e.target;
+  if (t.dataset && t.dataset.nbs) { S.nb[t.dataset.nbs] = t.value; if (t.dataset.nbs === 'sort') lsSet('tb:nbSort', t.value); render({ mainOnly: true }); return; }
+  if (t.dataset && t.dataset.nbf) {
+    const id = curNoteId(), n = S.data.notes[id]; if (!n) return;
+    nbFlush();
+    const v = t.value || null, upd = { [t.dataset.nbf]: v, updatedAt: Date.now(), updatedBy: me() };
+    if (t.dataset.nbf === 'accountId') {
+      if (n.campaignId && (S.data.campaigns[n.campaignId] || {}).accountId !== v) upd.campaignId = null;
+      if (S.nb.tab !== 'all') { S.nb.tab = v || 'general'; lsSet('tb:nbTab', S.nb.tab); }
+    }
+    await store.update('notes', id, upd);
+  }
+});
+document.addEventListener('keydown', e => {
+  const t = e.target;
+  // Ctrl/Cmd+S anywhere in the notebook saves straight away instead of opening the browser's save dialog
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's' && S.route && S.route.view === 'notes') { e.preventDefault(); nbFlush(); nbStatus('Saved'); return; }
+  if (t.dataset && t.dataset.nbtitle && e.key === 'Enter') { e.preventDefault(); const ed = nbEd(); if (ed) { ed.focus(); const r = document.createRange(); r.selectNodeContents(ed); r.collapse(true); const s = getSelection(); s.removeAllRanges(); s.addRange(r); } return; }
+  if (t.dataset && 'nbtag' in t.dataset && (e.key === 'Enter' || e.key === ',')) {
+    e.preventDefault();
+    const v = t.value.trim().replace(/^#/, '').replace(/,/g, '').slice(0, 30); const id = curNoteId(), n = S.data.notes[id];
+    if (!v || !n) return;
+    const tags = n.tags || [];
+    if (!tags.some(x => x.toLowerCase() === v.toLowerCase())) nbSetTags(id, [...tags, v]);
+    t.value = '';
+    setTimeout(() => { const i = $(`#nb-tag-${id}`); if (i) i.focus(); }, 60);
+    return;
+  }
+  if (!t.closest || !t.closest('#nb-editor')) return;
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); nbLink(); return; }
+  if (e.key === ' ' && !e.ctrlKey && !e.metaKey && nbShortcut(e)) return;
+  if (e.key === 'Tab' && nbClosest('li')) { e.preventDefault(); document.execCommand(e.shiftKey ? 'outdent' : 'indent'); nbSchedule(nbEd().dataset.note); }
+});
+document.addEventListener('paste', e => {
+  const ed = e.target.closest && e.target.closest('#nb-editor'); if (!ed) return;
+  const html = e.clipboardData && e.clipboardData.getData('text/html');
+  const text = e.clipboardData && e.clipboardData.getData('text/plain');
+  e.preventDefault();
+  if (html) document.execCommand('insertHTML', false, cleanHTML(html));
+  else if (text) document.execCommand('insertText', false, text);
+  nbSchedule(ed.dataset.note);
+});
+document.addEventListener('drop', e => { if (e.target.closest && e.target.closest('#nb-editor') && e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) { e.preventDefault(); toast('Attachments aren’t supported yet — paste a link instead'); } });
+document.addEventListener('mousedown', e => { if (e.target.closest && e.target.closest('[data-nbcmd]')) e.preventDefault(); });   // keep the selection in the editor
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('[data-nbcmd]'); if (b) { nbCmd(b.dataset.nbcmd); return; }
+  const td = e.target.closest && e.target.closest('[data-nbtagdel]');
+  if (td) { const id = curNoteId(), n = S.data.notes[id]; if (n) nbSetTags(id, (n.tags || []).filter(x => x !== td.dataset.nbtagdel)); return; }
+  const ed = e.target.closest && e.target.closest('#nb-editor'); if (!ed) return;
+  // the checkbox of a checklist item is drawn in its left gutter
+  const li = e.target.closest('ul.nb-check > li');
+  if (li && e.clientX - li.getBoundingClientRect().left < 24) {
+    e.preventDefault();
+    if (li.hasAttribute('data-done')) li.removeAttribute('data-done'); else li.setAttribute('data-done', '1');
+    nbSchedule(ed.dataset.note); return;
+  }
+  const a = e.target.closest('a[href]');
+  if (a && (e.ctrlKey || e.metaKey)) { e.preventDefault(); window.open(a.href, '_blank', 'noopener'); }
+});
+document.addEventListener('selectionchange', () => { if (S.route && S.route.view === 'notes' && nbEd()) nbToolState(); });
+document.addEventListener('focusin', e => { if (e.target.id === 'nb-editor') document.execCommand('defaultParagraphSeparator', false, 'p'); });
+
 /* ===================== boot, seeding & sign-in ===================== */
 let seeded = false;
 async function ensureSeed() {
@@ -3930,7 +4590,7 @@ function homeHTML(signedIn) {
       <div class="h-actions">${signedIn ? `<button class="h-btn h-glass sm" data-go="#/">Open app</button>` : `<button class="h-btn h-ghost sm" data-home="in">Sign in</button><button class="h-btn h-primary sm" data-home="up">Get started</button>`}</div>
     </header>
     <section class="h-hero">
-      <div class="h-pill"><span class="dot"></span>New · Dashboard, paused platforms &amp; pacing links</div>
+      <div class="h-pill"><span class="dot"></span>New · Notebook for meetings, dashboard &amp; pacing links</div>
       <h1>Tasks, team leave &amp; campaigns.<br><span class="h-grad">One calm command centre.</span></h1>
       <p class="h-sub">${name} is the shared to-do board for agency teams — with a team calendar for who's off, and a campaign tracker that flags what needs you this week.</p>
       <div class="h-cta">${cta}</div>
