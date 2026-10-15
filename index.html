@@ -737,7 +737,7 @@ kbd{font:600 10.5px/1 var(--font);padding:2px 5px;border-radius:4px;border:1px s
 <script type="module">
 /* ===================== utilities ===================== */
 const CFG = window.APP_CONFIG || {};
-const BUILD = '2026-10-15a';   // shown in Settings, so you can confirm which version is live
+const BUILD = '2026-10-15b';   // shown in Settings, so you can confirm which version is live
 const FB_URL = 'https://www.gstatic.com/firebasejs/10.12.2/';
 const COLS = ['projects', 'sections', 'tasks', 'events', 'meta', 'members', 'accounts', 'campaigns', 'trash'];
 // Collections added after the first release. If the security rules haven't been updated yet,
@@ -959,10 +959,14 @@ const byOrder = (a, b) => (a.order ?? 0) - (b.order ?? 0) || (a.createdAt ?? 0) 
 // Archived projects keep all their sections and tasks; they're just out of the way.
 const projects = () => Object.values(S.data.projects).filter(p => !p.archived).sort(byOrder);
 const archivedProjects = () => Object.values(S.data.projects).filter(p => p.archived).sort((a, b) => (b.archivedAt || 0) - (a.archivedAt || 0));
-const inArchivedProject = t => !!(S.data.projects[t.projectId] || {}).archived;
-const sectionsOf = pid => Object.values(S.data.sections).filter(s => s.projectId === pid).sort(byOrder);
+// A task is out of sight when it, its section (column) or its project is archived.
+const inArchivedProject = t => !!t.archived || !!(S.data.projects[t.projectId] || {}).archived
+  || !!(t.sectionId && (S.data.sections[t.sectionId] || {}).archived);
+const sectionsOf = pid => Object.values(S.data.sections).filter(s => s.projectId === pid && !s.archived).sort(byOrder);
+const archivedSections = () => Object.values(S.data.sections).filter(s => s.archived).sort((a, b) => (b.archivedAt || 0) - (a.archivedAt || 0));
+const archivedTasks = () => Object.values(S.data.tasks).filter(t => t.archived).sort((a, b) => (b.archivedAt || 0) - (a.archivedAt || 0));
 const tasksIn = (pid, sid, withDone) => Object.values(S.data.tasks)
-  .filter(t => t.projectId === pid && (t.sectionId || null) === (sid || null) && (withDone || !t.done))
+  .filter(t => t.projectId === pid && (t.sectionId || null) === (sid || null) && !t.archived && (withDone || !t.done))
   .sort((a, b) => (a.done - b.done) || byOrder(a, b));
 const activeTasks = () => Object.values(S.data.tasks).filter(t => !t.done && !inArchivedProject(t));
 const me = () => S.user ? (S.user.name || S.user.email) : 'Me';
@@ -1264,7 +1268,7 @@ function renderSidebar(r) {
   const todayCount = activeTasks().filter(t => t.due && t.due <= today).length;
   const counts = {}; activeTasks().forEach(t => counts[t.projectId] = (counts[t.projectId] || 0) + 1);
   const u = S.user || { name: 'Me' };
-  const archN = archivedProjects().length + Object.values(S.data.accounts).filter(a => a.archived).length + Object.values(S.data.campaigns).filter(c => c.archived).length;
+  const archN = archivedProjects().length + archivedSections().length + archivedTasks().length + Object.values(S.data.accounts).filter(a => a.archived).length + Object.values(S.data.campaigns).filter(c => c.archived).length;
   const trashN = trashGroups().length;
   const ws = S.ws;
   return `<aside class="sidebar">
@@ -1313,14 +1317,26 @@ function renderArchive() {
   const camps = Object.values(S.data.campaigns).filter(c => c.archived).sort((a, b) => (b.archivedAt || b.updatedAt || 0) - (a.archivedAt || a.updatedAt || 0));
   const when = x => x.archivedAt ? `Archived ${timeAgo(x.archivedAt)}` : 'Archived';
   const row = (icon, title, meta, btns) => `<div class="arc-row">${icon}<div class="arc-main"><div class="arc-title">${title}</div><div class="arc-meta">${meta}</div></div><div class="arc-btns">${btns}</div></div>`;
-  const total = ps.length + accs.length + camps.length;
+  const secs = archivedSections(), tks = archivedTasks();
+  const total = ps.length + secs.length + tks.length + accs.length + camps.length;
+  const pName = id => (S.data.projects[id] || {}).name || 'Deleted project';
   return topbar('') + `<div class="content"><div class="list">
-    <div class="page-head"><h1>Archive</h1><div class="page-desc empty" style="cursor:default">Projects, accounts and campaigns you've put away. Nothing here is deleted — restore any of it in one click.</div></div>
-    ${!total ? `<div class="empty-state">${ico('archive')}<br>Nothing archived.<br><span style="font-size:12px">Use “Archive project” from a project's ••• menu, or Archive on a campaign or account.</span></div>` : ''}
+    <div class="page-head"><h1>Archive</h1><div class="page-desc empty" style="cursor:default">Projects, sections, tasks, accounts and campaigns you've put away. Nothing here is deleted — restore any of it in one click.</div></div>
+    ${!total ? `<div class="empty-state">${ico('archive')}<br>Nothing archived.<br><span style="font-size:12px">Archive a project or section from its ••• menu, a task by right-clicking it (or from inside it), or a campaign or account from its menu.</span></div>` : ''}
     ${ps.length ? `<div class="group-head">Projects <span class="cnt">${ps.length}</span></div>${ps.map(p => {
       const n = Object.values(S.data.tasks).filter(t => t.projectId === p.id && !t.done).length;
       return row(`<span class="arc-ico tx-${esc(p.color || 'grey')}">#</span>`, esc(p.name), `${when(p)} · ${n} open task${n === 1 ? '' : 's'} · ${sectionsOf(p.id).length} section${sectionsOf(p.id).length === 1 ? '' : 's'}`,
         `<button class="btn" data-go="#/project/${p.id}">Open</button><button class="btn btn-primary" data-action="arc-restore" data-kind="project" data-id="${p.id}">Restore</button><button class="icon-btn" data-action="arc-del" data-kind="project" data-id="${p.id}" title="Delete">${ico('trash', 'i-sm')}</button>`);
+    }).join('')}` : ''}
+    ${secs.length ? `<div class="group-head">Sections <span class="cnt">${secs.length}</span></div>${secs.map(s => {
+      const n = Object.values(S.data.tasks).filter(t => t.sectionId === s.id && !t.done).length;
+      return row(`<span class="arc-ico">${ico('menu', 'i-sm')}</span>`, esc(s.name), `${esc(pName(s.projectId))} · ${when(s)} · ${n} open task${n === 1 ? '' : 's'}`,
+        `<button class="btn btn-primary" data-action="arc-restore" data-kind="section" data-id="${s.id}">Restore</button><button class="icon-btn" data-action="arc-del" data-kind="section" data-id="${s.id}" title="Delete">${ico('trash', 'i-sm')}</button>`);
+    }).join('')}` : ''}
+    ${tks.length ? `<div class="group-head">Tasks <span class="cnt">${tks.length}</span></div>${tks.map(t => {
+      const s = t.sectionId && S.data.sections[t.sectionId];
+      return row(`<span class="arc-ico">${ico('check', 'i-sm')}</span>`, esc(t.title), `${esc(pName(t.projectId))}${s ? ' / ' + esc(s.name) : ''} · ${when(t)}${t.done ? ' · completed' : ''}`,
+        `<button class="btn" data-action="open-task" data-id="${t.id}">Open</button><button class="btn btn-primary" data-action="arc-restore" data-kind="task" data-id="${t.id}">Restore</button><button class="icon-btn" data-action="arc-del" data-kind="task" data-id="${t.id}" title="Delete">${ico('trash', 'i-sm')}</button>`);
     }).join('')}` : ''}
     ${accs.length ? `<div class="group-head">Campaign accounts <span class="cnt">${accs.length}</span></div>${accs.map(a => {
       const n = Object.values(S.data.campaigns).filter(c => c.accountId === a.id).length;
@@ -1693,12 +1709,34 @@ async function editProject(p) {
   await store.put('projects', np); go('#/project/' + np.id);
 }
 async function deleteProject(p) {
-  const secs = sectionsOf(p.id), tasks = Object.values(S.data.tasks).filter(t => t.projectId === p.id);
+  const secs = Object.values(S.data.sections).filter(s => s.projectId === p.id), tasks = Object.values(S.data.tasks).filter(t => t.projectId === p.id);   // archived ones too
   if (!await confirmBox(`Delete <b>${esc(p.name)}</b> with its ${secs.length} section(s) and ${tasks.length} task(s)?${trashOn() ? `<br><span class="muted-note">You can restore it from Recently deleted for ${TRASH_DAYS} days. Want to keep it out of the way instead? Archive it.</span>` : ''}`)) return;
   const here = curProjectId() === p.id;
   await trashItems('project', p.name, [{ col: 'projects', data: p }, ...secs.map(s => ({ col: 'sections', data: s })), ...tasks.map(t => ({ col: 'tasks', data: t }))],
     `${secs.length} section${secs.length === 1 ? '' : 's'}, ${tasks.length} task${tasks.length === 1 ? '' : 's'}`);
   if (here) go('#/');
+}
+async function archiveSection(s, on = true) {
+  if (!s) return;
+  const n = Object.values(S.data.tasks).filter(t => t.sectionId === s.id && !t.done).length;
+  await store.update('sections', s.id, { archived: on, archivedAt: on ? Date.now() : null });
+  undoable(on ? `“${s.name}” archived with ${n} open task${n === 1 ? '' : 's'}` : `“${s.name}” restored`, `${on ? 'archive' : 'restore'} “${s.name}”`,
+    () => store.update('sections', s.id, { archived: !on, archivedAt: on ? null : (s.archivedAt || Date.now()) }));
+}
+async function archiveTask(t, on = true) {
+  if (!t) return;
+  await store.update('tasks', t.id, { archived: on, archivedAt: on ? Date.now() : null });
+  undoable(on ? 'Task archived' : 'Task restored', `${on ? 'archive' : 'restore'} “${t.title}”`,
+    () => store.update('tasks', t.id, { archived: !on, archivedAt: on ? null : (t.archivedAt || Date.now()) }));
+}
+// Tidy a column: put every ticked-off task in it away in one go.
+async function archiveDone(pid, sid) {
+  const done = Object.values(S.data.tasks).filter(t => t.projectId === pid && (t.sectionId || null) === (sid || null) && t.done && !t.archived);
+  if (!done.length) return toast('No completed tasks here');
+  const at = Date.now();
+  await store.batch(done.map(t => ({ type: 'update', col: 'tasks', id: t.id, data: { archived: true, archivedAt: at } })));
+  undoable(`${done.length} completed task${done.length === 1 ? '' : 's'} archived`, 'archive completed tasks',
+    () => store.batch(done.map(t => ({ type: 'update', col: 'tasks', id: t.id, data: { archived: false, archivedAt: null } }))));
 }
 async function archiveProject(p, on = true) {
   if (!p) return;
@@ -1775,6 +1813,8 @@ const ACTIONS = {
       { label: 'Move left', icon: 'left', onClick: () => moveItem(list, 'sections', s.id, -1) },
       { label: 'Move right', icon: 'right', onClick: () => moveItem(list, 'sections', s.id, 1) },
       '-',
+      { label: 'Archive section', icon: 'archive', onClick: () => archiveSection(s, true) },
+      { label: 'Archive completed tasks', icon: 'check', onClick: () => archiveDone(s.projectId, s.id) },
       { label: 'Delete section', icon: 'trash', danger: true, onClick: () => deleteSection(s) },
     ]);
   },
@@ -1811,12 +1851,16 @@ const ACTIONS = {
   'arc-restore': a => {
     const id = a.dataset.id, k = a.dataset.kind;
     if (k === 'project') return archiveProject(S.data.projects[id], false);
+    if (k === 'section') return archiveSection(S.data.sections[id], false);
+    if (k === 'task') return archiveTask(S.data.tasks[id], false);
     if (k === 'account') return S.data.accounts[id] && ctArchiveAccount(S.data.accounts[id], false);
     if (k === 'campaign') return ctArchive(id, false);
   },
   'arc-del': a => {
     const id = a.dataset.id, k = a.dataset.kind;
     if (k === 'project') return S.data.projects[id] && deleteProject(S.data.projects[id]);
+    if (k === 'section') return S.data.sections[id] && deleteSection(S.data.sections[id]);
+    if (k === 'task') return deleteTask(id);
     if (k === 'account') return S.data.accounts[id] && ctDeleteAccount(S.data.accounts[id]);
     if (k === 'campaign') return ctDelete(id);
   },
@@ -1894,6 +1938,8 @@ document.addEventListener('contextmenu', e => {
   openMenu(anchor, [
     { label: 'Open task', icon: 'eye', onClick: () => openTask(t.id) },
     { label: 'Duplicate task', icon: 'copy', onClick: () => duplicateTask(t.id) },
+    t.archived ? { label: 'Restore from archive', icon: 'archive', onClick: () => archiveTask(t, false) }
+      : { label: 'Archive task', icon: 'archive', onClick: () => archiveTask(t, true) },
     '-',
     { label: 'Delete task', icon: 'trash', danger: true, onClick: () => deleteTask(t.id) },
   ]);
@@ -2142,7 +2188,7 @@ function locOptions(pid, sid) {
   if (pid && S.data.projects[pid] && S.data.projects[pid].archived) list.push(S.data.projects[pid]);
   return list.map(p => `<optgroup label="# ${esc(p.name)}">
     <option value="${p.id}|" ${p.id === pid && !sid ? 'selected' : ''}>${esc(p.name)}</option>
-    ${sectionsOf(p.id).map(s => `<option value="${p.id}|${s.id}" ${s.id === sid ? 'selected' : ''}>&nbsp;&nbsp;${esc(p.name)} / ${esc(s.name)}</option>`).join('')}
+    ${[...sectionsOf(p.id), ...(sid && S.data.sections[sid] && S.data.sections[sid].archived && S.data.sections[sid].projectId === p.id ? [S.data.sections[sid]] : [])].map(s => `<option value="${p.id}|${s.id}" ${s.id === sid ? 'selected' : ''}>&nbsp;&nbsp;${esc(p.name)} / ${esc(s.name)}${s.archived ? ' (archived)' : ''}</option>`).join('')}
   </optgroup>`).join('');
 }
 function openTask(id, def = {}) {
@@ -2181,7 +2227,8 @@ function openTask(id, def = {}) {
       </div>
     </div>
     <div class="modal-foot">${ex ? `<button class="btn btn-danger" data-m="delete">${ico('trash', 'i-sm')} Delete</button>
-      <button class="btn" data-m="duplicate">${ico('copy', 'i-sm')} Duplicate</button>` : ''}<span class="spacer"></span>
+      <button class="btn" data-m="duplicate">${ico('copy', 'i-sm')} Duplicate</button>
+      <button class="btn" data-m="archive">${ico('archive', 'i-sm')} ${ex.archived ? 'Restore' : 'Archive'}</button>` : ''}<span class="spacer"></span>
       ${ex ? '' : '<button class="btn" data-m="x">Cancel</button>'}<button class="btn btn-primary" data-m="save">${ex ? 'Save' : 'Add task'}</button></div>`, 'wide');
 
   const q = s => w.querySelector(s);
@@ -2272,6 +2319,10 @@ function openTask(id, def = {}) {
     if (m === 'clear-due') { q('[data-f=due]').value = ''; q('[data-f=time]').value = ''; q('[data-f=recurType]').value = ''; recurUI(); }
     if (m === 'clear-deadline') q('[data-f=deadline]').value = '';
     if (m === 'delete') { if (await deleteTask(d.id)) w.close(); }
+    if (m === 'archive') {
+      if (dirty()) { if (!await save()) return; } else w.close();
+      return archiveTask(S.data.tasks[d.id], !ex.archived);
+    }
     if (m === 'duplicate') {
       if (dirty()) await save(); else w.close();
       const nid = await duplicateTask(d.id);
