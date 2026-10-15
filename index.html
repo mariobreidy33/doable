@@ -519,7 +519,23 @@ body.dragging-active .ct-card{cursor:grabbing}
 .brand .brand-logo{width:30px;height:30px}
 .side-logo{width:30px;height:30px;border-radius:9px;flex:none;display:grid;place-items:center;transition:transform .25s var(--ease)}
 .side-logo .mark{width:28px;height:28px}
-.side-logo:hover{transform:scale(1.07) rotate(-4deg)}
+/* logo hover: the stem lifts, the bowl squashes and settles, a light sweeps the stem, and the check re-draws */
+.mark{overflow:visible}
+.mark .lm-stem,.mark .lm-bowl{transform-box:fill-box;transform-origin:50% 100%}
+.mark .lm-bowl{transform-origin:50% 50%}
+.mark .lm-check{stroke-dasharray:1;stroke-dashoffset:0}
+.mark .lm-shine{opacity:0;transform-box:fill-box;transform:translateY(100%)}
+:is(.side-logo,.h-brand,.brand):hover .mark .lm-stem{animation:lmStem .9s cubic-bezier(.22,1,.36,1)}
+:is(.side-logo,.h-brand,.brand):hover .mark .lm-bowl{animation:lmBowl .9s cubic-bezier(.22,1,.36,1)}
+:is(.side-logo,.h-brand,.brand):hover .mark .lm-check{animation:lmCheck .75s .18s cubic-bezier(.65,0,.35,1) both}
+:is(.side-logo,.h-brand,.brand):hover .mark .lm-shine{animation:lmShine .8s .1s cubic-bezier(.4,0,.2,1)}
+:is(.side-logo,.h-brand,.brand) .mark{transition:filter .4s var(--ease)}
+:is(.side-logo,.h-brand,.brand):hover .mark{filter:drop-shadow(0 4px 10px rgba(255,90,74,.35))}
+@keyframes lmStem{0%{transform:none}12%{transform:translateY(2%) scaleY(.97)}36%{transform:translateY(-9%) scaleY(1.03)}62%{transform:translateY(2%) scaleY(.99)}82%{transform:translateY(-.6%)}100%{transform:none}}
+@keyframes lmBowl{0%{transform:none}22%{transform:scale(.86)}50%{transform:scale(1.07)}72%{transform:scale(.98)}100%{transform:none}}
+@keyframes lmCheck{0%{stroke-dashoffset:1;opacity:0}12%{opacity:1}100%{stroke-dashoffset:0;opacity:1}}
+@keyframes lmShine{0%{opacity:0;transform:translateY(100%)}30%{opacity:1}100%{opacity:0;transform:translateY(-100%)}}
+@media (prefers-reduced-motion:reduce){ :is(.side-logo,.h-brand,.brand):hover .mark *{animation:none!important} }
 .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
 .load-logo{width:44px;height:44px;animation:logoPulse 1.6s var(--ease) infinite}
 @keyframes logoPulse{50%{transform:scale(.92);opacity:.7}}
@@ -908,7 +924,7 @@ kbd{font:600 10.5px/1 var(--font);padding:2px 5px;border-radius:4px;border:1px s
 <script type="module">
 /* ===================== utilities ===================== */
 const CFG = window.APP_CONFIG || {};
-const BUILD = '2026-10-15d';   // shown in Settings, so you can confirm which version is live
+const BUILD = '2026-10-15e';   // shown in Settings, so you can confirm which version is live
 const FB_URL = 'https://www.gstatic.com/firebasejs/10.12.2/';
 const COLS = ['projects', 'sections', 'tasks', 'events', 'meta', 'members', 'accounts', 'campaigns', 'trash'];
 // Collections added after the first release. If the security rules haven't been updated yet,
@@ -3873,11 +3889,13 @@ function logoMark(cls = '') {
   // that carries the check — with the overlap in a deeper blend.
   const id = 'dlg' + (++logoN);
   return `<svg class="mark ${cls}" viewBox="0 0 48 48" aria-hidden="true">
-    <defs><clipPath id="${id}"><circle cx="20" cy="29" r="15"/></clipPath></defs>
-    <rect x="28.5" y="3" width="12" height="42" rx="6" fill="#6d5dfc"/>
-    <circle cx="20" cy="29" r="15" fill="#ff5a4a"/>
-    <rect x="28.5" y="3" width="12" height="42" rx="6" fill="#c2306e" clip-path="url(#${id})"/>
-    <path d="M12.6 29.4l4.9 4.9 9.4-10.2" fill="none" stroke="#fff" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    <defs><clipPath id="${id}"><circle class="lm-bowl" cx="20" cy="29" r="15"/></clipPath></defs>
+    <g class="lm-stem"><rect x="28.5" y="3" width="12" height="42" rx="6" fill="#6d5dfc"/><g clip-path="url(#${id}c)"><rect class="lm-shine" x="28.5" y="3" width="12" height="42" fill="url(#${id}s)"/></g></g>
+    <clipPath id="${id}c"><rect x="28.5" y="3" width="12" height="42" rx="6"/></clipPath>
+    <circle class="lm-bowl" cx="20" cy="29" r="15" fill="#ff5a4a"/>
+    <g clip-path="url(#${id})"><rect class="lm-stem" x="28.5" y="3" width="12" height="42" rx="6" fill="#c2306e"/></g>
+    <path class="lm-check" d="M12.6 29.4l4.9 4.9 9.4-10.2" fill="none" stroke="#fff" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
+    <defs><linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".45" stop-color="#fff" stop-opacity=".55"/><stop offset=".55" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs></svg>`;
 }
 const wordmark = () => `<span class="wordmark">${esc((CFG.appName || 'Doable').toLowerCase())}</span>`;
 function homeHTML(signedIn) {
