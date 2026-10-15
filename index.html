@@ -706,7 +706,7 @@ kbd{font:600 10.5px/1 var(--font);padding:2px 5px;border-radius:4px;border:1px s
 .pv-hl{position:absolute;left:3px;right:3px;top:3px;height:17px;border-radius:5px;background:rgba(255,90,74,.22);animation:pvHl 4.2s var(--ease) infinite}
 .pv-inv{display:block;padding:2px 5px;color:#ffb59c;border-top:1px solid rgba(255,255,255,.08);margin-top:2px;font-size:9px}
 @keyframes pvMenu{0%,8%{transform:scaleY(.4);opacity:0}18%,100%{transform:none;opacity:1}}
-@keyframes pvHl{0%,30%{transform:translateY(0)}42%,62%{transform:translateY(17px)}74%,100%{transform:translateY(34px)}}
+@keyframes pvHl{0%,30%{transform:translateY(0)}45%,85%{transform:translateY(17px)}100%{transform:translateY(0)}}
 @keyframes hUp{from{opacity:0;transform:translateY(16px)}}
 .h-stage{position:relative;z-index:2;max-width:980px;margin:30px auto 0;padding:0 20px;height:380px;perspective:1600px}
 .h-window{position:absolute;inset:0 20px auto;height:340px;border-radius:18px;overflow:hidden;background:linear-gradient(180deg,rgba(28,28,36,.92),rgba(16,16,22,.95));
@@ -3901,7 +3901,7 @@ function homeHTML(signedIn) {
   const PV_CAL = `<div class="pv-cal">${['M', 'T', 'W', 'T', 'F'].map(d => `<span class="pv-d">${d}</span>`).join('')}
       <span class="pv-ev pv-ooo">Lara · OOO</span><span class="pv-ev pv-rem">Magdy · Remote</span><span class="pv-task"></span><span class="pv-task t2"></span></div>`;
   const PV_WS = `<div class="pv-ws"><div class="pv-wsbtn"><i class="pv-av a1">MW</i><i class="pv-line" style="width:48%"></i></div>
-      <div class="pv-menu"><span class="pv-hl"></span><span class="pv-row"><i class="pv-av a1">MW</i>Mario's workspace</span><span class="pv-row"><i class="pv-av a2">AT</i>Automotive team</span><span class="pv-row"><i class="pv-av a3">FL</i>Freelance</span>
+      <div class="pv-menu"><span class="pv-hl"></span><span class="pv-row"><i class="pv-av a1">MW</i>Mario's workspace</span><span class="pv-row"><i class="pv-av a2">AT</i>Automotive team</span>
       <span class="pv-inv">+ Invite people</span></div></div>`;
   const card = (title, meta, p, done) => `<div class="hm-card ${done ? 'done' : ''}"><span class="hm-check p${p}">${done ? ico('check') : ''}</span><div><b>${title}</b><i>${meta}</i></div></div>`;
   return `<div class="home">
