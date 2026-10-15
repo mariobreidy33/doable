@@ -4,7 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Doable</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23dc4c3e'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='4' y1='2' x2='44' y2='46' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23ffb066'/%3E%3Cstop offset='.5' stop-color='%23ff5a4a'/%3E%3Cstop offset='1' stop-color='%23c81f5c'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='2' y='2' width='44' height='44' rx='13' fill='url(%23g)'/%3E%3Cpath d='M15 12.5h8.5a11.5 11.5 0 0 1 0 23H15' fill='none' stroke='%23fff' stroke-opacity='.45' stroke-width='3.4' stroke-linecap='round'/%3E%3Cpath d='M14.5 24.5l6 6L33.5 17' fill='none' stroke='%23fff' stroke-width='4.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#06060a">
+<meta name="description" content="Doable — the shared to-do board for agency teams, with a team leave calendar and a campaign tracker.">
 <script>
 /* =====================================================================
    CONFIG — paste your Firebase web-app config here (see SETUP.md).
@@ -21,7 +23,9 @@ window.APP_CONFIG = {
   },
   // Your own email (lowercase). The owner can always get in and manages who else has access.
   ownerEmail: "mariobreidy33@gmail.com",
-  appName: "Doable"
+  appName: "Doable",
+  // Name shown in the workspace switcher for the original (owner's) workspace.
+  rootWorkspaceName: "Mario's workspace"
 };
 </script>
 <style>
@@ -508,6 +512,222 @@ body.dragging-active .ct-card{cursor:grabbing}
   .ct-filters .filt{flex:none}
   .ct-toolbar .btn-primary{flex:1}
 }
+
+/* ---------- Oct 2026: logo, workspaces, archive, recently deleted, pauses, links ---------- */
+.mark{display:block;flex:none;filter:drop-shadow(0 2px 8px rgba(255,90,74,.28))}
+.brand .brand-logo{width:30px;height:30px}
+.side-logo{width:30px;height:30px;border-radius:9px;flex:none;display:grid;place-items:center;transition:transform .25s var(--ease)}
+.side-logo .mark{width:26px;height:26px}
+.side-logo:hover{transform:scale(1.07) rotate(-4deg)}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.load-logo{width:44px;height:44px;animation:logoPulse 1.6s var(--ease) infinite}
+@keyframes logoPulse{50%{transform:scale(.92);opacity:.7}}
+.ws-btn{display:flex;align-items:center;gap:8px;width:100%;padding:6px 8px;margin:0 0 8px;border:1px solid var(--line2);border-radius:9px;background:color-mix(in srgb,var(--card) 70%,transparent);text-align:left;font-size:12.5px;font-weight:600;transition:border-color .15s,background .15s}
+.ws-btn:hover{border-color:color-mix(in srgb,var(--accent) 45%,transparent);background:var(--hover)}
+.ws-btn .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ws-btn .i{color:var(--faint)}
+.ws-ava{width:20px;height:20px;border-radius:6px;display:grid;place-items:center;font-size:9.5px;font-weight:800;color:#fff;flex:none}
+.ws-n{font-size:10.5px;color:var(--faint);font-weight:500}
+.side-tools{margin-top:10px;padding-top:8px;border-top:1px solid var(--line)}
+.side-tools .nav-item .i{color:var(--muted)}
+.i-xs{width:11px;height:11px;flex:none}
+.muted-note{display:inline-block;margin-top:8px;font-size:12px;color:var(--muted)}
+kbd{font:600 10.5px/1 var(--font);padding:2px 5px;border-radius:4px;border:1px solid var(--line2);border-bottom-width:2px;background:var(--hover);color:var(--text)}
+.crumb-link{color:var(--muted);cursor:pointer}
+.crumb-link:hover{color:var(--accent-text)}
+.link{color:var(--accent-text);font-size:12px;font-weight:500}
+.link:hover{text-decoration:underline}
+/* archive & recently deleted */
+.arc-row{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid var(--line);animation:fade .2s var(--ease-out)}
+.arc-ico{width:28px;height:28px;border-radius:8px;background:var(--hover);display:grid;place-items:center;flex:none;font-weight:800;color:var(--muted)}
+.arc-main{flex:1;min-width:0}
+.arc-title{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.arc-meta{font-size:11.5px;color:var(--faint);margin-top:2px}
+.arc-meta .soon{color:var(--sw-orange)}
+.arc-btns{display:flex;gap:6px;align-items:center;flex:none}
+.arc-banner{align-items:center;margin-top:10px}
+.empty-state .i{width:30px;height:30px;color:var(--faint);margin-bottom:6px}
+/* campaign pauses */
+.tag.plat.paused{background:transparent;border:1px dashed var(--line2);color:var(--faint);display:inline-flex;align-items:center;gap:3px}
+.tag.plat .pz-dot{display:inline-flex;align-items:center;gap:1px;margin-left:4px;color:var(--sw-orange);font-weight:600}
+.pz-btn{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--muted);border:1px solid var(--line2);border-radius:6px;padding:2px 7px;flex:none;align-self:flex-start;margin-top:1px}
+.pz-btn:hover{color:var(--sw-orange);border-color:color-mix(in srgb,var(--sw-orange) 45%,transparent)}
+.pz-btn.on{color:var(--c-today);border-color:color-mix(in srgb,var(--c-today) 40%,transparent)}
+.obj-row.paused .pf{color:var(--faint)}
+.obj-row .pf{display:flex;flex-direction:column;gap:3px}
+.obj-row.paused .obj-chip{opacity:.55;background:transparent;border:1px dashed var(--line2)}
+.obj-chip.paused{background:color-mix(in srgb,var(--sw-orange) 10%,transparent);border:1px dashed color-mix(in srgb,var(--sw-orange) 40%,transparent)}
+.obj-chip .pz-obj{color:var(--faint)}
+.obj-chip .pz-obj:hover{color:var(--sw-orange)}
+.obj-chip.paused .pz-obj{color:var(--c-today)}
+.pz-since{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;font-weight:500;color:var(--sw-orange);text-align:left}
+.pz-since:hover{text-decoration:underline}
+.pz-since.sm{font-size:10px;opacity:.9}
+.pz-log{margin-top:8px;font-size:12.5px}
+.pz-log summary{cursor:pointer;color:var(--muted);font-size:11.5px;font-weight:600;padding:4px 0;list-style:none}
+.pz-log summary::-webkit-details-marker{display:none}
+.pz-log summary::before{content:"▸ ";color:var(--faint)}
+.pz-log[open] summary::before{content:"▾ "}
+.pz-log .cnt{color:var(--faint);font-weight:500}
+.pz-log .pz-ic{color:var(--sw-orange)}
+.pz-log b{font-weight:600}
+/* pacing sheet links */
+.sheet-btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 9px;border-radius:7px;color:var(--text);text-decoration:none;
+  background:color-mix(in srgb,var(--c-today) 13%,transparent);border:1px solid color-mix(in srgb,var(--c-today) 35%,transparent);transition:background .15s}
+.sheet-btn:hover{background:color-mix(in srgb,var(--c-today) 22%,transparent)}
+.sheet-btn .i{color:var(--c-today)}
+.sheet-btn.ghost{background:transparent;border-style:dashed;border-color:var(--line2);color:var(--muted)}
+.sheet-btn.ghost .i{color:var(--muted)}
+.sheet-btn.ghost:hover{color:var(--accent-text);border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+.ct-link{width:24px;height:24px;border-radius:6px;display:grid;place-items:center;color:var(--c-today);flex:none;margin-top:-2px}
+.ct-link:hover{background:color-mix(in srgb,var(--c-today) 15%,transparent)}
+/* auth */
+.auth-title{font-size:15px;font-weight:700;margin:-4px 0 14px}
+.auth-back{margin-top:16px;padding-top:12px;border-top:1px solid var(--line);text-align:center}
+.auth-back button{display:inline-flex;align-items:center;gap:4px;color:var(--muted);font-size:12px}
+.auth-back button:hover{color:var(--text)}
+.auth{background:radial-gradient(60% 50% at 50% 0%,rgba(255,90,74,.16),transparent 70%),var(--bg)}
+
+/* ---------- homepage ---------- */
+.home{--h-bg:#06060a;--h-text:#f4f4f6;--h-muted:#a3a3b2;--h-line:rgba(255,255,255,.09);--h-glass:rgba(255,255,255,.045);
+  position:relative;min-height:100vh;height:100vh;overflow-x:hidden;overflow-y:auto;background:var(--h-bg);color:var(--h-text);scroll-behavior:smooth;color-scheme:dark}
+.h-bg{position:absolute;inset:0;height:1500px;pointer-events:none;overflow:hidden}
+.h-glow{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55}
+.h-glow.g1{width:720px;height:520px;left:50%;top:-220px;transform:translateX(-50%);background:radial-gradient(circle,#ff5a3c 0%,#c8245c 45%,transparent 70%);animation:hGlow 9s ease-in-out infinite alternate}
+.h-glow.g2{width:460px;height:460px;left:-160px;top:420px;background:radial-gradient(circle,#7a2cff 0%,transparent 65%);opacity:.28}
+.h-glow.g3{width:420px;height:420px;right:-140px;top:300px;background:radial-gradient(circle,#ff8a3c 0%,transparent 65%);opacity:.22}
+@keyframes hGlow{to{transform:translateX(-50%) scale(1.12);opacity:.7}}
+.h-stars{position:absolute;inset:0;opacity:.5;background-image:radial-gradient(1px 1px at 12% 18%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 72% 12%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 38% 32%,#ffd9c9 50%,transparent 51%),radial-gradient(1px 1px at 88% 40%,#fff 50%,transparent 51%),radial-gradient(1.5px 1.5px at 22% 52%,#ffb59c 50%,transparent 51%),radial-gradient(1px 1px at 58% 8%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 92% 22%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 6% 40%,#fff 50%,transparent 51%)}
+.h-floor{position:absolute;left:-50%;right:-50%;top:640px;height:900px;transform:perspective(520px) rotateX(64deg);transform-origin:top center;
+  background-image:linear-gradient(rgba(255,106,74,.32) 1px,transparent 1px),linear-gradient(90deg,rgba(255,106,74,.32) 1px,transparent 1px);background-size:56px 56px;
+  -webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.95),transparent 75%);mask-image:linear-gradient(to bottom,rgba(0,0,0,.95),transparent 75%);animation:hFloor 3.2s linear infinite}
+@keyframes hFloor{to{background-position:0 56px}}
+.h-horizon{position:absolute;left:0;right:0;top:636px;height:2px;background:linear-gradient(90deg,transparent,#ff6a4a 30%,#ffb36b 50%,#ff6a4a 70%,transparent);box-shadow:0 0 30px 6px rgba(255,90,74,.45);opacity:.8}
+.h-nav{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:20px;padding:14px max(20px,calc(50vw - 560px));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(6,6,10,.55);border-bottom:1px solid var(--h-line)}
+.h-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;letter-spacing:-.01em}
+.h-logo{width:32px;height:32px}
+.h-logo.sm{width:22px;height:22px}
+.h-links{display:flex;gap:22px;margin-left:18px;font-size:13px}
+.h-links a{color:var(--h-muted);text-decoration:none;transition:color .15s}
+.h-links a:hover{color:var(--h-text)}
+.h-actions{margin-left:auto;display:flex;gap:8px}
+.h-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:12px;font-weight:700;font-size:14px;color:var(--h-text);transition:transform .2s var(--ease),box-shadow .2s,background .2s,border-color .2s;white-space:nowrap}
+.h-btn.sm{padding:8px 14px;font-size:13px;border-radius:10px}
+.h-btn:active{transform:scale(.97)}
+.h-primary{background:linear-gradient(135deg,#ff9a5a,#ff4f45 50%,#d42a62);box-shadow:0 8px 30px -6px rgba(255,79,69,.65),inset 0 1px 0 rgba(255,255,255,.35)}
+.h-primary:hover{transform:translateY(-1px);box-shadow:0 12px 38px -6px rgba(255,79,69,.85),inset 0 1px 0 rgba(255,255,255,.35)}
+.h-glass{background:var(--h-glass);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(10px)}
+.h-glass:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.25)}
+.h-ghost{color:var(--h-muted)}
+.h-ghost:hover{color:var(--h-text)}
+.h-hero{position:relative;z-index:2;text-align:center;padding:84px 20px 40px;max-width:1120px;margin:0 auto}
+.h-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:30px;font-size:12px;font-weight:600;color:#ffd2c4;background:rgba(255,90,74,.1);border:1px solid rgba(255,120,90,.3);margin-bottom:26px;animation:hUp .8s var(--ease) both}
+.h-pill .dot{width:7px;height:7px;border-radius:50%;background:#ff6a4a;box-shadow:0 0 0 0 rgba(255,106,74,.7);animation:hPing 2s infinite}
+@keyframes hPing{70%{box-shadow:0 0 0 8px rgba(255,106,74,0)}100%{box-shadow:0 0 0 0 rgba(255,106,74,0)}}
+.h-hero h1{font-size:clamp(34px,5.4vw,64px);line-height:1.04;letter-spacing:-.035em;margin:0;font-weight:800;animation:hUp .8s .08s var(--ease) both}
+.h-grad{background:linear-gradient(100deg,#ffd0a8 0%,#ff8a5c 30%,#ff4f6a 60%,#b67bff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%;animation:hShine 8s ease-in-out infinite alternate}
+@keyframes hShine{to{background-position:100% 0}}
+.h-sub{font-size:clamp(15px,1.8vw,18px);line-height:1.6;color:var(--h-muted);max-width:640px;margin:22px auto 0;animation:hUp .8s .16s var(--ease) both}
+.h-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:32px;animation:hUp .8s .24s var(--ease) both}
+.h-keys{margin-top:22px;font-size:12px;color:var(--h-muted);display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap;animation:hUp .8s .32s var(--ease) both}
+.h-keys kbd{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16);color:var(--h-text)}
+.h-keys span{opacity:.4}
+@keyframes hUp{from{opacity:0;transform:translateY(16px)}}
+.h-stage{position:relative;z-index:2;max-width:980px;margin:30px auto 0;padding:0 20px;height:380px;perspective:1600px}
+.h-window{position:absolute;inset:0 20px auto;height:340px;border-radius:18px;overflow:hidden;background:linear-gradient(180deg,rgba(28,28,36,.92),rgba(16,16,22,.95));
+  border:1px solid rgba(255,255,255,.12);box-shadow:0 40px 120px -20px rgba(255,79,69,.35),0 0 0 1px rgba(255,255,255,.04) inset,0 1px 0 rgba(255,255,255,.12) inset;
+  transform:rotateX(14deg) translateY(10px);transform-origin:center top;animation:hTilt 1.2s .2s var(--ease) both}
+@keyframes hTilt{from{opacity:0;transform:rotateX(32deg) translateY(60px)}}
+.hm-bar{display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:1px solid var(--h-line);font-size:11.5px;color:var(--h-muted)}
+.hm-bar i{width:10px;height:10px;border-radius:50%;background:#3a3a44}
+.hm-bar i:first-child{background:#ff5f57}.hm-bar i:nth-child(2){background:#febc2e}.hm-bar i:nth-child(3){background:#28c840}
+.hm-bar span{margin-left:10px}
+.hm-body{display:flex;height:calc(100% - 37px)}
+.hm-side{width:170px;flex:none;padding:14px 12px;border-right:1px solid var(--h-line);background:rgba(255,255,255,.02);font-size:12px;color:var(--h-muted)}
+.hm-side .hm-logo{width:24px;height:24px;margin-bottom:14px}
+.hm-side p{margin:0 0 4px;padding:5px 8px;border-radius:7px;display:flex;align-items:center;gap:6px}
+.hm-side p.on{background:rgba(255,90,74,.16);color:#ffd2c4}
+.hm-side p em{margin-left:auto;font-style:normal;font-size:11px;opacity:.7}
+.hm-side p.hd{margin-top:12px;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;opacity:.6}
+.hm-side s{text-decoration:none;color:#ff6a4a;font-weight:800}.hm-side s.b{color:#5b8cff}.hm-side s.g{color:#3ccf6b}
+.hm-board{flex:1;display:flex;gap:12px;padding:16px;min-width:0}
+.hm-col{flex:1;min-width:0}
+.hm-col h5{margin:0 0 10px;font-size:12px;display:flex;gap:6px;color:var(--h-text)}
+.hm-col h5 em{font-style:normal;color:var(--h-muted);font-weight:500}
+.hm-card{display:flex;gap:9px;padding:10px;border-radius:10px;background:rgba(255,255,255,.045);border:1px solid var(--h-line);margin-bottom:8px;font-size:12px;animation:hCard .6s var(--ease) both}
+.hm-col:nth-child(2) .hm-card{animation-delay:.15s}.hm-col:nth-child(3) .hm-card{animation-delay:.3s}
+@keyframes hCard{from{opacity:0;transform:translateY(10px)}}
+.hm-card b{display:block;font-weight:600;color:var(--h-text)}
+.hm-card i{display:block;font-style:normal;font-size:10.5px;color:#7fd99a;margin-top:3px}
+.hm-col:nth-child(2) .hm-card:first-child i{color:#ff7a6a}
+.hm-card.done b{text-decoration:line-through;opacity:.5}
+.hm-check{width:15px;height:15px;border-radius:50%;border:1.5px solid #8a8a96;flex:none;margin-top:1px;display:grid;place-items:center}
+.hm-check.p1{border-color:#ff6a5a;background:rgba(255,106,90,.12)}.hm-check.p2{border-color:#ff9a14}.hm-check.p3{border-color:#5297ff}
+.hm-card.done .hm-check{background:#8a8a96;border-color:#8a8a96;color:#111}
+.hm-check .i{width:10px;height:10px}
+.h-float{position:absolute;z-index:3;border-radius:14px;background:rgba(22,22,30,.82);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  box-shadow:0 20px 60px -10px rgba(0,0,0,.7);font-size:12px;animation:hFloat 6s ease-in-out infinite}
+.h-float.f1{right:-6px;top:150px;width:290px;padding:13px 14px}
+.h-float.f2{left:-14px;top:262px;display:flex;align-items:center;gap:8px;padding:10px 14px;animation-delay:-2s}
+.h-float.f2 .i{color:#3ccf6b}
+.h-float.f3{right:60px;top:-22px;display:flex;align-items:center;gap:8px;padding:8px 12px;animation-delay:-4s}
+.h-float.f3 .av{width:22px;height:22px;border-radius:50%;background:#7c3934;display:grid;place-items:center;font-size:9.5px;font-weight:800}
+@keyframes hFloat{50%{transform:translateY(-10px)}}
+.hf-top{display:flex;align-items:center;gap:8px}
+.hf-top b{flex:1;font-size:12.5px}
+.hf-live{font-size:10.5px;color:#3ccf6b;font-weight:700;padding:2px 7px;border-radius:20px;background:rgba(60,207,107,.12);border:1px solid rgba(60,207,107,.3)}
+.hf-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:9px}
+.hf-row .tg{font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(82,140,255,.16);display:inline-flex;align-items:center;gap:3px}
+.hf-row .tg.pf{background:rgba(136,77,255,.18)}
+.hf-row .tg.pz{background:transparent;border:1px dashed rgba(255,255,255,.25);color:var(--h-muted)}
+.hf-m{display:flex;gap:12px;margin-top:10px;padding-top:9px;border-top:1px solid var(--h-line);font-size:11px;color:var(--h-muted)}
+.hf-m .ok{display:inline-flex;align-items:center;gap:5px}.hf-m .ok .i{color:#3ccf6b}
+.h-feats{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:1120px;margin:60px auto 0;padding:0 20px;scroll-margin-top:90px}
+.h-feat{padding:22px 20px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.02));border:1px solid var(--h-line);transition:transform .3s var(--ease),border-color .3s,background .3s}
+.h-feat:hover{transform:translateY(-4px);border-color:rgba(255,120,90,.35);background:linear-gradient(180deg,rgba(255,90,74,.09),rgba(255,255,255,.02))}
+.h-fi{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(255,154,90,.22),rgba(212,42,98,.22));border:1px solid rgba(255,120,90,.35);color:#ffb59c;margin-bottom:14px}
+.h-feat h3{margin:0 0 8px;font-size:15px;letter-spacing:-.01em}
+.h-feat p{margin:0;font-size:13px;line-height:1.6;color:var(--h-muted)}
+.h-safety{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;max-width:1120px;margin:22px auto 0;padding:0 20px;scroll-margin-top:90px}
+.h-safety div{padding:18px 20px;background:rgba(255,255,255,.025);border:1px solid var(--h-line);display:flex;flex-direction:column;gap:6px}
+.h-safety div:first-child{border-radius:16px 0 0 16px}.h-safety div:last-child{border-radius:0 16px 16px 0}
+.h-safety b{display:flex;align-items:center;gap:8px;font-size:13.5px}
+.h-safety b .i{color:#ff8a6a}
+.h-safety span{font-size:12.5px;color:var(--h-muted);line-height:1.55}
+.h-final{position:relative;z-index:2;text-align:center;padding:90px 20px 60px;scroll-margin-top:60px}
+.h-final h2{font-size:clamp(26px,4vw,40px);letter-spacing:-.03em;margin:0}
+.h-final p{color:var(--h-muted);font-size:15px;margin:12px auto 0;max-width:520px;line-height:1.6}
+.h-foot{position:relative;z-index:2;display:flex;align-items:center;gap:10px;max-width:1120px;margin:0 auto;padding:22px 20px 30px;border-top:1px solid var(--h-line);font-size:12px;color:var(--h-muted)}
+.h-foot .sp{flex:1}
+@media (max-width:900px){
+  .h-feats{grid-template-columns:repeat(2,1fr)}
+  .h-float.f1{right:10px;top:220px;width:250px}
+  .h-float.f3{display:none}
+}
+@media (max-width:640px){
+  .h-links{display:none}
+  .h-nav{gap:10px;padding:12px 16px}
+  .h-actions .h-ghost{display:none}
+  .h-hero{padding:56px 16px 24px}
+  .h-cta .h-btn{flex:1 1 100%;justify-content:center}
+  .h-stage{height:330px;padding:0 8px}
+  .h-window{inset:0 8px auto;height:290px}
+  .h-floor{top:760px}
+  .h-horizon{top:756px}
+  .hm-side{display:none}
+  .hide-sm{display:none}
+  .h-float.f1{left:16px;right:16px;width:auto;top:250px}
+  .h-float.f2{display:none}
+  .h-feats,.h-safety{grid-template-columns:1fr;padding:0 16px}
+  .h-safety div,.h-safety div:first-child,.h-safety div:last-child{border-radius:14px}
+  .h-safety{gap:10px}
+  .arc-row{flex-wrap:wrap}
+  .arc-btns{width:100%;justify-content:flex-end}
+}
+@media (prefers-reduced-motion:reduce){
+  .home *,.home{animation:none!important;transition:none!important;scroll-behavior:auto}
+  .load-logo{animation:none}
+}
 </style>
 </head>
 <body>
@@ -517,12 +737,13 @@ body.dragging-active .ct-card{cursor:grabbing}
 <script type="module">
 /* ===================== utilities ===================== */
 const CFG = window.APP_CONFIG || {};
-const BUILD = '2026-09-17d';   // shown in Settings, so you can confirm which version is live
+const BUILD = '2026-10-15a';   // shown in Settings, so you can confirm which version is live
 const FB_URL = 'https://www.gstatic.com/firebasejs/10.12.2/';
-const COLS = ['projects', 'sections', 'tasks', 'events', 'meta', 'members', 'accounts', 'campaigns'];
+const COLS = ['projects', 'sections', 'tasks', 'events', 'meta', 'members', 'accounts', 'campaigns', 'trash'];
 // Collections added after the first release. If the security rules haven't been updated yet,
-// the app still runs — only the Campaign Tracker shows a notice.
-const OPTIONAL_COLS = ['accounts', 'campaigns'];
+// the app still runs — only the feature that needs them shows a notice.
+const OPTIONAL_COLS = ['accounts', 'campaigns', 'trash'];
+const TRASH_DAYS = 30;   // Recently deleted empties itself after this many days
 const COLORS = ['red', 'orange', 'yellow', 'green', 'teal', 'blue', 'purple', 'pink', 'grey'];
 const MARKETS = ['KSA', 'UAE', 'QAT', 'KWT', 'BAH', 'OMN'];
 const PLATFORMS = ['Search', 'PMax', 'YouTube', 'Meta', 'Snap', 'TikTok', 'LinkedIn', 'X'];
@@ -705,17 +926,26 @@ const P = {
   trendDown: '<path d="M3.5 7.5 9 13l3.5-3.5L20 17"/><path d="M15 17h5v-5"/>',
   pulse: '<path d="M2.5 12h4l2.5-6 3.5 12 2.5-6h6.5"/>',
   sidebar: '<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M9.5 4.5v15"/>',
+  bars: '<rect x="7" y="5.5" width="3.2" height="13" rx="1" fill="currentColor" stroke="none"/><rect x="13.8" y="5.5" width="3.2" height="13" rx="1" fill="currentColor" stroke="none"/>',
+  play: '<path d="M8 5.8v12.4a.8.8 0 0 0 1.2.7l10-6.2a.8.8 0 0 0 0-1.4l-10-6.2A.8.8 0 0 0 8 5.8Z" fill="currentColor" stroke="none"/>',
+  sheet: '<rect x="4.5" y="3.5" width="15" height="17" rx="2.5"/><path d="M4.5 9h15M4.5 14.5h15M10 9v11.5"/>',
+  ext: '<path d="M14 4h6v6M20 4l-9 9M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/>',
+  link: '<path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/>',
+  people: '<circle cx="9" cy="8.5" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 5.2a3.5 3.5 0 0 1 0 6.6M18.5 14.2a6.5 6.5 0 0 1 3 5.8"/>',
+  swap: '<path d="M7 4 3.5 7.5 7 11"/><path d="M3.5 7.5h13M17 13l3.5 3.5L17 20"/><path d="M20.5 16.5h-13"/>',
 };
 const ico = (n, cls = '') => `<svg class="i ${cls}" viewBox="0 0 24 24" aria-hidden="true">${P[n] || ''}</svg>`;
 
 /* ===================== state ===================== */
 const S = {
-  data: { projects: {}, sections: {}, tasks: {}, events: {}, meta: {}, members: {}, accounts: {}, campaigns: {} },
+  data: { projects: {}, sections: {}, tasks: {}, events: {}, meta: {}, members: {}, accounts: {}, campaigns: {}, trash: {} },
+  missing: new Set(),      // collections the security rules don't cover yet
+  ws: null, workspaces: [], // cloud workspaces: the one open now, and every one you can open
   user: null, mode: 'local', ready: false,
   showCompleted: {}, cal: null, calTasks: lsGet('tb:calTasks') !== '0', calLeave: lsGet('tb:calLeave') !== '0',
   inlineAdd: null, addingSection: false, drag: null,
   ct: { account: lsGet('tb:ctAccount') || 'all', q: '', sort: lsGet('tb:ctSort') || 'attention', archived: false, limit: 80,
-        f: { status: 'All', market: 'All', platform: 'All', objective: 'All', pacing: 'All', creative: 'All', results: 'All', weekly: 'All' } },
+        f: { status: 'All', market: 'All', platform: 'All', objective: 'All', pacing: 'All', creative: 'All', results: 'All', weekly: 'All', paused: 'All' } },
   rulesMissing: false,
 };
 let store = null;
@@ -726,12 +956,15 @@ const types = () => (settings().types && settings().types.length ? settings().ty
 const typeById = id => types().find(t => t.id === id) || { id, name: 'Other', color: 'grey' };
 const personById = id => people().find(p => p.id === id);
 const byOrder = (a, b) => (a.order ?? 0) - (b.order ?? 0) || (a.createdAt ?? 0) - (b.createdAt ?? 0);
-const projects = () => Object.values(S.data.projects).sort(byOrder);
+// Archived projects keep all their sections and tasks; they're just out of the way.
+const projects = () => Object.values(S.data.projects).filter(p => !p.archived).sort(byOrder);
+const archivedProjects = () => Object.values(S.data.projects).filter(p => p.archived).sort((a, b) => (b.archivedAt || 0) - (a.archivedAt || 0));
+const inArchivedProject = t => !!(S.data.projects[t.projectId] || {}).archived;
 const sectionsOf = pid => Object.values(S.data.sections).filter(s => s.projectId === pid).sort(byOrder);
 const tasksIn = (pid, sid, withDone) => Object.values(S.data.tasks)
   .filter(t => t.projectId === pid && (t.sectionId || null) === (sid || null) && (withDone || !t.done))
   .sort((a, b) => (a.done - b.done) || byOrder(a, b));
-const activeTasks = () => Object.values(S.data.tasks).filter(t => !t.done);
+const activeTasks = () => Object.values(S.data.tasks).filter(t => !t.done && !inArchivedProject(t));
 const me = () => S.user ? (S.user.name || S.user.email) : 'Me';
 const initials = n => String(n || '?').trim().split(/[\s._@-]+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase() || '?';
 function nextOrder(list) { return list.length ? Math.max(...list.map(x => x.order ?? 0)) + 1000 : 1000; }
@@ -766,6 +999,24 @@ const liveObjectives = c => (c.platforms || []).flatMap(p => objOf(c, p));
 const hasObjective = (c, obj, platform) => (platform && platform !== 'All' ? [platform] : (c.platforms || []))
   .some(p => objOf(c, p).some(o => o === obj || (obj === 'Other' && o.startsWith(CUSTOM_PREFIX))));
 const attentionCount = () => Object.values(S.data.campaigns).filter(c => !c.archived && needsAttention(c)).length;
+/* ---------- pauses ---------- */
+// c.pauses: what is paused right now — [{ platform, objective|null, since:'YYYY-MM-DD', by }]
+// c.pauseLog: the history — [{ platform, objective|null, action:'paused'|'resumed', date, at, by }]
+// Stored as arrays (not maps) because objective names contain characters like "/" and ".".
+const pauseOf = (c, p, o = null) => (c.pauses || []).find(x => x.platform === p && (x.objective || null) === (o || null));
+const platformPaused = (c, p) => !!pauseOf(c, p);
+const objPaused = (c, p, o) => platformPaused(c, p) || !!pauseOf(c, p, o);
+const activePlatforms = c => (c.platforms || []).filter(p => !platformPaused(c, p));
+const pausedCount = c => (c.platforms || []).reduce((n, p) => n + (platformPaused(c, p) ? 1 : objOf(c, p).filter(o => pauseOf(c, p, o)).length), 0);
+/* ---------- pacing sheet links ---------- */
+// Only plain web links are ever stored or opened (no javascript: or data: URLs).
+function cleanUrl(v) {
+  v = String(v || '').trim(); if (!v) return '';
+  if (!/^[a-z][a-z0-9+.-]*:/i.test(v)) v = 'https://' + v;
+  try { const u = new URL(v); return /^https?:$/.test(u.protocol) && u.hostname.includes('.') ? u.href : null; } catch { return null; }
+}
+const pacingLink = c => (c && (c.pacingUrl || (S.data.accounts[c.accountId] || {}).pacingUrl)) || '';
+const extLink = (url, inner, cls = '', title = 'Open pacing sheet') => `<a class="${cls}" data-ext href="${esc(url)}" target="_blank" rel="noopener noreferrer" title="${esc(title)}">${inner}</a>`;
 
 /* ===================== stores ===================== */
 let renderQueued = false;
@@ -798,13 +1049,17 @@ class LocalStore {
 }
 
 class CloudStore {
-  constructor(fs, db) { this.fs = fs; this.db = db; this.unsubs = []; }
+  // base: [] for the original workspace (top-level collections), ['workspaces', id] for everyone else's.
+  constructor(fs, db, base = []) {
+    this.fs = fs; this.db = db; this.unsubs = []; this.base = base;
+    this.cols = base.length ? COLS.filter(c => c !== 'members') : COLS;   // other workspaces keep members on the workspace itself
+  }
   start(cb, onErr) {
     const loaded = new Set(); this.fresh = new Set(); let raf = 0;
-    const fire = () => { if (loaded.size < COLS.length) return; cancelAnimationFrame(raf); raf = requestAnimationFrame(cb); };
-    COLS.forEach(col => {
+    const fire = () => { if (loaded.size < this.cols.length) return; cancelAnimationFrame(raf); raf = requestAnimationFrame(cb); };
+    this.cols.forEach(col => {
       // includeMetadataChanges lets us know when data has been confirmed by the server (never seed over real data)
-      this.unsubs.push(this.fs.onSnapshot(this.fs.collection(this.db, col), { includeMetadataChanges: true }, snap => {
+      this.unsubs.push(this.fs.onSnapshot(this.fs.collection(this.db, ...this.base, col), { includeMetadataChanges: true }, snap => {
         const known = loaded.has(col);
         if (!snap.metadata.fromCache) this.fresh.add(col);
         const changed = typeof snap.docChanges === 'function' ? snap.docChanges().length : 1;
@@ -814,15 +1069,16 @@ class CloudStore {
       }, err => {
         // A newer collection the security rules don't cover yet must not lock the whole app out.
         if (OPTIONAL_COLS.includes(col) && err.code === 'permission-denied') {
-          S.rulesMissing = true; S.data[col] = {}; loaded.add(col); this.fresh.add(col); fire(); return;
+          S.missing.add(col); if (col !== 'trash') S.rulesMissing = true;
+          S.data[col] = {}; loaded.add(col); this.fresh.add(col); fire(); return;
         }
         onErr && onErr(err);
       }));
     });
   }
-  isFresh() { return this.fresh && this.fresh.size >= COLS.length; }
+  isFresh() { return this.fresh && this.fresh.size >= this.cols.length; }
   stop() { this.unsubs.forEach(u => u()); this.unsubs = []; }
-  ref(col, id) { return this.fs.doc(this.db, col, id); }
+  ref(col, id) { return this.fs.doc(this.db, ...this.base, col, id); }
   async put(col, obj) { return this.fs.setDoc(this.ref(col, obj.id), clone(obj)).catch(writeErr); }
   async update(col, id, fields) { return this.fs.updateDoc(this.ref(col, id), clone(fields)).catch(writeErr); }
   async del(col, id) { return this.fs.deleteDoc(this.ref(col, id)).catch(writeErr); }
@@ -847,7 +1103,7 @@ function writeErr(e) {
 /* ===================== UI primitives ===================== */
 function toast(msg, undo) {
   const el = document.createElement('div'); el.className = 'toast';
-  el.innerHTML = `<span>${esc(msg)}</span>${undo ? '<button>Undo</button>' : ''}`;
+  el.innerHTML = `<span>${esc(msg)}</span>${undo ? `<button title="${/Mac|iPhone|iPad/.test(navigator.platform) ? '⌘' : 'Ctrl'}+Z">Undo</button>` : ''}`;
   if (undo) el.querySelector('button').onclick = () => { undo(); el.remove(); };
   $('#toasts').appendChild(el);
   setTimeout(() => el.remove(), undo ? 6000 : 3500);
@@ -955,6 +1211,9 @@ function route() {
   if (h[0] === 'today') return { view: 'today' };
   if (h[0] === 'upcoming') return { view: 'upcoming' };
   if (h[0] === 'campaigns') return { view: 'campaigns' };
+  if (h[0] === 'archive') return { view: 'archive' };
+  if (h[0] === 'trash') return { view: 'trash' };
+  if (h[0] === 'home') return { view: 'home' };
   const first = projects()[0];
   return first ? { view: 'project', id: first.id } : { view: 'today' };
 }
@@ -985,6 +1244,10 @@ function render(opts = {}) {
   // View-only changes (filters, search, sort, account tabs) repaint the main pane only —
   // the sidebar and its counts don't change, so there's no reason to rebuild them.
   const main = $('.main');
+  if (r.view === 'home') {   // the homepage only repaints when you arrive on it (data changes don't restart its animations)
+    if (routeChanged || !$('#root .home')) { $('#root').innerHTML = homeHTML(true); document.title = CFG.appName || 'Doable'; }
+    return;
+  }
   if (opts.mainOnly && main && !routeChanged) main.innerHTML = renderMain(r);
   else $('#root').innerHTML = `<div id="app">${renderSidebar(r)}<div class="scrim" data-action="close-nav"></div><main class="main">${renderMain(r)}</main></div>`;
 
@@ -993,7 +1256,7 @@ function render(opts = {}) {
   const nb = $('#board'); if (nb) nb.parentElement.scrollLeft = scrollL;
   const nc = $('.content'); if (nc) { nc.scrollTop = routeChanged ? 0 : scrollT; if (routeChanged) nc.classList.add('route-enter'); }
   if (S.drawerPaint) S.drawerPaint();
-  document.title = (r.view === 'project' ? S.data.projects[r.id]?.name + ' – ' : r.view === 'today' ? 'Today – ' : r.view === 'upcoming' ? 'Upcoming – ' : r.view === 'campaigns' ? 'Campaign Tracker – ' : '') + (CFG.appName || 'Tasks');
+  document.title = (r.view === 'project' ? S.data.projects[r.id]?.name + ' – ' : { today: 'Today – ', upcoming: 'Upcoming – ', campaigns: 'Campaign Tracker – ', archive: 'Archive – ', trash: 'Recently deleted – ' }[r.view] || '') + (CFG.appName || 'Tasks');
 }
 
 function renderSidebar(r) {
@@ -1001,11 +1264,16 @@ function renderSidebar(r) {
   const todayCount = activeTasks().filter(t => t.due && t.due <= today).length;
   const counts = {}; activeTasks().forEach(t => counts[t.projectId] = (counts[t.projectId] || 0) + 1);
   const u = S.user || { name: 'Me' };
+  const archN = archivedProjects().length + Object.values(S.data.accounts).filter(a => a.archived).length + Object.values(S.data.campaigns).filter(c => c.archived).length;
+  const trashN = trashGroups().length;
+  const ws = S.ws;
   return `<aside class="sidebar">
     <div class="side-top">
+      <button class="side-logo" data-go="#/home" title="${esc(CFG.appName || 'Doable')} home">${logoMark()}</button>
       <button class="user-btn" data-action="user-menu"><span class="avatar sw-${esc(u.color || 'red')}">${esc(initials(u.name || u.email))}</span><span class="name">${esc(u.name || u.email || 'Me')}</span>${ico('down', 'i-sm')}</button>
       <button class="icon-btn" data-action="open-settings" title="Settings">${ico('gear')}</button>
     </div>
+    ${ws ? `<button class="ws-btn" data-action="ws-menu" title="Switch workspace"><span class="ws-ava sw-${esc(ws.color || 'red')}">${esc(initials(ws.name))}</span><span class="nm">${esc(ws.name)}</span>${S.workspaces.length > 1 ? `<span class="ws-n">${S.workspaces.length}</span>` : ''}${ico('sort', 'i-sm')}</button>` : ''}
     <button class="add-task-btn" data-action="quick-add"><span class="plus">${ico('plus')}</span>Add task</button>
     <button class="nav-item" data-action="search">${ico('search')}<span class="lbl">Search</span></button>
     <button class="nav-item ${r.view === 'today' ? 'active' : ''}" data-go="#/today">${ico('today')}<span class="lbl">Today</span><span class="cnt">${todayCount || ''}</span></button>
@@ -1018,6 +1286,10 @@ function renderSidebar(r) {
       </div>`).join('') || '<div class="mode-note" style="border:0">No projects yet.</div>'}
       <button class="nav-item ${r.view === 'campaigns' ? 'active' : ''}" data-go="#/campaigns">${ico('campaign')}<span class="lbl">Campaign Tracker</span>${(() => { const n = attentionCount(); return n ? `<span class="cnt" title="${n} campaign${n === 1 ? '' : 's'} need attention" style="color:var(--sw-orange)">${n}</span>` : ''; })()}</button>
     </div>
+    <div class="side-group side-tools">
+      <button class="nav-item ${r.view === 'archive' ? 'active' : ''}" data-go="#/archive">${ico('archive')}<span class="lbl">Archive</span><span class="cnt">${archN || ''}</span></button>
+      <button class="nav-item ${r.view === 'trash' ? 'active' : ''}" data-go="#/trash">${ico('trash')}<span class="lbl">Recently deleted</span><span class="cnt">${trashN || ''}</span></button>
+    </div>
     <div class="side-foot">${S.mode === 'local'
       ? `<div class="mode-note"><b>Local mode</b> — data is saved in this browser only. Add your Firebase config (see SETUP) to sync with your team.</div>`
       : `<div class="mode-note">Synced · signed in as ${esc(S.user?.email || '')}</div>`}</div>
@@ -1029,7 +1301,56 @@ function renderMain(r) {
   if (r.view === 'today') return renderToday();
   if (r.view === 'upcoming') return renderUpcoming();
   if (r.view === 'campaigns') return renderCampaigns();
+  if (r.view === 'archive') return renderArchive();
+  if (r.view === 'trash') return renderTrash();
   return '';
+}
+
+/* ---------- archive ---------- */
+function renderArchive() {
+  const ps = archivedProjects();
+  const accs = Object.values(S.data.accounts).filter(a => a.archived).sort((a, b) => (b.archivedAt || 0) - (a.archivedAt || 0));
+  const camps = Object.values(S.data.campaigns).filter(c => c.archived).sort((a, b) => (b.archivedAt || b.updatedAt || 0) - (a.archivedAt || a.updatedAt || 0));
+  const when = x => x.archivedAt ? `Archived ${timeAgo(x.archivedAt)}` : 'Archived';
+  const row = (icon, title, meta, btns) => `<div class="arc-row">${icon}<div class="arc-main"><div class="arc-title">${title}</div><div class="arc-meta">${meta}</div></div><div class="arc-btns">${btns}</div></div>`;
+  const total = ps.length + accs.length + camps.length;
+  return topbar('') + `<div class="content"><div class="list">
+    <div class="page-head"><h1>Archive</h1><div class="page-desc empty" style="cursor:default">Projects, accounts and campaigns you've put away. Nothing here is deleted — restore any of it in one click.</div></div>
+    ${!total ? `<div class="empty-state">${ico('archive')}<br>Nothing archived.<br><span style="font-size:12px">Use “Archive project” from a project's ••• menu, or Archive on a campaign or account.</span></div>` : ''}
+    ${ps.length ? `<div class="group-head">Projects <span class="cnt">${ps.length}</span></div>${ps.map(p => {
+      const n = Object.values(S.data.tasks).filter(t => t.projectId === p.id && !t.done).length;
+      return row(`<span class="arc-ico tx-${esc(p.color || 'grey')}">#</span>`, esc(p.name), `${when(p)} · ${n} open task${n === 1 ? '' : 's'} · ${sectionsOf(p.id).length} section${sectionsOf(p.id).length === 1 ? '' : 's'}`,
+        `<button class="btn" data-go="#/project/${p.id}">Open</button><button class="btn btn-primary" data-action="arc-restore" data-kind="project" data-id="${p.id}">Restore</button><button class="icon-btn" data-action="arc-del" data-kind="project" data-id="${p.id}" title="Delete">${ico('trash', 'i-sm')}</button>`);
+    }).join('')}` : ''}
+    ${accs.length ? `<div class="group-head">Campaign accounts <span class="cnt">${accs.length}</span></div>${accs.map(a => {
+      const n = Object.values(S.data.campaigns).filter(c => c.accountId === a.id).length;
+      return row(`<span class="arc-ico">${ico('campaign', 'i-sm')}</span>`, esc(a.name), `${when(a)} · ${n} campaign${n === 1 ? '' : 's'}`,
+        `<button class="btn" data-action="arc-open-acc" data-id="${a.id}">Open</button><button class="btn btn-primary" data-action="arc-restore" data-kind="account" data-id="${a.id}">Restore</button><button class="icon-btn" data-action="arc-del" data-kind="account" data-id="${a.id}" title="Delete">${ico('trash', 'i-sm')}</button>`);
+    }).join('')}` : ''}
+    ${camps.length ? `<div class="group-head">Campaigns <span class="cnt">${camps.length}</span></div>${camps.map(c =>
+      row(`<span class="arc-ico">${ico('campaign', 'i-sm')}</span>`, esc(c.name), `${esc(accName(c.accountId))} · ${when(c)} · ${esc(c.status)}`,
+        `<button class="btn" data-action="ct-open" data-id="${c.id}">Open</button><button class="btn btn-primary" data-action="arc-restore" data-kind="campaign" data-id="${c.id}">Restore</button><button class="icon-btn" data-action="arc-del" data-kind="campaign" data-id="${c.id}" title="Delete">${ico('trash', 'i-sm')}</button>`)).join('')}` : ''}
+  </div></div>`;
+}
+
+/* ---------- recently deleted ---------- */
+const TRASH_ICON = { task: 'check', section: 'menu', project: 'inbox', campaign: 'campaign', account: 'campaign', event: 'cal' };
+const TRASH_KIND = { task: 'Task', section: 'Section', project: 'Project', campaign: 'Campaign', account: 'Campaign account', event: 'Calendar entry' };
+function renderTrash() {
+  const groups = trashGroups();
+  return topbar('', groups.length ? `<button class="top-btn" data-action="trash-empty">${ico('trash', 'i-sm')}Empty</button>` : '') + `<div class="content"><div class="list">
+    <div class="page-head"><h1>Recently deleted</h1><div class="page-desc empty" style="cursor:default">Deleted tasks, sections, projects, campaigns and calendar entries stay here for ${TRASH_DAYS} days, then they're removed for good.</div></div>
+    ${S.missing.has('trash') ? `<div class="ct-banner">${ico('alert')}<div><b>Recently deleted needs the updated security rules.</b><br>Until they're published, deleting is immediate (you can still undo right away with Ctrl+Z). Paste the new <code>firestore.rules</code> in Firebase → Firestore → Rules → Publish, then reload.</div></div>` : ''}
+    ${!groups.length ? `<div class="empty-state">${ico('trash')}<br>Nothing here.<br><span style="font-size:12px">Anything you delete shows up here for ${TRASH_DAYS} days.</span></div>` : ''}
+    ${groups.map(({ head, items }) => {
+      const left = daysLeft(head);
+      return `<div class="arc-row"><span class="arc-ico">${ico(TRASH_ICON[head.kind] || 'trash', 'i-sm')}</span>
+        <div class="arc-main"><div class="arc-title">${esc(head.label)}</div>
+          <div class="arc-meta">${esc(TRASH_KIND[head.kind] || 'Item')}${head.context ? ' · ' + esc(head.context) : ''} · deleted ${timeAgo(head.deletedAt)}${head.deletedBy ? ' by ' + esc(head.deletedBy) : ''} · <span class="${left <= 3 ? 'soon' : ''}">${left === 0 ? 'removed today' : `${left} day${left === 1 ? '' : 's'} left`}</span></div></div>
+        <div class="arc-btns"><button class="btn btn-primary" data-action="trash-restore" data-id="${head.groupId}">Restore</button>
+          <button class="icon-btn" data-action="trash-purge" data-id="${head.groupId}" title="Delete forever">${ico('x', 'i-sm')}</button></div></div>`;
+    }).join('')}
+  </div></div>`;
 }
 const topbar = (crumb, right = '') => `<div class="topbar"><button class="icon-btn menu-toggle" data-action="open-nav">${ico('menu')}</button><span class="crumb">${crumb}</span><span class="spacer"></span>${right}</div>`;
 
@@ -1070,10 +1391,10 @@ function renderProject(p) {
     ? `<form class="add-section-form" data-form="add-section"><input id="new-section" data-keep placeholder="Name this section" autofocus maxlength="80"><div class="form-actions" style="border:0;padding-top:0"><button type="button" class="btn" data-action="cancel-section">Cancel</button><button class="btn btn-primary">Add section</button></div></form>`
     : `<button class="add-section" data-action="add-section">${ico('plus')} Add section</button>`);
   const desc = p.description || '';
-  return topbar('My Projects /', `
+  return topbar(p.archived ? '<a data-go="#/archive" class="crumb-link">Archive</a> /' : 'My Projects /', `
       <button class="top-btn ${showDone ? 'on' : ''}" data-action="toggle-completed">${ico('check')}${showDone ? 'Hide' : 'Show'} completed</button>
       <button class="icon-btn" data-action="project-menu" data-id="${p.id}" data-align="right">${ico('dots')}</button>`) +
-    `<div class="content"><div class="page-head"><h1 class="editable" data-action="rename-project" data-id="${p.id}">${esc(p.name)}</h1><br>
+    `<div class="content">${p.archived ? `<div class="ct-banner arc-banner">${ico('archive')}<div style="flex:1"><b>This project is archived.</b> It's hidden from the sidebar, Today and Upcoming.</div><button class="btn btn-primary" data-action="arc-restore" data-kind="project" data-id="${p.id}">Restore</button></div>` : ''}<div class="page-head"><h1 class="editable" data-action="rename-project" data-id="${p.id}">${esc(p.name)}</h1><br>
       <span class="page-desc ${desc ? '' : 'empty'}" data-action="edit-desc" data-id="${p.id}">${esc(desc || 'Add a description')}</span></div>
       <div class="board" id="board">${cols.join('')}</div></div>`;
 }
@@ -1220,9 +1541,112 @@ function newTask(f) {
   return Object.assign({ id: uid(), title: '', description: '', projectId: null, sectionId: null, due: null, time: null, recur: null,
     deadline: null, priority: 4, assignee: null, subtasks: [], comments: [], done: false, order: 1000, createdAt: Date.now(), createdBy: me() }, f);
 }
+/* ---------- undo (toast button and Ctrl/Cmd+Z share one history) ---------- */
+const UNDO = [];
+function pushUndo(label, fn) {
+  const e = { label, fn };
+  UNDO.push(e); if (UNDO.length > 30) UNDO.shift();
+  return e;
+}
+async function runUndo(e) {
+  const i = UNDO.indexOf(e); if (i < 0) return false;   // already undone
+  UNDO.splice(i, 1);
+  await e.fn();
+  return true;
+}
+// Show a toast with an Undo button and remember the same step for Ctrl+Z.
+function undoable(msg, label, fn) { const e = pushUndo(label, fn); toast(msg, () => runUndo(e)); }
+async function undoLast() {
+  const e = UNDO[UNDO.length - 1];
+  if (!e) return toast('Nothing to undo');
+  await runUndo(e);
+  $$('#toasts .toast').forEach(t => t.remove());
+  toast(`Undone: ${e.label}`);
+}
+
+/* ---------- Recently deleted ---------- */
+// Deleting moves the documents into the `trash` collection (one doc per item, grouped by
+// groupId), so a whole project with its sections and tasks comes back in one go.
+const trashOn = () => !S.missing.has('trash');
+async function trashItems(kind, label, items, context = '') {
+  const groupId = uid(), at = Date.now(), ops = [], entries = [];
+  items.forEach((it, i) => {
+    const entry = { id: `${groupId}_${i}`, groupId, head: i === 0, kind, col: it.col, docId: it.data.id, data: clone(it.data),
+      label, context, count: items.length, deletedAt: at, deletedBy: me() };
+    entries.push(entry);
+    if (trashOn()) ops.push({ type: 'put', col: 'trash', data: entry });
+    ops.push({ type: 'del', col: it.col, id: it.data.id });
+  });
+  await store.batch(ops);
+  const what = { task: 'Task', section: 'Section', project: 'Project', campaign: 'Campaign', account: 'Account', event: 'Entry' }[kind] || 'Item';
+  undoable(trashOn() ? `${what} moved to Recently deleted` : `${what} deleted`, `delete “${label}”`, () => restoreEntries(entries));
+}
+// Puts trashed documents back. Anything whose parent is gone lands somewhere sensible.
+async function restoreEntries(entries) {
+  const ops = [], back = new Set(entries.map(t => t.col + ':' + t.docId));
+  const has = (col, id) => !!(id && (S.data[col][id] || back.has(col + ':' + id)));
+  let fallbackProject = null, fallbackAccount = null;
+  const project = () => {
+    if (fallbackProject) return fallbackProject;
+    const p = projects()[0];
+    if (p) return (fallbackProject = p.id);
+    const np = { id: uid(), name: 'Restored tasks', color: 'grey', description: '', order: nextOrder(Object.values(S.data.projects)), createdAt: Date.now() };
+    ops.push({ type: 'put', col: 'projects', data: np });
+    return (fallbackProject = np.id);
+  };
+  const account = () => {
+    if (fallbackAccount) return fallbackAccount;
+    const a = accounts()[0];
+    if (a) return (fallbackAccount = a.id);
+    const na = { id: uid(), name: 'Restored campaigns', order: nextOrder(accounts(true)), archived: false, createdAt: Date.now(), createdBy: me() };
+    ops.push({ type: 'put', col: 'accounts', data: na });
+    return (fallbackAccount = na.id);
+  };
+  for (const t of entries) {
+    const d = clone(t.data);
+    if (t.col === 'tasks') {
+      if (!has('projects', d.projectId)) { d.projectId = project(); d.sectionId = null; }
+      if (d.sectionId && !has('sections', d.sectionId)) d.sectionId = null;
+    }
+    if (t.col === 'sections' && !has('projects', d.projectId)) d.projectId = project();
+    if (t.col === 'campaigns' && !has('accounts', d.accountId)) d.accountId = account();
+    ops.push({ type: 'put', col: t.col, data: d });
+    if (S.data.trash[t.id] || trashOn()) ops.push({ type: 'del', col: 'trash', id: t.id });
+  }
+  await store.batch(ops);
+}
+const trashGroups = () => {
+  const g = {};
+  Object.values(S.data.trash).forEach(t => (g[t.groupId] = g[t.groupId] || []).push(t));
+  return Object.values(g).map(items => ({ items, head: items.find(x => x.head) || items[0] }))
+    .sort((a, b) => (b.head.deletedAt || 0) - (a.head.deletedAt || 0));
+};
+async function restoreGroup(groupId) {
+  const items = Object.values(S.data.trash).filter(t => t.groupId === groupId);
+  if (!items.length) return;
+  await restoreEntries(items);
+  toast(`Restored “${items[0].label}”`);
+}
+async function purgeGroup(groupId) {
+  const items = Object.values(S.data.trash).filter(t => t.groupId === groupId);
+  if (!items.length) return;
+  if (!await confirmBox(`Delete <b>${esc(items[0].label)}</b> forever? This one can't be undone.`, 'Delete forever')) return;
+  await store.batch(items.map(t => ({ type: 'del', col: 'trash', id: t.id })));
+}
+async function emptyTrash() {
+  const all = Object.values(S.data.trash); if (!all.length) return;
+  if (!await confirmBox(`Permanently delete everything in Recently deleted (${trashGroups().length} item${trashGroups().length === 1 ? '' : 's'})? This can't be undone.`, 'Empty')) return;
+  await store.batch(all.map(t => ({ type: 'del', col: 'trash', id: t.id })));
+}
+const daysLeft = t => Math.max(0, Math.ceil((t.deletedAt + TRASH_DAYS * 864e5 - Date.now()) / 864e5));
+
 async function toggleTask(id, btn) {
   const t = S.data.tasks[id]; if (!t) return;
-  if (t.done) return store.update('tasks', id, { done: false, completedAt: null });
+  if (t.done) {
+    await store.update('tasks', id, { done: false, completedAt: null });
+    pushUndo(`reopen “${t.title}”`, () => store.update('tasks', id, { done: true, completedAt: t.completedAt || Date.now(), completedBy: t.completedBy || me() }));
+    return;
+  }
   if (btn) { btn.classList.add('checked'); await sleep(200); }
   if (t.recur) {
     const prev = { due: t.due || null, deadline: t.deadline || null, subtasks: t.subtasks || [] };
@@ -1230,10 +1654,10 @@ async function toggleTask(id, btn) {
     const upd = { due: next, subtasks: (t.subtasks || []).map(s => ({ ...s, done: false })), lastDoneAt: Date.now(), lastDoneBy: me() };
     if (t.deadline && t.due) upd.deadline = addDays(t.deadline, dayDiff(t.due, next));
     await store.update('tasks', id, upd);
-    toast(`Done — next one is ${longDay(next)}`, () => store.update('tasks', id, prev));
+    undoable(`Done — next one is ${longDay(next)}`, `complete “${t.title}”`, () => store.update('tasks', id, prev));
   } else {
     await store.update('tasks', id, { done: true, completedAt: Date.now(), completedBy: me() });
-    toast('1 task completed', () => store.update('tasks', id, { done: false, completedAt: null }));
+    undoable('1 task completed', `complete “${t.title}”`, () => store.update('tasks', id, { done: false, completedAt: null }));
   }
 }
 // An independent copy: new id, fresh timestamps, its own sub-task ids, no shared history.
@@ -1251,14 +1675,14 @@ async function duplicateTask(id) {
     order: (t.order ?? 1000) + 1,       // sits directly under the original
   };
   await store.put('tasks', copy);
-  toast('Task duplicated', () => store.del('tasks', copy.id));
+  undoable('Task duplicated', `duplicate “${t.title}”`, () => store.del('tasks', copy.id));
   return copy.id;
 }
 async function deleteTask(id) {
   const t = S.data.tasks[id]; if (!t) return false;
-  if (!await confirmBox(`Delete <b>${esc(t.title)}</b>?`)) return false;
-  await store.del('tasks', id);
-  toast('Task deleted', () => store.put('tasks', t));
+  if (!await confirmBox(`Delete <b>${esc(t.title)}</b>?${trashOn() ? `<br><span class="muted-note">It stays in Recently deleted for ${TRASH_DAYS} days.</span>` : ''}`)) return false;
+  const p = S.data.projects[t.projectId], s = t.sectionId && S.data.sections[t.sectionId];
+  await trashItems('task', t.title, [{ col: 'tasks', data: t }], p ? `${p.name}${s ? ' / ' + s.name : ''}` : '');
   return true;
 }
 async function editProject(p) {
@@ -1270,9 +1694,19 @@ async function editProject(p) {
 }
 async function deleteProject(p) {
   const secs = sectionsOf(p.id), tasks = Object.values(S.data.tasks).filter(t => t.projectId === p.id);
-  if (!await confirmBox(`Delete <b>${esc(p.name)}</b> with its ${secs.length} section(s) and ${tasks.length} task(s)? This can't be undone.`)) return;
-  await store.batch([...tasks.map(t => ({ type: 'del', col: 'tasks', id: t.id })), ...secs.map(s => ({ type: 'del', col: 'sections', id: s.id })), { type: 'del', col: 'projects', id: p.id }]);
-  go('#/');
+  if (!await confirmBox(`Delete <b>${esc(p.name)}</b> with its ${secs.length} section(s) and ${tasks.length} task(s)?${trashOn() ? `<br><span class="muted-note">You can restore it from Recently deleted for ${TRASH_DAYS} days. Want to keep it out of the way instead? Archive it.</span>` : ''}`)) return;
+  const here = curProjectId() === p.id;
+  await trashItems('project', p.name, [{ col: 'projects', data: p }, ...secs.map(s => ({ col: 'sections', data: s })), ...tasks.map(t => ({ col: 'tasks', data: t }))],
+    `${secs.length} section${secs.length === 1 ? '' : 's'}, ${tasks.length} task${tasks.length === 1 ? '' : 's'}`);
+  if (here) go('#/');
+}
+async function archiveProject(p, on = true) {
+  if (!p) return;
+  await store.update('projects', p.id, { archived: on, archivedAt: on ? Date.now() : null });
+  if (on) {
+    if (curProjectId() === p.id) go('#/');
+    undoable(`“${p.name}” archived`, `archive “${p.name}”`, () => store.update('projects', p.id, { archived: false, archivedAt: null }));
+  } else undoable(`“${p.name}” restored from the archive`, `restore “${p.name}”`, () => store.update('projects', p.id, { archived: true, archivedAt: p.archivedAt || Date.now() }));
 }
 async function moveItem(list, col, id, dir) {
   const i = list.findIndex(x => x.id === id), j = i + dir;
@@ -1285,8 +1719,10 @@ async function renameSection(s) {
 }
 async function deleteSection(s) {
   const tasks = Object.values(S.data.tasks).filter(t => t.sectionId === s.id);
-  if (!await confirmBox(`Delete section <b>${esc(s.name)}</b> and its ${tasks.length} task(s)?`)) return;
-  await store.batch([...tasks.map(t => ({ type: 'del', col: 'tasks', id: t.id })), { type: 'del', col: 'sections', id: s.id }]);
+  if (!await confirmBox(`Delete section <b>${esc(s.name)}</b> and its ${tasks.length} task(s)?${trashOn() ? `<br><span class="muted-note">It stays in Recently deleted for ${TRASH_DAYS} days.</span>` : ''}`)) return;
+  const p = S.data.projects[s.projectId];
+  await trashItems('section', s.name, [{ col: 'sections', data: s }, ...tasks.map(t => ({ col: 'tasks', data: t }))],
+    `${p ? p.name + ' · ' : ''}${tasks.length} task${tasks.length === 1 ? '' : 's'}`);
 }
 async function saveSettings(patch) { await store.put('meta', { ...clone(settings()), ...patch, id: 'settings' }); }
 
@@ -1317,9 +1753,13 @@ const ACTIONS = {
       { label: 'Edit description', icon: 'comment', onClick: () => ACTIONS['edit-desc']({ dataset: { id: p.id } }) },
       { label: 'Add section', icon: 'plus', onClick: () => { go('#/project/' + p.id); S.addingSection = true; render(); focusSoon('#new-section'); } },
       '-',
-      { label: 'Move up', icon: 'up', onClick: () => moveItem(list, 'projects', p.id, -1) },
-      { label: 'Move down', icon: 'down', onClick: () => moveItem(list, 'projects', p.id, 1) },
+      ...(p.archived ? [] : [
+        { label: 'Move up', icon: 'up', onClick: () => moveItem(list, 'projects', p.id, -1) },
+        { label: 'Move down', icon: 'down', onClick: () => moveItem(list, 'projects', p.id, 1) },
+      ]),
       '-',
+      p.archived ? { label: 'Restore from archive', icon: 'archive', onClick: () => archiveProject(p, false) }
+        : { label: 'Archive project', icon: 'archive', onClick: () => archiveProject(p, true) },
       { label: 'Delete project', icon: 'trash', danger: true, onClick: () => deleteProject(p) },
     ], a.dataset.align);
   },
@@ -1344,8 +1784,10 @@ const ACTIONS = {
   'toggle-task': a => toggleTask(a.dataset.id, a),
   'reschedule-overdue': async () => {
     const t = todayKey(); const list = activeTasks().filter(x => x.due && x.due < t);
+    const before = list.map(x => ({ id: x.id, due: x.due }));
     await store.batch(list.map(x => ({ type: 'update', col: 'tasks', id: x.id, data: { due: t } })));
-    toast(`${list.length} task(s) moved to today`);
+    undoable(`${list.length} task(s) moved to today`, 'reschedule overdue tasks',
+      () => store.batch(before.map(x => ({ type: 'update', col: 'tasks', id: x.id, data: { due: x.due } }))));
   },
   'cal-toggle': a => { const k = a.dataset.k; S[k] = !S[k]; lsSet('tb:' + k, S[k] ? '1' : '0'); render(); },
   'cal-nav': a => {
@@ -1366,6 +1808,23 @@ const ACTIONS = {
     ]);
   },
   'cal-more': a => openDay(a.dataset.day),
+  'arc-restore': a => {
+    const id = a.dataset.id, k = a.dataset.kind;
+    if (k === 'project') return archiveProject(S.data.projects[id], false);
+    if (k === 'account') return S.data.accounts[id] && ctArchiveAccount(S.data.accounts[id], false);
+    if (k === 'campaign') return ctArchive(id, false);
+  },
+  'arc-del': a => {
+    const id = a.dataset.id, k = a.dataset.kind;
+    if (k === 'project') return S.data.projects[id] && deleteProject(S.data.projects[id]);
+    if (k === 'account') return S.data.accounts[id] && ctDeleteAccount(S.data.accounts[id]);
+    if (k === 'campaign') return ctDelete(id);
+  },
+  'arc-open-acc': a => { S.ct.archived = true; S.ct.account = a.dataset.id; lsSet('tb:ctAccount', a.dataset.id); go('#/campaigns'); },
+  'trash-restore': a => restoreGroup(a.dataset.id),
+  'trash-purge': a => purgeGroup(a.dataset.id),
+  'trash-empty': () => emptyTrash(),
+  'ws-menu': a => openWorkspaceMenu(a),
 };
 function focusSoon(sel) { setTimeout(() => { const el = $(sel); if (el) el.focus(); }, 30); }
 function startInline(sec) {
@@ -1380,6 +1839,7 @@ document.addEventListener('click', e => {
     if (a) { topModal() && topModal().close(); ACTIONS[a.dataset.action](a, e); }
     return;
   }
+  if (e.target.closest('a[data-ext]')) return;   // pacing sheet links open in a new tab, nothing else
   const g = e.target.closest('[data-go]'); if (g) { go(g.dataset.go); return; }
   const a = e.target.closest('[data-action]'); if (!a) return;
   const fn = ACTIONS[a.dataset.action]; if (fn) { e.preventDefault(); fn(a, e); }
@@ -1413,6 +1873,12 @@ document.addEventListener('keydown', e => {
     return;
   }
   const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName) || document.activeElement?.isContentEditable;
+  // Ctrl+Z / Cmd+Z undoes the last delete, completion, archive… (text boxes keep their own undo)
+  if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && e.key.toLowerCase() === 'z' && !typing && S.ready && store) {
+    const m = topModal();
+    if (m && m.classList.contains('overlay') && m.querySelector('[data-ok]')) return;   // a confirm dialog is open
+    e.preventDefault(); undoLast(); return;
+  }
   if (typing || e.metaKey || e.ctrlKey || e.altKey || topModal() || !S.ready || !store) return;
   if (e.key === 'q') { e.preventDefault(); openTask(null, { projectId: curProjectId() }); }
   else if (e.key === '/') { e.preventDefault(); openSearch(); }
@@ -1672,7 +2138,9 @@ document.addEventListener('keydown', e => {
 const EDITABLE = ['title', 'description', 'projectId', 'sectionId', 'due', 'time', 'recur', 'deadline', 'priority', 'assignee', 'subtasks'];
 const pick = (o, keys) => Object.fromEntries(keys.map(k => [k, o[k] ?? null]));
 function locOptions(pid, sid) {
-  return projects().map(p => `<optgroup label="# ${esc(p.name)}">
+  const list = projects();
+  if (pid && S.data.projects[pid] && S.data.projects[pid].archived) list.push(S.data.projects[pid]);
+  return list.map(p => `<optgroup label="# ${esc(p.name)}">
     <option value="${p.id}|" ${p.id === pid && !sid ? 'selected' : ''}>${esc(p.name)}</option>
     ${sectionsOf(p.id).map(s => `<option value="${p.id}|${s.id}" ${s.id === sid ? 'selected' : ''}>&nbsp;&nbsp;${esc(p.name)} / ${esc(s.name)}</option>`).join('')}
   </optgroup>`).join('');
@@ -1889,11 +2357,11 @@ function openEvent(id, { day } = {}) {
     const m = b.dataset.m;
     if (m === 'x') w.close();
     if (m === 'save') save();
-    if (m === 'skip') { await store.update('events', d.id, { skip: [...(d.skip || []), day] }); w.close(); toast(`Removed ${fmtDay(day)}`, () => store.update('events', d.id, { skip: d.skip || [] })); }
+    if (m === 'skip') { await store.update('events', d.id, { skip: [...(d.skip || []), day] }); w.close(); undoable(`Removed ${fmtDay(day)}`, `remove ${fmtDay(day)}`, () => store.update('events', d.id, { skip: d.skip || [] })); }
     if (m === 'unskip') { await store.update('events', d.id, { skip: [] }); w.close(); }
     if (m === 'delete') {
       if (!await confirmBox(`Delete <b>${esc(evTitle(d))}</b>${isRep ? ' and all its repeats' : ''}?`)) return;
-      await store.del('events', d.id); w.close(); toast('Entry deleted', () => store.put('events', ex));
+      w.close(); await trashItems('event', evTitle(ex), [{ col: 'events', data: ex }], `Calendar · ${fmtDay(ex.start)}${ex.end && ex.end !== ex.start ? ' – ' + fmtDay(ex.end) : ''}`);
     }
   });
 }
@@ -1918,7 +2386,7 @@ function openSearch() {
   const run = () => {
     const v = inp.value.trim().toLowerCase();
     if (!v) { res.innerHTML = '<div style="color:var(--faint);padding:6px 0">Type to search task names, descriptions and sub-tasks.</div>'; return; }
-    const hits = Object.values(S.data.tasks).filter(t => (t.title + ' ' + (t.description || '') + ' ' + (t.subtasks || []).map(s => s.title).join(' ')).toLowerCase().includes(v))
+    const hits = Object.values(S.data.tasks).filter(t => !inArchivedProject(t) && (t.title + ' ' + (t.description || '') + ' ' + (t.subtasks || []).map(s => s.title).join(' ')).toLowerCase().includes(v))
       .sort((a, b) => a.done - b.done).slice(0, 60);
     res.innerHTML = hits.map(rowHTML).join('') || '<div style="color:var(--faint);padding:6px 0">No matching tasks.</div>';
   };
@@ -1931,15 +2399,20 @@ function openSearch() {
 }
 
 /* ===================== settings ===================== */
-function openSettings() {
+function openSettings(focus) {
   const w = openModal(`<div class="modal-head"><h2>Settings</h2><button class="icon-btn" data-x>${ico('x')}</button></div><div class="modal-body" data-body style="max-height:70vh;overflow:auto"></div>
     <div class="modal-foot"><span class="spacer"></span><button class="btn btn-primary" data-x>Done</button></div>`, 'wide');
   $$('[data-x]', w).forEach(b => b.onclick = () => w.close());
   w.onDismiss = () => w.close();
   const body = w.querySelector('[data-body]');
-  const isOwner = S.mode === 'local' || (S.user && S.user.isOwner);
   const draw = () => {
-    const ppl = people(), tys = types(), members = Object.values(S.data.members).sort((a, b) => a.id.localeCompare(b.id));
+    const isOwner = S.mode === 'local' || wsMine(S.ws);
+    const ws = S.ws, root = !ws || ws.root;
+    const ppl = people(), tys = types();
+    const members = root ? Object.values(S.data.members).map(m => m.id).sort()
+      : (ws.memberEmails || []).filter(e => e !== ws.ownerEmail).sort();
+    const ownerEmail = root ? CFG.ownerEmail : ws.ownerEmail;
+    const site = esc(location.origin + location.pathname);
     body.innerHTML = `
       <div class="set-h">${ico('user')} Team members</div>
       <p class="set-p">People you track on the calendar and can assign tasks to. This list is just names — it doesn't grant access.</p>
@@ -1951,10 +2424,12 @@ function openSettings() {
       ${tys.map(t => `<div class="set-row"><button class="dot ev-${esc(t.color)}" style="outline:1px solid var(--line2)" data-tcolor="${t.id}" title="Change color"></button><input class="inp" data-tname="${t.id}" value="${esc(t.name)}" maxlength="40"><button class="icon-btn" data-tdel="${t.id}" title="Remove">${ico('trash', 'i-sm')}</button></div>`).join('')}
       <form class="set-row" data-add-type><input class="inp" placeholder="Add a type, e.g. Sick leave" maxlength="40"><button class="btn">Add</button></form>
 
-      ${S.mode === 'cloud' ? `<div class="set-h">${ico('eye')} Who can open this app</div>
-      <p class="set-p">Owner: <b>${esc(CFG.ownerEmail)}</b>. Add a teammate's email below, then send them the link — they create an account with that email on the sign-in page and verify it. Remove them when you're back.</p>
-      ${members.map(m => `<div class="set-row"><span class="avatar sm">${esc(initials(m.id))}</span><span style="flex:1">${esc(m.id)}</span>${isOwner ? `<button class="icon-btn" data-mdel="${esc(m.id)}" title="Remove access">${ico('trash', 'i-sm')}</button>` : ''}</div>`).join('') || '<p class="set-p" style="color:var(--faint)">No one else has access yet.</p>'}
-      ${isOwner ? `<form class="set-row" data-add-member><input class="inp" type="email" placeholder="teammate@company.com"><button class="btn">Give access</button></form>` : '<p class="set-p">Only the owner can change access.</p>'}` : ''}
+      ${S.mode === 'cloud' && ws ? `<div class="set-h" data-sec="access">${ico('people')} Workspace &amp; access</div>
+      <div class="set-row" style="border:0">${isOwner && !root ? `<input class="inp" data-wsname value="${esc(ws.name)}" maxlength="60" title="Workspace name">` : `<b style="flex:1">${esc(ws.name)}</b>`}</div>
+      <p class="set-p">Owner: <b>${esc(ownerEmail)}</b>. Anyone can create a free account at <b>${site}</b> and gets their own workspace. Add someone's email here and <b>${esc(ws.name)}</b> also appears in their workspace switcher (top-left). Remove them any time.</p>
+      ${members.map(m => `<div class="set-row"><span class="avatar sm">${esc(initials(m))}</span><span style="flex:1">${esc(m)}</span>${isOwner ? `<button class="icon-btn" data-mdel="${esc(m)}" title="Remove access">${ico('trash', 'i-sm')}</button>` : ''}</div>`).join('') || '<p class="set-p" style="color:var(--faint)">No one else has access yet.</p>'}
+      ${isOwner ? `<form class="set-row" data-add-member><input class="inp" type="email" placeholder="teammate@company.com"><button class="btn">Give access</button></form>` : '<p class="set-p">Only the owner can change who has access.</p>'}
+      ${S.wsRulesMissing && S.user.isOwner ? `<div class="ct-banner" style="margin-top:8px">${ico('alert')}<div><b>Sign-ups are off until the new security rules are published.</b> New people can't get their own workspace yet — paste the updated <code>firestore.rules</code> in Firebase → Firestore → Rules → Publish.</div></div>` : ''}` : ''}
 
       <div class="set-h">${ico('moon')} Appearance${S.mode === 'local' ? ' & name' : ''}</div>
       <div class="set-row" style="border:0"><div class="seg"><button class="${document.documentElement.dataset.theme === 'dark' ? 'on' : ''}" data-theme-set="dark">Dark</button><button class="${document.documentElement.dataset.theme === 'light' ? 'on' : ''}" data-theme-set="light">Light</button></div>
@@ -1962,9 +2437,13 @@ function openSettings() {
 
       <div class="set-h">${ico('download')} Backup</div>
       <p class="set-p">Download everything as a file, or restore from one (also how you move local-mode data into the synced version).</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-export>${ico('download', 'i-sm')} Export backup</button><label class="btn" style="cursor:pointer">${ico('upload', 'i-sm')} Import backup<input type="file" accept=".json,application/json" data-import hidden></label></div>`;
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-export>${ico('download', 'i-sm')} Export backup</button><label class="btn" style="cursor:pointer">${ico('upload', 'i-sm')} Import backup<input type="file" accept=".json,application/json" data-import hidden></label></div>
+
+      <div class="set-h">${ico('alert')} About</div>
+      <p class="set-p">${esc(CFG.appName || 'Doable')} · build <b>${BUILD}</b>${S.mode === 'cloud' ? ' · synced' : ' · local mode'}. Shortcuts: <kbd>Q</kbd> add task · <kbd>/</kbd> search · <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>Z</kbd> undo the last delete, completion or archive.</p>`;
   };
   draw();
+  if (focus) setTimeout(() => { const el = body.querySelector(`[data-sec="${focus}"]`); if (el) el.scrollIntoView({ block: 'start' }); const inp = body.querySelector('[data-add-member] input'); if (inp) inp.focus(); }, 30);
   const cycle = c => COLORS[(COLORS.indexOf(c) + 1) % COLORS.length];
   body.addEventListener('click', async e => {
     const b = e.target.closest('button'); if (!b) return;
@@ -1973,7 +2452,12 @@ function openSettings() {
     if (ds.pdel) { const p = personById(ds.pdel); if (await confirmBox(`Remove <b>${esc(p.name)}</b> from the team list? Their calendar entries stay but show without a name.`, 'Remove')) { await saveSettings({ people: people().filter(x => x.id !== ds.pdel) }); draw(); } }
     if (ds.tcolor) { await saveSettings({ types: types().map(t => t.id === ds.tcolor ? { ...t, color: cycle(t.color) } : t) }); draw(); }
     if (ds.tdel) { if (types().length <= 1) return toast('Keep at least one type'); if (await confirmBox('Remove this type? Entries using it will show as “Other”.', 'Remove')) { await saveSettings({ types: types().filter(x => x.id !== ds.tdel) }); draw(); } }
-    if (ds.mdel) { if (await confirmBox(`Remove access for <b>${esc(ds.mdel)}</b>?`, 'Remove')) { await store.del('members', ds.mdel); setTimeout(draw, 100); } }
+    if (ds.mdel) {
+      if (!await confirmBox(`Remove access for <b>${esc(ds.mdel)}</b>?`, 'Remove')) return;
+      if (!S.ws || S.ws.root) await store.del('members', ds.mdel);
+      else { await S.wsApi.setMembers((S.ws.memberEmails || []).filter(x => x !== ds.mdel)); S.ws.memberEmails = (S.ws.memberEmails || []).filter(x => x !== ds.mdel); }
+      setTimeout(draw, 100);
+    }
     if (ds.themeSet) { setTheme(ds.themeSet); draw(); }
     if ('export' in ds) exportData();
   });
@@ -1982,6 +2466,7 @@ function openSettings() {
     if (ds.pname) { const v = t.value.trim(); if (v) await saveSettings({ people: people().map(p => p.id === ds.pname ? { ...p, name: v } : p) }); }
     if (ds.tname) { const v = t.value.trim(); if (v) await saveSettings({ types: types().map(x => x.id === ds.tname ? { ...x, name: v } : x) }); }
     if ('myname' in ds) { const v = t.value.trim() || 'Me'; S.user.name = v; lsSet('tb:name', v); render(); }
+    if ('wsname' in ds) { const v = t.value.trim(); if (v && S.ws && v !== S.ws.name) { await S.wsApi.rename(v); S.ws.name = v; const e = S.workspaces.find(x => x.id === S.ws.id); if (e) e.name = v; render(); } }
     if ('import' in ds && t.files[0]) { await importData(t.files[0]); t.value = ''; }
   });
   body.addEventListener('submit', async e => {
@@ -1991,7 +2476,12 @@ function openSettings() {
     if ('addMember' in f.dataset) {
       const em = v.toLowerCase();
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) return toast('That doesn’t look like an email');
-      await store.put('members', { id: em, addedAt: Date.now(), addedBy: S.user?.email || '' });
+      if (!S.ws || S.ws.root) await store.put('members', { id: em, addedAt: Date.now(), addedBy: S.user?.email || '' });
+      else if (!(S.ws.memberEmails || []).includes(em)) {
+        const next = [...(S.ws.memberEmails || []), em];
+        await S.wsApi.setMembers(next); S.ws.memberEmails = next;
+      }
+      toast(`${em} can open ${S.ws ? S.ws.name : 'this workspace'} now — send them the link`);
     }
     setTimeout(() => { draw(); const again = body.querySelector(`[data-${f.dataset.addPerson !== undefined ? 'add-person' : f.dataset.addType !== undefined ? 'add-type' : 'add-member'}] input`); again && again.focus(); }, 60);
   });
@@ -2080,6 +2570,8 @@ function ctFiltered() {
     if (f.results !== 'All' && c.results !== f.results) return false;
     if (f.weekly === 'Due' && !weeklyDue(c)) return false;
     if (f.weekly === 'Completed' && !weeklyDone(c)) return false;
+    if (f.paused === 'Something paused' && !pausedCount(c)) return false;
+    if (f.paused === 'Nothing paused' && pausedCount(c)) return false;
     return true;
   });
   if (q) list = list.filter(c => `${c.name} ${c.description || ''} ${c.notes || ''} ${liveObjectives(c).join(' ')}`.toLowerCase().includes(q));
@@ -2140,9 +2632,11 @@ function platformChips(c, max = 4) {
   const list = c.platforms || [];
   const shown = list.length > max + 1 ? list.slice(0, max) : list;
   return shown.map(p => {
-    const objs = objOf(c, p);
+    const objs = objOf(c, p), pp = pauseOf(c, p);
+    const nPaused = pp ? 0 : objs.filter(o => pauseOf(c, p, o)).length;
     const tail = objs.length ? ` <span class="oo">· ${esc(objLabel(objs[0]))}${objs.length > 1 ? ` +${objs.length - 1}` : ''}</span>` : '';
-    return `<span class="tag plat" title="${esc(p)}${objs.length ? ' — ' + esc(objs.join(', ')) : ''}">${esc(p)}${tail}</span>`;
+    const tip = `${p}${pp ? ` — paused since ${fmtDay(pp.since)}` : ''}${objs.length ? ' — ' + objs.map(o => objFull(o) + (!pp && pauseOf(c, p, o) ? ' (paused)' : '')).join(', ') : ''}`;
+    return `<span class="tag plat ${pp ? 'paused' : ''}" title="${esc(tip)}">${pp ? ico('bars', 'i-xs') : ''}${esc(p)}${tail}${nPaused ? `<span class="pz-dot" title="${nPaused} objective${nPaused === 1 ? '' : 's'} paused">${ico('bars', 'i-xs')}${nPaused}</span>` : ''}</span>`;
   }).join('') + (list.length > shown.length ? `<span class="tag more">+${list.length - shown.length}</span>` : '');
 }
 function campaignCard(c, showAccount) {
@@ -2153,6 +2647,7 @@ function campaignCard(c, showAccount) {
     <div class="ct-top">
       <div style="flex:1;min-width:0"><div class="ct-name">${esc(c.name)}</div>
         ${showAccount ? `<div class="ct-acc">${esc(accName(c.accountId))}${c.archived ? ' · archived' : ''}</div>` : c.archived ? '<div class="ct-acc">Archived</div>' : ''}</div>
+      ${pacingLink(c) ? extLink(pacingLink(c), ico('sheet', 'i-sm'), 'ct-link') : ''}
       ${statusPill(c, true)}
     </div>
     <div class="ct-dates">${ico('cal', 'i-sm')}${flightLabel(c)}</div>
@@ -2174,7 +2669,9 @@ function renderCampaigns() {
   const attn = all.filter(needsAttention).length, due = all.filter(weeklyDue).length;
   const liveOnes = all.filter(c => c.status === 'Live');
   const mk = [...new Set(liveOnes.flatMap(c => c.markets || []))].sort((a, b) => MARKETS.indexOf(a) - MARKETS.indexOf(b));
-  const pf = [...new Set(liveOnes.flatMap(c => c.platforms || []))].sort((a, b) => PLATFORMS.indexOf(a) - PLATFORMS.indexOf(b));
+  const pf = [...new Set(liveOnes.flatMap(activePlatforms))].sort((a, b) => PLATFORMS.indexOf(a) - PLATFORMS.indexOf(b));
+  const nPausedPf = [...new Set(liveOnes.flatMap(c => (c.platforms || []).filter(p => platformPaused(c, p))))].filter(p => !pf.includes(p)).length;
+  const selAcc = sel !== 'all' ? S.data.accounts[sel] : null;
   const accCount = id => Object.values(S.data.campaigns).filter(c => c.accountId === id && (S.ct.archived || !c.archived)).length;
   const accAttn = id => Object.values(S.data.campaigns).filter(c => c.accountId === id && !c.archived && needsAttention(c)).length;
 
@@ -2203,6 +2700,9 @@ function renderCampaigns() {
       ${mk.length || pf.length ? '<span class="ct-sumsep"></span>' : ''}
       ${mk.length ? `<span class="ct-sumchips">Markets live ${tagList(mk, 'mkt', 6)}</span>` : ''}
       ${pf.length ? `<span class="ct-sumchips">Platforms live ${tagList(pf, 'plat', 8)}</span>` : ''}
+      ${nPausedPf ? `<span class="ct-stat" title="Platforms that are paused on every live campaign">${ico('bars', 'i-xs')} <b>${nPausedPf}</b> paused</span>` : ''}
+      ${selAcc ? `<span class="ct-sumchips" style="margin-left:auto">${selAcc.pacingUrl ? extLink(selAcc.pacingUrl, `${ico('sheet', 'i-sm')}Pacing sheet${ico('ext', 'i-xs')}`, 'sheet-btn')
+        : `<button class="sheet-btn ghost" data-action="ct-acc-link" data-id="${selAcc.id}">${ico('link', 'i-sm')}Add pacing sheet</button>`}</span>` : ''}
     </div>` : ''}
 
     <div class="ct-toolbar">
@@ -2217,6 +2717,7 @@ function renderCampaigns() {
       ${filt('pacing', 'Pacing', C_PACING)}${filt('creative', 'Creatives', C_CREATIVE)}${filt('results', 'Results', C_RESULTS)}
       ${filt('objective', 'Objective', [...ALL_OBJECTIVES, 'Other'])}
       ${filt('weekly', 'Weekly check', ['Completed', 'Due'])}
+      ${filt('paused', 'Paused', ['Something paused', 'Nothing paused'])}
       ${ctCanDrag() ? `<span style="font-size:11.5px;color:var(--faint)">${ctManual() ? 'Drag a card by its handle to arrange' : 'Drag a card by its handle to switch to your own order'}</span>`
         : '<span style="font-size:11.5px;color:var(--faint)">Open an account to drag campaigns into your own order</span>'}
     </div>
@@ -2243,18 +2744,89 @@ function ctAccountMenu(anchor, id) {
   openMenu(anchor, [
     { label: 'Rename account', icon: 'pencil', onClick: async () => { const r = await promptBox({ title: 'Rename account', value: a.name }); if (r) store.update('accounts', id, { name: r.value }); } },
     { label: 'Add campaign', icon: 'plus', onClick: () => openCampaignForm(null, id) },
+    { label: a.pacingUrl ? 'Change pacing sheet link' : 'Set pacing sheet link', icon: 'sheet', onClick: () => ctEditAccountLink(a) },
+    ...(a.pacingUrl ? [{ label: 'Open pacing sheet', icon: 'ext', onClick: () => window.open(a.pacingUrl, '_blank', 'noopener') }] : []),
     '-',
     { label: 'Move left', icon: 'left', onClick: () => moveItem(list, 'accounts', id, -1) },
     { label: 'Move right', icon: 'right', onClick: () => moveItem(list, 'accounts', id, 1) },
-    { label: a.archived ? 'Unarchive account' : 'Archive account', icon: 'archive', onClick: () => store.update('accounts', id, { archived: !a.archived }) },
+    { label: a.archived ? 'Restore from archive' : 'Archive account', icon: 'archive', onClick: () => ctArchiveAccount(a, !a.archived) },
     '-',
     { label: 'Delete account', icon: 'trash', danger: true, onClick: () => ctDeleteAccount(a) },
   ], anchor.dataset ? anchor.dataset.align : '');
 }
+// Ask for a link; '' clears it, null means cancelled. Re-asks on anything that isn't a web link.
+async function askLink(title, value, hint) {
+  for (;;) {
+    const r = await promptBox({ title, label: hint, value: value || '', placeholder: 'https://docs.google.com/spreadsheets/d/…', ok: 'Save' });
+    if (!r) return null;
+    const u = cleanUrl(r.value);
+    if (u !== null) return u;
+    toast('That doesn’t look like a web link — paste the full sheet URL'); value = r.value;
+  }
+}
+async function ctEditAccountLink(a) {
+  const u = await askLink(`Pacing sheet for ${a.name}`, a.pacingUrl, 'Google Sheets link (campaigns without their own link use this one; leave empty to remove)');
+  if (u === null) return;
+  await store.update('accounts', a.id, { pacingUrl: u });
+  toast(u ? 'Pacing sheet linked' : 'Pacing sheet link removed');
+}
+async function ctEditCampaignLink(id) {
+  const c = S.data.campaigns[id]; if (!c) return;
+  const u = await askLink('Pacing sheet link', c.pacingUrl, 'Google Sheets link for this campaign (leave empty to use the account’s sheet)');
+  if (u === null) return;
+  const prev = c.pacingUrl || '';
+  await ctUpdate(id, { pacingUrl: u });
+  undoable(u ? 'Pacing sheet linked' : 'Campaign link removed', 'pacing sheet link', () => ctUpdate(id, { pacingUrl: prev }));
+}
+// Pause or resume a whole platform (objective = null) or one objective on it.
+async function ctTogglePause(id, platform, objective = null, date) {
+  const c = S.data.campaigns[id]; if (!c) return;
+  const prev = { pauses: c.pauses || [], pauseLog: c.pauseLog || [] };
+  const ex = pauseOf(c, platform, objective);
+  const day = date || todayKey();
+  const pauses = ex ? prev.pauses.filter(x => x !== ex) : [...prev.pauses, { platform, objective: objective || null, since: day, at: Date.now(), by: me() }];
+  const log = [...prev.pauseLog, { platform, objective: objective || null, action: ex ? 'resumed' : 'paused', date: day, at: Date.now(), by: me() }];
+  await ctUpdate(id, { pauses, pauseLog: log });
+  const what = objective ? `${platform} · ${objFull(objective)}` : platform;
+  undoable(`${what} ${ex ? 'resumed' : 'paused'}`, `${ex ? 'resume' : 'pause'} ${what}`, () => ctUpdate(id, prev));
+}
+// Change the "paused since" date (e.g. you're logging a pause from last week).
+async function ctPauseDate(id, platform, objective = null) {
+  const c = S.data.campaigns[id]; const p = c && pauseOf(c, platform, objective); if (!p) return;
+  const v = await datePrompt(`Paused since`, p.since);
+  if (!v || v === p.since) return;
+  const pauses = (c.pauses || []).map(x => x === p ? { ...x, since: v } : x);
+  // keep the history in step: the matching "paused" entry moves to the new date
+  const log = [...(c.pauseLog || [])];
+  for (let i = log.length - 1; i >= 0; i--) {
+    const l = log[i];
+    if (l.platform === platform && (l.objective || null) === (objective || null) && l.action === 'paused') { log[i] = { ...l, date: v }; break; }
+  }
+  await ctUpdate(id, { pauses, pauseLog: log });
+}
+function datePrompt(title, value) {
+  return new Promise(res => {
+    const w = openModal(`<div class="modal-head"><h2>${esc(title)}</h2></div>
+      <form class="modal-body"><div class="field" style="margin:0"><input type="date" class="inp" value="${esc(value || todayKey())}" max="${todayKey()}" autofocus></div><button type="submit" hidden></button></form>
+      <div class="modal-foot"><span class="spacer"></span><button class="btn" data-x>Cancel</button><button class="btn btn-primary" data-ok>Save</button></div>`);
+    const inp = w.querySelector('input'), done = v => { w.close(); res(v); };
+    w.onDismiss = () => done(null);
+    w.querySelector('[data-x]').onclick = () => done(null);
+    w.querySelector('[data-ok]').onclick = () => done(inp.value || null);
+    w.querySelector('form').onsubmit = e => { e.preventDefault(); done(inp.value || null); };
+  });
+}
+async function ctArchiveAccount(a, on) {
+  await store.update('accounts', a.id, { archived: on, archivedAt: on ? Date.now() : null });
+  if (on && S.ct.account === a.id && !S.ct.archived) { S.ct.account = 'all'; lsSet('tb:ctAccount', 'all'); }
+  undoable(on ? `“${a.name}” archived` : `“${a.name}” restored`, `${on ? 'archive' : 'restore'} “${a.name}”`,
+    () => store.update('accounts', a.id, { archived: !on, archivedAt: a.archivedAt || null }));
+}
 async function ctDeleteAccount(a) {
   const camps = Object.values(S.data.campaigns).filter(c => c.accountId === a.id);
-  if (!await confirmBox(`Delete <b>${esc(a.name)}</b> and its ${camps.length} campaign${camps.length === 1 ? '' : 's'}, including their weekly check history? This can't be undone.`)) return;
-  await store.batch([...camps.map(c => ({ type: 'del', col: 'campaigns', id: c.id })), { type: 'del', col: 'accounts', id: a.id }]);
+  if (!await confirmBox(`Delete <b>${esc(a.name)}</b> and its ${camps.length} campaign${camps.length === 1 ? '' : 's'}, including their weekly check history?${trashOn() ? `<br><span class="muted-note">You can restore it from Recently deleted for ${TRASH_DAYS} days.</span>` : ''}`)) return;
+  await trashItems('account', a.name, [{ col: 'accounts', data: a }, ...camps.map(c => ({ col: 'campaigns', data: c }))],
+    `Campaign Tracker · ${camps.length} campaign${camps.length === 1 ? '' : 's'}`);
   S.ct.account = 'all'; lsSet('tb:ctAccount', 'all'); render();
 }
 
@@ -2287,6 +2859,9 @@ async function ctMaintenance() {
     if (!known.length) return;
     ops.push({ type: 'update', col: 'tasks', id: t.id, data: { createdAt: Math.min(...known), createdApprox: true } });
   });
+  // Recently deleted empties itself: anything older than TRASH_DAYS is gone for good.
+  const cutoff = Date.now() - TRASH_DAYS * 864e5;
+  Object.values(S.data.trash).forEach(t => { if ((t.deletedAt || 0) < cutoff) ops.push({ type: 'del', col: 'trash', id: t.id }); });
   Object.values(S.data.campaigns).forEach(c => {
     const fix = {};
     // 1. a campaign whose end date has passed is Ended — everything else is kept as it was
@@ -2325,7 +2900,7 @@ async function ctCompleteWeekly(id) {
   const checks = c.weeklyChecks || [];
   const entry = { id: uid(), date: todayKey(), at: Date.now(), by: me() };
   await ctUpdate(id, { weeklyChecks: [...checks, entry] });
-  toast(`Weekly check logged for ${esc(c.name)}`, () => ctUpdate(id, { weeklyChecks: checks }));
+  undoable(`Weekly check logged for ${c.name}`, `weekly check for “${c.name}”`, () => ctUpdate(id, { weeklyChecks: checks }));
 }
 function ctWeeklyClick(anchor, id) {
   const c = S.data.campaigns[id]; if (!c) return;
@@ -2339,17 +2914,22 @@ function ctWeeklyClick(anchor, id) {
 }
 async function ctDuplicate(id) {
   const c = S.data.campaigns[id]; if (!c) return;
-  const copy = { ...clone(c), id: uid(), name: c.name + ' (copy)', weeklyChecks: [], createdAt: Date.now(), createdBy: me(), updatedAt: Date.now(), order: nextOrder(campaignsOf(c.accountId, true)) };
+  const copy = { ...clone(c), id: uid(), name: c.name + ' (copy)', weeklyChecks: [], pauses: [], pauseLog: [], archived: false, createdAt: Date.now(), createdBy: me(), updatedAt: Date.now(), order: nextOrder(campaignsOf(c.accountId, true)) };
   await store.put('campaigns', copy);
-  toast('Campaign duplicated');
+  undoable('Campaign duplicated', `duplicate “${c.name}”`, () => store.del('campaigns', copy.id));
   return copy.id;
 }
 async function ctDelete(id) {
   const c = S.data.campaigns[id]; if (!c) return false;
-  if (!await confirmBox(`Delete <b>${esc(c.name)}</b>, including its weekly check history? This can't be undone.`)) return false;
-  await store.del('campaigns', id);
-  toast('Campaign deleted', () => store.put('campaigns', c));
+  if (!await confirmBox(`Delete <b>${esc(c.name)}</b>, including its weekly check history?${trashOn() ? `<br><span class="muted-note">It stays in Recently deleted for ${TRASH_DAYS} days.</span>` : ''}`)) return false;
+  await trashItems('campaign', c.name, [{ col: 'campaigns', data: c }], accName(c.accountId));
   return true;
+}
+async function ctArchive(id, on) {
+  const c = S.data.campaigns[id]; if (!c) return;
+  await ctUpdate(id, { archived: on, archivedAt: on ? Date.now() : null });
+  undoable(on ? 'Campaign archived' : 'Campaign restored from the archive', `${on ? 'archive' : 'restore'} “${c.name}”`,
+    () => ctUpdate(id, { archived: !on, archivedAt: c.archivedAt || null }));
 }
 function ctMoveMenu(anchor, id) {
   const c = S.data.campaigns[id]; if (!c) return;
@@ -2400,17 +2980,33 @@ function drawerHTML(c) {
         <div class="d-row" style="border-bottom:0"><span class="k">Markets live</span><span class="v">${(c.markets || []).length ? tagList(c.markets, 'mkt', 99) : '<span style="color:var(--faint)">None selected</span>'}</span></div>
       </div>
       <div class="d-sec"><h4>Platforms &amp; objectives</h4>
-        ${(c.platforms || []).length ? (c.platforms).map(p => `<div class="obj-row">
-            <span class="pf">${esc(p)}</span>
+        ${(c.platforms || []).length ? (c.platforms).map(p => {
+          const pp = pauseOf(c, p);
+          return `<div class="obj-row ${pp ? 'paused' : ''}">
+            <span class="pf">${esc(p)}${pp ? `<button class="pz-since" data-pzdate="${esc(p)}" data-oi="-1" title="Change the pause date">${ico('bars', 'i-xs')}since ${esc(fmtDay(pp.since))}</button>` : ''}</span>
             <span class="objs">
-              ${objOf(c, p).map(o => `<span class="obj-chip">${esc(objFull(o))}<button data-objdel="${esc(p)}|${esc(o)}" title="Remove">${ico('x', 'i-sm')}</button></span>`).join('')
-                || '<span class="obj-none">No objective set</span>'}
+              ${objOf(c, p).map((o, i) => {
+                const op = !pp && pauseOf(c, p, o);
+                return `<span class="obj-chip ${pp || op ? 'paused' : ''}" ${op ? `title="Paused since ${esc(fmtDay(op.since))}${op.by ? ' by ' + esc(op.by) : ''}"` : ''}>
+                  ${!pp ? `<button class="pz-obj" data-pause="${esc(p)}" data-oi="${i}" title="${op ? 'Resume' : 'Pause'} this objective">${ico(op ? 'play' : 'bars', 'i-xs')}</button>` : ''}
+                  ${esc(objFull(o))}${op ? `<button class="pz-since sm" data-pzdate="${esc(p)}" data-oi="${i}" title="Change the pause date">since ${esc(fmtDay(op.since))}</button>` : ''}
+                  <button data-objdel="${esc(p)}|${esc(o)}" title="Remove">${ico('x', 'i-sm')}</button></span>`;
+              }).join('') || '<span class="obj-none">No objective set</span>'}
               <button class="obj-add" data-objadd="${esc(p)}">${objOf(c, p).length ? 'Edit' : '+ Objective'}</button>
             </span>
-          </div>`).join('') : '<span style="color:var(--faint);font-size:12.5px">No platforms selected yet — add them with Edit.</span>'}
+            <button class="pz-btn ${pp ? 'on' : ''}" data-pause="${esc(p)}" data-oi="-1" title="${pp ? 'Resume' : 'Pause'} ${esc(p)}">${ico(pp ? 'play' : 'bars', 'i-xs')}${pp ? 'Resume' : 'Pause'}</button>
+          </div>`;
+        }).join('') : '<span style="color:var(--faint);font-size:12.5px">No platforms selected yet — add them with Edit.</span>'}
+        ${(c.pauseLog || []).length ? `<details class="pz-log" ${(c.pauses || []).length ? 'open' : ''}><summary>Pause history <span class="cnt">${c.pauseLog.length}</span></summary>
+          ${[...c.pauseLog].sort((a, b) => b.date.localeCompare(a.date) || (b.at || 0) - (a.at || 0)).map(l => `<div class="wk">${ico(l.action === 'paused' ? 'bars' : 'play', 'i-sm ' + (l.action === 'paused' ? 'pz-ic' : 'tick'))}
+            <span class="when">${l.action === 'paused' ? 'Paused' : 'Resumed'} <b>${esc(l.platform)}${l.objective ? ' · ' + esc(objFull(l.objective)) : ''}</b> · ${esc(fmtDay(l.date))}</span><span class="who">${esc(l.by || '')}</span></div>`).join('')}
+        </details>` : ''}
       </div>
       <div class="d-sec"><h4>Health</h4>
         <div class="d-row"><span class="k">Pacing</span><span class="v">${pickRow(c, 'pacing')}</span></div>
+        <div class="d-row"><span class="k">Pacing sheet</span><span class="v" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${pacingLink(c)
+          ? `${extLink(pacingLink(c), `${ico('sheet', 'i-sm')}Open pacing sheet${ico('ext', 'i-xs')}`, 'sheet-btn')}${!c.pacingUrl ? '<span style="font-size:11px;color:var(--faint)">account’s sheet</span>' : ''}<button class="link" data-act="link">${c.pacingUrl ? 'Change' : 'Use a different sheet'}</button>`
+          : `<button class="sheet-btn ghost" data-act="link">${ico('link', 'i-sm')}Add pacing sheet link</button>`}</span></div>
         <div class="d-row"><span class="k">Creatives</span><span class="v">${pickRow(c, 'creative')}</span></div>
         <div class="d-row" style="border-bottom:0"><span class="k">Results</span><span class="v">${pickRow(c, 'results')}</span></div>
       </div>
@@ -2441,7 +3037,7 @@ function drawerHTML(c) {
       <button class="btn" data-act="edit">${ico('pencil', 'i-sm')} Edit</button>
       <button class="btn" data-act="dup">${ico('copy', 'i-sm')} Duplicate</button>
       <button class="btn" data-act="move">${ico('arrowRight', 'i-sm')} Move</button>
-      <button class="btn" data-act="archive">${ico('archive', 'i-sm')} ${c.archived ? 'Unarchive' : 'Archive'}</button>
+      <button class="btn" data-act="archive">${ico('archive', 'i-sm')} ${c.archived ? 'Restore' : 'Archive'}</button>
       <span class="spacer" style="flex:1"></span>
       <button class="btn btn-danger" data-act="del">${ico('trash', 'i-sm')} Delete</button>
     </div>`;
@@ -2463,6 +3059,10 @@ function openCampaignDrawer(id) {
       if (set.dataset.locked) return toast('Set the campaign to Live first — pacing and results stay Pending until then');
       return ctUpdate(id, { [set.dataset.set]: set.dataset.v });
     }
+    const pz = e.target.closest('[data-pause]');
+    if (pz) { const i = +pz.dataset.oi; return ctTogglePause(id, pz.dataset.pause, i >= 0 ? objOf(c, pz.dataset.pause)[i] : null); }
+    const pzd = e.target.closest('[data-pzdate]');
+    if (pzd) { const i = +pzd.dataset.oi; return ctPauseDate(id, pzd.dataset.pzdate, i >= 0 ? objOf(c, pzd.dataset.pzdate)[i] : null); }
     const objAdd = e.target.closest('[data-objadd]');
     if (objAdd) return openObjectiveMenu(objAdd, objAdd.dataset.objadd, () => S.data.campaigns[id], next => ctUpdate(id, { objectives: next }));
     const objDel = e.target.closest('[data-objdel]');
@@ -2473,7 +3073,7 @@ function openCampaignDrawer(id) {
       return ctUpdate(id, { objectives: objs });
     }
     const wkdel = e.target.closest('[data-wkdel]');
-    if (wkdel) { const keep = (c.weeklyChecks || []).filter(x => x.id !== wkdel.dataset.wkdel); await ctUpdate(id, { weeklyChecks: keep }); toast('Check removed', () => ctUpdate(id, { weeklyChecks: c.weeklyChecks })); return; }
+    if (wkdel) { const keep = (c.weeklyChecks || []).filter(x => x.id !== wkdel.dataset.wkdel); await ctUpdate(id, { weeklyChecks: keep }); undoable('Check removed', 'remove weekly check', () => ctUpdate(id, { weeklyChecks: c.weeklyChecks })); return; }
     const b = e.target.closest('[data-act]'); if (!b) return;
     const act = b.dataset.act;
     if (act === 'close') w.close();
@@ -2482,7 +3082,8 @@ function openCampaignDrawer(id) {
     if (act === 'edit') { w.close(); openCampaignForm(id); }
     if (act === 'dup') { const nid = await ctDuplicate(id); w.close(); if (nid) openCampaignForm(nid); }
     if (act === 'move') ctMoveMenu(b, id);
-    if (act === 'archive') { await ctUpdate(id, { archived: !c.archived }); toast(c.archived ? 'Campaign unarchived' : 'Campaign archived'); }
+    if (act === 'link') ctEditCampaignLink(id);
+    if (act === 'archive') await ctArchive(id, !c.archived);
     if (act === 'del') { if (await ctDelete(id)) w.close(); }
   });
   panel.addEventListener('change', e => {
@@ -2553,7 +3154,10 @@ function openCampaignForm(id, accountId) {
         <div class="field"><label>Pacing</label>${sel('pacing', C_PACING)}</div>
         <div class="field"><label>Creatives</label>${sel('creative', C_CREATIVE)}</div>
       </div>
-      <div class="field"><label>Results</label>${sel('results', C_RESULTS)}</div>
+      <div class="row2">
+        <div class="field"><label>Results</label>${sel('results', C_RESULTS)}</div>
+        <div class="field"><label>Pacing sheet link</label><input class="inp" data-f="pacingUrl" value="${esc(d.pacingUrl || '')}" placeholder="${esc((S.data.accounts[d.accountId] || {}).pacingUrl ? 'Uses the account’s sheet' : 'https://docs.google.com/spreadsheets/…')}" inputmode="url" autocomplete="off"></div>
+      </div>
       <div class="field" style="margin-bottom:0"><label>Notes / things to check</label><textarea class="ta" data-f="notes" rows="3">${esc(d.notes || '')}</textarea></div>
       <button type="submit" hidden></button>
     </form>
@@ -2613,9 +3217,11 @@ function openCampaignForm(id, accountId) {
     if (b.dataset.m === 'delete') { if (await ctDelete(id)) w.close(); }
   });
   async function save() {
-    ['name', 'description', 'notes', 'accountId', 'status', 'startDate', 'endDate', 'pacing', 'creative', 'results']
+    ['name', 'description', 'notes', 'accountId', 'status', 'startDate', 'endDate', 'pacing', 'creative', 'results', 'pacingUrl']
       .forEach(f => { const el = q(`[data-f="${f}"]`); if (el) d[f] = el.value; });
     d.name = d.name.trim();
+    d.pacingUrl = cleanUrl(d.pacingUrl);
+    if (d.pacingUrl === null) { q('[data-f="pacingUrl"]').focus(); return toast('The pacing sheet link isn’t a web link — paste the full URL'); }
     if (!d.name) { q('[data-f="name"]').focus(); return toast('Give the campaign a name'); }
     if (!d.startDate || !d.endDate) { return toast('Start and end dates are required'); }
     if (d.endDate < d.startDate) { return toast('The end date is before the start date'); }
@@ -2624,8 +3230,8 @@ function openCampaignForm(id, accountId) {
     if (!ex) { d.order = nextOrder(campaignsOf(d.accountId, true)); await store.put('campaigns', d); }
     else {
       const live = S.data.campaigns[id] || {};
-      const { weeklyChecks, ...edits } = d;           // never overwrite check history from a stale form
-      await store.put('campaigns', { ...live, ...edits, weeklyChecks: live.weeklyChecks || [] });
+      const { weeklyChecks, pauses, pauseLog, ...edits } = d;   // never overwrite history from a stale form
+      await store.put('campaigns', { ...live, ...edits, weeklyChecks: live.weeklyChecks || [], pauses: live.pauses || [], pauseLog: live.pauseLog || [] });
     }
     w.close();
     if (!ex && S.ct.account !== 'all' && S.ct.account !== d.accountId) { S.ct.account = d.accountId; lsSet('tb:ctAccount', d.accountId); render(); }
@@ -2661,6 +3267,7 @@ Object.assign(ACTIONS, {
   'ct-archived': () => { S.ct.archived = !S.ct.archived; ctRepaint(); },
   'ct-clear': () => { S.ct.q = ''; Object.keys(S.ct.f).forEach(k => S.ct.f[k] = 'All'); ctRepaint(); },
   'ct-more': () => { S.ct.limit += 160; ctRepaint(true); },
+  'ct-acc-link': a => S.data.accounts[a.dataset.id] && ctEditAccountLink(S.data.accounts[a.dataset.id]),
 });
 document.addEventListener('change', e => {
   const f = e.target.closest('[data-ctf]');
@@ -2681,9 +3288,10 @@ async function ensureSeed() {
   seeded = true;
   if (S.data.meta.settings) return;
   const ops = [{ type: 'put', col: 'meta', data: { id: 'settings', people: [], types: DEFAULT_TYPES, createdAt: Date.now() } }];
-  if (!projects().length) {
+  if (!Object.keys(S.data.projects).length) {
     ops.push({ type: 'put', col: 'projects', data: { id: uid(), name: 'To-Do', color: 'red', description: '', order: 1000, createdAt: Date.now() } });
-    ops.push({ type: 'put', col: 'projects', data: { id: uid(), name: 'Automotive Team', color: 'blue', description: '', order: 2000, createdAt: Date.now() } });
+    // a brand-new personal workspace starts with one list; the original one keeps its old defaults
+    if (!S.ws || S.ws.root) ops.push({ type: 'put', col: 'projects', data: { id: uid(), name: 'Automotive Team', color: 'blue', description: '', order: 2000, createdAt: Date.now() } });
   }
   await store.batch(ops);
 }
@@ -2691,10 +3299,111 @@ function onData() {
   S.ready = true;
   scheduleRender();
   ensureSeed();
-  ctMaintenance();          // auto-end finished campaigns, tidy contradictory statuses
+  ctMaintenance();          // auto-end finished campaigns, tidy contradictory statuses, empty old trash
 }
 
-const brand = () => `<div class="brand"><span class="logo">${ico('check')}</span>${esc(CFG.appName || 'Tasks')}</div>`;
+/* ===================== logo & homepage ===================== */
+let logoN = 0;
+// The Doable mark: a glowing squircle with a "D" whose bowl is finished by a check.
+function logoMark(cls = '') {
+  const id = 'dlg' + (++logoN);
+  return `<svg class="mark ${cls}" viewBox="0 0 48 48" aria-hidden="true"><defs>
+    <linearGradient id="${id}" x1="4" y1="2" x2="44" y2="46" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffb066"/><stop offset=".5" stop-color="#ff5a4a"/><stop offset="1" stop-color="#c81f5c"/></linearGradient>
+    <radialGradient id="${id}h" cx="14" cy="8" r="30" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
+    <rect x="2" y="2" width="44" height="44" rx="13" fill="url(#${id})"/><rect x="2" y="2" width="44" height="44" rx="13" fill="url(#${id}h)"/>
+    <path d="M15 12.5h8.5a11.5 11.5 0 0 1 0 23H15" fill="none" stroke="#fff" stroke-opacity=".42" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M14.5 24.5l6 6L33.5 17" fill="none" stroke="#fff" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="2.6" y="2.6" width="42.8" height="42.8" rx="12.4" fill="none" stroke="#fff" stroke-opacity=".25" stroke-width="1.2"/></svg>`;
+}
+function homeHTML(signedIn) {
+  const name = esc(CFG.appName || 'Doable');
+  const cta = signedIn
+    ? `<button class="h-btn h-primary" data-go="#/">Open my workspace ${ico('arrowRight', 'i-sm')}</button>`
+    : `<button class="h-btn h-primary" data-home="up">Get started — it's free ${ico('arrowRight', 'i-sm')}</button><button class="h-btn h-glass" data-home="in">Sign in</button>`;
+  const feat = (icon, title, text) => `<div class="h-feat"><span class="h-fi">${ico(icon)}</span><h3>${title}</h3><p>${text}</p></div>`;
+  const card = (title, meta, p, done) => `<div class="hm-card ${done ? 'done' : ''}"><span class="hm-check p${p}">${done ? ico('check') : ''}</span><div><b>${title}</b><i>${meta}</i></div></div>`;
+  return `<div class="home">
+    <div class="h-bg"><div class="h-glow g1"></div><div class="h-glow g2"></div><div class="h-glow g3"></div><div class="h-stars"></div><div class="h-floor"></div><div class="h-horizon"></div></div>
+    <header class="h-nav">
+      <div class="h-brand">${logoMark('h-logo')}<span>${name}</span></div>
+      <nav class="h-links"><a href="#features" data-scroll>Features</a><a href="#safety" data-scroll>Undo &amp; archive</a><a href="#workspaces" data-scroll>Workspaces</a></nav>
+      <div class="h-actions">${signedIn ? `<button class="h-btn h-glass sm" data-go="#/">Open app</button>` : `<button class="h-btn h-ghost sm" data-home="in">Sign in</button><button class="h-btn h-primary sm" data-home="up">Get started</button>`}</div>
+    </header>
+    <section class="h-hero">
+      <div class="h-pill"><span class="dot"></span>New · Workspaces, archive &amp; 30-day undo</div>
+      <h1>Tasks, team leave &amp; campaigns.<br><span class="h-grad">One calm command centre.</span></h1>
+      <p class="h-sub">${name} is the shared to-do board for agency teams — with a team calendar for who's off, and a campaign tracker that flags what needs you this week.</p>
+      <div class="h-cta">${cta}</div>
+      <div class="h-keys"><kbd>Q</kbd> add a task <span>·</span> <kbd>/</kbd> search <span>·</span> <kbd>${/Mac|iPhone|iPad/.test(navigator.platform) ? '⌘' : 'Ctrl'}</kbd><kbd>Z</kbd> undo anything</div>
+    </section>
+    <section class="h-stage" aria-hidden="true">
+      <div class="h-window">
+        <div class="hm-bar"><i></i><i></i><i></i><span>${name} — To-Do</span></div>
+        <div class="hm-body">
+          <div class="hm-side">${logoMark('hm-logo')}<p class="on">Today <em>4</em></p><p>Upcoming</p><p class="hd">My Projects</p><p><s>#</s> To-Do</p><p><s class="b">#</s> Automotive</p><p><s class="g">#</s> Campaigns</p></div>
+          <div class="hm-board">
+            <div class="hm-col"><h5>Cadillac <em>3</em></h5>${card('Send weekly report', 'Today · 10:00', 1)}${card('Approve Escalade creatives', 'Tomorrow', 2)}${card('Brief media team', 'Thu', 4, true)}</div>
+            <div class="hm-col"><h5>GMC <em>2</em></h5>${card('Fix Snap pixel', 'Overdue · 12 Oct', 1)}${card('Q4 pacing review', 'Every Monday', 3)}</div>
+            <div class="hm-col hide-sm"><h5>Team <em>2</em></h5>${card('Lara — OOO', '16 – 20 Oct', 4)}${card('Plan Ramadan flight', 'Next week', 3)}</div>
+          </div>
+        </div>
+      </div>
+      <div class="h-float f1"><div class="hf-top"><b>Escalade — Always On</b><span class="hf-live">● Live</span></div>
+        <div class="hf-row"><span class="tg">KSA</span><span class="tg">UAE</span><span class="tg pf">Meta · Lead Gen</span><span class="tg pf pz">${ico('bars', 'i-xs')}Snap</span></div>
+        <div class="hf-m"><span class="ok">${ico('gauge', 'i-sm')} Pacing · Healthy</span><span class="ok">${ico('okcircle', 'i-sm')} Weekly · Done</span></div></div>
+      <div class="h-float f2">${ico('check', 'i-sm')}<span>Undone: delete “Q4 report”</span></div>
+      <div class="h-float f3"><span class="av">LA</span><span>Lara is OOO today</span></div>
+    </section>
+    <section class="h-feats" id="features">
+      ${feat('inbox', 'Boards that bend to your accounts', 'A section per client, drag cards and columns where they belong, and repeat anything daily, weekly or monthly.')}
+      ${feat('campaign', 'Campaign Tracker', 'Status, pacing, creatives and weekly checks at a glance. Pause a platform mid-flight and keep the history — with the pacing sheet one click away.')}
+      ${feat('cal', 'Team calendar', 'See who’s OOO, remote or in the office before you hand work over — right next to everything that’s due.')}
+      ${feat('people', 'Your own workspace', 'Everyone who signs up gets their own space. Invite people into yours, and switch between the ones you’re part of.')}
+    </section>
+    <section class="h-safety" id="safety">
+      <div><b>${ico('archive')} Archive, don't lose</b><span>Put finished boards and campaigns away and bring them back in one click.</span></div>
+      <div><b>${ico('trash')} 30-day safety net</b><span>Deleted items wait in Recently deleted for 30 days before they're gone.</span></div>
+      <div><b>${ico('swap')} Undo anything</b><span>Completed or deleted by mistake? Ctrl+Z puts it straight back.</span></div>
+    </section>
+    <section class="h-final" id="workspaces">
+      <h2>Bring your team in.</h2>
+      <p>Create your workspace in a minute, then invite teammates by email. Shared workspaces sync live for everyone.</p>
+      <div class="h-cta">${cta}</div>
+    </section>
+    <footer class="h-foot">${logoMark('h-logo sm')}<span>${name}</span><span class="sp"></span><span>Build ${BUILD}</span></footer>
+  </div>`;
+}
+// smooth-scroll the homepage's own anchor links without touching the app's #/ routes
+document.addEventListener('click', e => {
+  const a = e.target.closest && e.target.closest('a[data-scroll]'); if (!a) return;
+  e.preventDefault();
+  const t = document.querySelector(a.getAttribute('href')); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+/* ===================== workspaces ===================== */
+const wsKey = () => 'tb:ws:' + ((S.user && S.user.email) || '');
+const wsColor = id => (id === 'main' ? 'red' : COLORS[[...String(id)].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7) % (COLORS.length - 1)]);
+const wsMine = w => !!(w && S.user && (w.root ? S.user.isOwner : w.ownerEmail === S.user.email));
+function openWorkspaceMenu(anchor) {
+  if (!S.ws) return;
+  openMenu(anchor, [
+    { title: 'Workspaces' },
+    ...S.workspaces.map(w => ({
+      label: `${w.id === S.ws.id ? '✓  ' : '     '}${w.name}${wsMine(w) ? '' : ' · shared with you'}`,
+      onClick: () => { if (w.id !== S.ws.id) switchWorkspace(w.id); },
+    })),
+    '-',
+    { label: wsMine(S.ws) ? 'Invite people…' : 'Who has access', icon: 'people', onClick: () => openSettings('access') },
+    ...(S.workspaces.length < 2 ? [{ title: 'Ask a teammate to add your email to see their workspace here' }] : []),
+  ]);
+}
+function switchWorkspace(id) {
+  const w = S.workspaces.find(x => x.id === id); if (!w || !S.openWorkspace) return;
+  lsSet(wsKey(), id);
+  S.openWorkspace(w);
+}
+
+const brand = () => `<div class="brand">${logoMark('brand-logo')}${esc(CFG.appName || 'Tasks')}</div>`;
 function authScreen(html) { $('#modals').innerHTML = ''; $('#root').innerHTML = `<div class="auth"><div class="auth-card">${brand()}${html}</div></div>`; }
 const authErr = e => {
   const c = (e && e.code) || '';
@@ -2719,10 +3428,31 @@ async function bootCloud() {
   try { db = F.initializeFirestore(app, { localCache: F.persistentLocalCache({ tabManager: F.persistentMultipleTabManager() }) }); }
   catch { db = F.getFirestore(app); }
   const owner = (CFG.ownerEmail || '').trim().toLowerCase();
-  S.signOut = async () => { if (store && store.stop) store.stop(); store = null; S.ready = false; await A.signOut(auth); location.hash = ''; };
+  const closeWorkspace = () => {
+    if (store && store.stop) store.stop();
+    if (S.wsUnsub) { S.wsUnsub(); S.wsUnsub = null; }
+    store = null; S.ready = false;
+  };
+  S.signOut = async () => { closeWorkspace(); S.ws = null; S.workspaces = []; UNDO.length = 0; history.replaceState(null, '', location.pathname + location.search); await A.signOut(auth); };
 
+  // Members & name of a workspace other than the original one live on its own document.
+  S.wsApi = {
+    setMembers: list => F.updateDoc(F.doc(db, 'workspaces', S.ws.id), { memberEmails: list }).catch(writeErr),
+    rename: name => F.updateDoc(F.doc(db, 'workspaces', S.ws.id), { name }).catch(writeErr),
+  };
+
+  // Signed-out visitors land on the homepage; links into the app go straight to sign-in.
+  const showHome = () => {
+    const h = location.hash.replace(/^#\/?/, '');
+    if (h && h !== 'home') return showSignIn();
+    $('#modals').innerHTML = '';
+    $('#root').innerHTML = homeHTML(false);
+    document.title = `${CFG.appName || 'Doable'} — tasks, team leave & campaigns`;
+    $$('[data-home]').forEach(b => b.onclick = () => showSignIn(b.dataset.home));
+  };
   const showSignIn = (mode = 'in', msg = '', isErr = false) => {
-    authScreen(`${msg ? `<div class="auth-msg ${isErr ? 'err' : ''}">${msg}</div>` : ''}
+    authScreen(`<div class="auth-title">${mode === 'up' ? 'Create your free account' : mode === 'reset' ? 'Reset your password' : 'Welcome back'}</div>
+      ${msg ? `<div class="auth-msg ${isErr ? 'err' : ''}">${msg}</div>` : ''}
       <form data-auth>
         ${mode === 'up' ? '<div class="field"><label>Your name</label><input class="inp" name="name" required autocomplete="name" maxlength="60"></div>' : ''}
         <div class="field"><label>Email</label><input class="inp" name="email" type="email" required autocomplete="email" autofocus></div>
@@ -2731,18 +3461,24 @@ async function bootCloud() {
       </form>
       <div class="auth-links">
         ${mode === 'in' ? '<button data-to="up">Create an account</button><button data-to="reset">Forgot password?</button>' : '<button data-to="in">Back to sign in</button>'}
-      </div>`);
-    $$('[data-to]').forEach(b => b.onclick = () => showSignIn(b.dataset.to));
+      </div>
+      <div class="auth-back"><button data-to="home">${ico('left', 'i-sm')} Back to home</button></div>`);
+    $$('[data-to]').forEach(b => b.onclick = () => {
+      if (b.dataset.to === 'home') { history.replaceState(null, '', location.pathname + location.search); return showHome(); }
+      showSignIn(b.dataset.to);
+    });
     const f = $('[data-auth]');
     f.onsubmit = async e => {
       e.preventDefault(); const btn = f.querySelector('button'); btn.disabled = true;
       const email = f.email.value.trim(), pw = f.pw && f.pw.value;
+      if (/home/.test(location.hash)) history.replaceState(null, '', location.pathname + location.search);
       try {
         if (mode === 'in') await A.signInWithEmailAndPassword(auth, email, pw);
         else if (mode === 'up') {
           const cred = await A.createUserWithEmailAndPassword(auth, email, pw);
           await A.updateProfile(cred.user, { displayName: f.name.value.trim() });
           await A.sendEmailVerification(cred.user);
+          showVerify(cred.user);
         } else { await A.sendPasswordResetEmail(auth, email); showSignIn('in', 'Check your inbox for a password reset link.'); }
       } catch (err) { btn.disabled = false; showSignIn(mode, esc(authErr(err)), true); if (f.email) setTimeout(() => { const i = $('[name=email]'); if (i) i.value = email; }, 0); }
     };
@@ -2759,35 +3495,87 @@ async function bootCloud() {
       if (auth.currentUser.emailVerified) enter(auth.currentUser); else b.textContent = 'Not verified yet — try again';
     });
   };
-  const showNoAccess = (email, note = '') => {
-    authScreen(`<div class="auth-msg">You're signed in as <b>${esc(email)}</b>, but this email hasn't been given access yet.<br><br>Ask ${owner ? `<b>${esc(owner)}</b>` : 'the owner'} to add it under Settings → “Who can open this app”, then press Check again.${note ? `<br><br><span style="color:var(--faint)">${esc(note)}</span>` : ''}</div>
+  const showNoAccess = (email, note = '', others = []) => {
+    closeWorkspace();
+    authScreen(`<div class="auth-msg">You're signed in as <b>${esc(email)}</b>, but ${others.length ? 'this workspace can’t be opened right now' : 'your workspace couldn’t be opened yet'}.${note ? `<br><br><span style="color:var(--muted)">${note}</span>` : ''}</div>
+      ${others.map(w => `<button class="btn" style="width:100%;margin-bottom:6px" data-ws="${esc(w.id)}">Open ${esc(w.name)}</button>`).join('')}
       <button class="btn btn-primary" data-v="again">Check again</button><div class="auth-links"><button data-v="out">Sign out</button></div>`);
     $('[data-v=again]').onclick = () => enter(auth.currentUser);
     $('[data-v=out]').onclick = () => A.signOut(auth);
+    $$('[data-ws]').forEach(b => b.onclick = () => switchWorkspace(b.dataset.ws));
   };
+
+  // Opens one workspace: the original one lives in top-level collections, every other one
+  // under workspaces/{id}/…  Switching just points the same store at a different place.
+  S.openWorkspace = w => {
+    closeWorkspace();
+    COLS.forEach(c => { S.data[c] = {}; });
+    S.missing = new Set(); S.rulesMissing = false; seeded = false; ctMaintRun = 0; UNDO.length = 0;
+    $('#modals').innerHTML = ''; closeMenu();
+    if (S.ws && S.ws.id !== w.id && location.hash && !/home/.test(location.hash)) history.replaceState(null, '', location.pathname + location.search);
+    S.ws = w;
+    S.mode = 'cloud';
+    store = new CloudStore(F, db, w.root ? [] : ['workspaces', w.id]);
+    if (!w.root) {
+      S.wsUnsub = F.onSnapshot(F.doc(db, 'workspaces', w.id), snap => {
+        if (!snap.exists()) return;
+        Object.assign(w, snap.data(), { id: w.id });
+        if (S.ready) scheduleRender();
+      }, () => { });
+    }
+    $('#root').innerHTML = `<div class="loading">${logoMark('load-logo')}Opening ${esc(w.name)}…</div>`;
+    const mine = store;
+    store.start(onData, err => {
+      console.error(err);
+      if (store !== mine) return;
+      const others = S.workspaces.filter(x => x.id !== w.id);
+      if (err.code === 'permission-denied') showNoAccess(S.user.email, w.root && S.user.isOwner
+        ? 'The database refused access. Check that you published the security rules (SETUP step 5) and that ownerEmail matches in both places.'
+        : 'Your access to it may have been removed.', others);
+      else showNoAccess(S.user.email, 'Sync error: ' + esc(err.code || err.message), others);
+    });
+  };
+
   const enter = async user => {
-    if (!user) return showSignIn();
+    if (!user) return showHome();
     if (!user.emailVerified) return showVerify(user);
     const email = user.email.toLowerCase();
     const isOwner = !!owner && email === owner;
-    if (!isOwner) {
-      try { const snap = await F.getDoc(F.doc(db, 'members', email)); if (!snap.exists()) return showNoAccess(email); }
-      catch (e) { return showNoAccess(email, e.code === 'permission-denied' ? '' : 'Error: ' + (e.code || e.message)); }
-    }
     S.mode = 'cloud';
-    S.user = { email, name: user.displayName || email.split('@')[0], isOwner, color: 'red' };
-    if (store && store.stop) store.stop();
-    store = new CloudStore(F, db);
-    $('#root').innerHTML = '<div class="loading">Loading your tasks…</div>';
-    store.start(onData, err => {
-      console.error(err);
-      if (!store) return;
-      store.stop(); S.ready = false;
-      if (err.code === 'permission-denied') showNoAccess(email, isOwner
-        ? 'The database refused access. Check that you pasted the security rules (SETUP step 5) and that ownerEmail matches in both places.'
-        : 'Your access may have been removed.');
-      else showNoAccess(email, 'Sync error: ' + (err.code || err.message));
-    });
+    S.user = { email, uid: user.uid, name: user.displayName || email.split('@')[0], isOwner, color: 'red' };
+    $('#root').innerHTML = `<div class="loading">${logoMark('load-logo')}Loading your workspaces…</div>`;
+    const list = []; let note = '';
+    // 1. the original workspace: its owner, plus anyone on its access list
+    let rootOk = isOwner;
+    if (!isOwner) {
+      try { rootOk = (await F.getDoc(F.doc(db, 'members', email))).exists(); }
+      catch (e) { if (e.code !== 'permission-denied') note = 'Error: ' + esc(e.code || e.message); }
+    }
+    if (rootOk) list.push({ id: 'main', root: true, name: CFG.rootWorkspaceName || 'Main workspace', ownerEmail: owner });
+    // 2. your own workspace (made on first sign-in) and 3. every workspace you've been invited to
+    try {
+      if (!isOwner) {
+        const ref = F.doc(db, 'workspaces', user.uid);
+        const own = await F.getDoc(ref);
+        if (!own.exists()) await F.setDoc(ref, { name: `${S.user.name}'s workspace`, ownerEmail: email, ownerUid: user.uid, memberEmails: [email], createdAt: Date.now() });
+      }
+      const qs = await F.getDocs(F.query(F.collection(db, 'workspaces'), F.where('memberEmails', 'array-contains', email)));
+      qs.forEach(d => { if (!list.some(w => w.id === d.id)) list.push({ ...d.data(), id: d.id }); });
+      S.wsRulesMissing = false;
+    } catch (e) {
+      console.error(e);
+      S.wsRulesMissing = e.code === 'permission-denied';
+      if (!list.length) note = S.wsRulesMissing
+        ? `New accounts aren't switched on yet — ${owner ? `ask <b>${esc(owner)}</b>` : 'ask the owner'} to publish the latest security rules (SETUP step 5), then press Check again.`
+        : 'Error: ' + esc(e.code || e.message);
+    }
+    if (!list.length) return showNoAccess(email, note);
+    const rank = w => (w.root ? 0 : w.ownerEmail === email ? 1 : 2);
+    S.workspaces = list.map(w => ({ ...w, color: wsColor(w.id) })).sort((a, b) => rank(a) - rank(b) || String(a.name).localeCompare(String(b.name)));
+    const last = lsGet(wsKey());
+    const pick = S.workspaces.find(w => w.id === last) || S.workspaces.find(w => w.root)
+      || S.workspaces.find(w => rank(w) === 2) || S.workspaces[0];
+    S.openWorkspace(pick);
   };
   A.onAuthStateChanged(auth, user => { S.ready = false; enter(user); });
 }
