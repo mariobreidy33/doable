@@ -908,7 +908,7 @@ kbd{font:600 10.5px/1 var(--font);padding:2px 5px;border-radius:4px;border:1px s
 <script type="module">
 /* ===================== utilities ===================== */
 const CFG = window.APP_CONFIG || {};
-const BUILD = '2026-10-15c';   // shown in Settings, so you can confirm which version is live
+const BUILD = '2026-10-15d';   // shown in Settings, so you can confirm which version is live
 const FB_URL = 'https://www.gstatic.com/firebasejs/10.12.2/';
 const COLS = ['projects', 'sections', 'tasks', 'events', 'meta', 'members', 'accounts', 'campaigns', 'trash'];
 // Collections added after the first release. If the security rules haven't been updated yet,
@@ -916,7 +916,7 @@ const COLS = ['projects', 'sections', 'tasks', 'events', 'meta', 'members', 'acc
 const OPTIONAL_COLS = ['accounts', 'campaigns', 'trash'];
 const TRASH_DAYS = 30;   // Recently deleted empties itself after this many days
 const COLORS = ['red', 'orange', 'yellow', 'green', 'teal', 'blue', 'purple', 'pink', 'grey'];
-const MARKETS = ['KSA', 'UAE', 'QAT', 'KWT', 'BAH', 'OMN'];
+const MARKETS = ['KSA', 'UAE', 'QAT', 'KWT', 'BAH', 'OMN', 'IRQ', 'EGY'];
 const PLATFORMS = ['Search', 'PMax', 'YouTube', 'Meta', 'Snap', 'TikTok', 'LinkedIn', 'X'];
 const C_STATUS = ['Live', 'Pending', 'Ended'];
 /* Objective library — what each platform can actually be bought on. Canonical names only;
@@ -3916,7 +3916,7 @@ function homeHTML(signedIn) {
       <h1>Tasks, team leave &amp; campaigns.<br><span class="h-grad">One calm command centre.</span></h1>
       <p class="h-sub">${name} is the shared to-do board for agency teams — with a team calendar for who's off, and a campaign tracker that flags what needs you this week.</p>
       <div class="h-cta">${cta}</div>
-      <div class="h-keys"><span class="lbl">Track campaigns across</span>${['Meta', 'Snap', 'TikTok', 'Search', 'PMax', 'YouTube', 'LinkedIn'].map(p => `<span class="h-plat">${p}</span>`).join('')}<span class="lbl">in KSA, UAE &amp; the GCC</span></div>
+      <div class="h-keys"><span class="lbl">Track campaigns across</span>${['Meta', 'Snap', 'TikTok', 'Search', 'PMax', 'YouTube', 'LinkedIn'].map(p => `<span class="h-plat">${p}</span>`).join('')}<span class="lbl">in the GCC, Iraq &amp; Egypt</span></div>
     </section>
     <section class="h-stage" aria-hidden="true">
       <div class="h-window">
