@@ -256,6 +256,13 @@ a{color:var(--accent-text)}
 .sub-row input.bare{flex:1;background:transparent;border:0;outline:0;padding:0}
 .sub-row.done input.bare{text-decoration:line-through;color:var(--faint)}
 .sub-row .icon-btn{width:22px;height:22px;opacity:0}
+.sub-row{position:relative;background:var(--menu)}
+.sub-grip{width:14px;margin-left:-18px;margin-right:-4px;display:grid;place-items:center;color:var(--faint);cursor:grab;opacity:0;touch-action:none;transition:opacity .15s}
+.sub-row:hover .sub-grip,.sub-sorting .sub-grip{opacity:1}
+.sub-grip:hover{color:var(--text)}
+.sub-row.sub-dragging{z-index:2;box-shadow:0 6px 18px rgba(0,0,0,.35);border-radius:6px;cursor:grabbing}
+.sub-sorting,.sub-sorting *{cursor:grabbing!important;user-select:none}
+@media (hover:none){ .sub-grip{opacity:1;margin-left:0} }
 .sub-row:hover .icon-btn{opacity:1}
 .sub-add{display:flex;gap:8px;align-items:center;padding:6px 0;color:var(--muted)}
 .sub-add input{flex:1;background:transparent;border:0;outline:0;padding:0}
@@ -1059,7 +1066,7 @@ kbd{font:600 10.5px/1 var(--font);padding:2px 5px;border-radius:4px;border:1px s
 <script type="module">
 /* ===================== utilities ===================== */
 const CFG = window.APP_CONFIG || {};
-const BUILD = '2026-10-15f';   // shown in Settings, so you can confirm which version is live
+const BUILD = '2026-10-20a';   // shown in Settings, so you can confirm which version is live
 const FB_URL = 'https://www.gstatic.com/firebasejs/10.12.2/';
 const COLS = ['projects', 'sections', 'tasks', 'events', 'meta', 'members', 'accounts', 'campaigns', 'trash', 'notes'];
 // Collections added after the first release. If the security rules haven't been updated yet,
@@ -3355,7 +3362,8 @@ function openTask(id, def = {}) {
     q('[data-recur-hint]').textContent = r ? `${recurLabel(r)}${due ? ' · from ' + longDay(due) : ' · starting today'}. Ticking it off moves it to the next date.` : '';
   };
   const renderSubs = () => {
-    q('[data-subs]').innerHTML = d.subtasks.map((s, i) => `<div class="sub-row ${s.done ? 'done' : ''}">
+    q('[data-subs]').innerHTML = d.subtasks.map((s, i) => `<div class="sub-row ${s.done ? 'done' : ''}" data-sub-row="${i}">
+      ${d.subtasks.length > 1 ? `<span class="sub-grip" data-sub-grip="${i}" title="Drag to reorder (or Alt+↑/↓)">${ico('grip', 'i-sm')}</span>` : ''}
       <button class="check ${s.done ? 'checked' : ''}" data-sub-toggle="${i}">${ico('check')}</button>
       <input class="bare" data-sub-edit="${i}" value="${esc(s.title)}" maxlength="200">
       <button class="icon-btn" data-sub-del="${i}" title="Remove">${ico('x', 'i-sm')}</button></div>`).join('');
@@ -3419,6 +3427,53 @@ function openTask(id, def = {}) {
     d.subtasks.push({ id: uid(), title: v, done: false }); e.target.value = ''; renderSubs();
   });
   w.addEventListener('input', e => { const i = e.target.dataset.subEdit; if (i != null) d.subtasks[i].title = e.target.value; });
+  // Reorder sub-tasks: drag a row by its handle (mouse or touch), or Alt+↑/↓ while typing in one.
+  const moveSub = (from, to, focus) => {
+    if (to < 0 || to >= d.subtasks.length || from === to) return;
+    const [s] = d.subtasks.splice(from, 1); d.subtasks.splice(to, 0, s); renderSubs();
+    if (focus) { const inp = q(`[data-sub-edit="${to}"]`); if (inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }
+  };
+  w.addEventListener('keydown', e => {
+    const i = e.target.dataset && e.target.dataset.subEdit;
+    if (i == null || !e.altKey || !['ArrowUp', 'ArrowDown'].includes(e.key)) return;
+    e.preventDefault(); moveSub(+i, +i + (e.key === 'ArrowUp' ? -1 : 1), true);
+  });
+  let sd = null;
+  const subEnd = commit => {
+    if (!sd) return;
+    const { from, to } = sd;
+    sd.rows.forEach(r => { r.style.transform = ''; r.style.transition = ''; r.classList.remove('sub-dragging'); });
+    q('[data-subs]').classList.remove('sub-sorting');
+    sd = null;
+    if (commit && to !== from) moveSub(from, to);
+  };
+  w.addEventListener('pointerdown', e => {
+    const g = e.target.closest('[data-sub-grip]'); if (!g || e.button !== 0) return;
+    e.preventDefault();
+    const list = q('[data-subs]'), rows = [...list.querySelectorAll('[data-sub-row]')], row = g.closest('[data-sub-row]');
+    const from = rows.indexOf(row); if (from < 0) return;
+    sd = { from, to: from, row, rows, y0: e.clientY, rects: rows.map(r => r.getBoundingClientRect()) };
+    try { g.setPointerCapture(e.pointerId); } catch { }
+    row.classList.add('sub-dragging'); list.classList.add('sub-sorting');
+  });
+  w.addEventListener('pointermove', e => {
+    if (!sd) return;
+    if (e.buttons === 0) return subEnd(true);
+    const { rects, from, rows } = sd, h = rects[from].height;
+    const top = rects[0].top - rects[from].top, bottom = rects[rects.length - 1].top - rects[from].top;
+    const dy = Math.max(top - 6, Math.min(bottom + 6, e.clientY - sd.y0));
+    sd.row.style.transform = `translateY(${dy}px)`;
+    const cy = rects[from].top + h / 2 + dy;
+    let to = rects.filter((rc, i) => i !== from && cy > rc.top + rc.height / 2).length;
+    sd.to = to;
+    rows.forEach((r, i) => {
+      if (i === from) return;
+      r.style.transition = 'transform .18s var(--ease)';
+      r.style.transform = from < to && i > from && i <= to ? `translateY(${-h}px)` : to < from && i >= to && i < from ? `translateY(${h}px)` : '';
+    });
+  });
+  w.addEventListener('pointerup', () => subEnd(true));
+  w.addEventListener('pointercancel', () => subEnd(false));
   w.addEventListener('click', async e => {
     const b = e.target.closest('[data-m],[data-sub-toggle],[data-sub-del],[data-cdel]'); if (!b) return;
     if (b.dataset.subToggle != null) { const s = d.subtasks[b.dataset.subToggle]; s.done = !s.done; renderSubs(); return; }
