@@ -257,6 +257,18 @@ a{color:var(--accent-text)}
 .sub-row.done input.bare{text-decoration:line-through;color:var(--faint)}
 .sub-row .icon-btn{width:22px;height:22px;opacity:0}
 .sub-row{position:relative;background:var(--menu)}
+/* sub-task progress */
+.sp{display:flex;align-items:center;gap:10px;margin:2px 0 8px}
+.sp[hidden]{display:none}
+.sp-track{flex:1;height:8px;border-radius:5px;background:var(--hover);overflow:hidden}
+.sp-track i{display:block;height:100%;width:0;border-radius:5px;background:linear-gradient(90deg,var(--sw-blue),#5b8cff);transition:width .45s var(--ease),background .3s}
+.sp.full .sp-track i{background:linear-gradient(90deg,var(--c-today),#3ccf6b)}
+.sp-lbl{font-size:11.5px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.sp.full .sp-lbl{color:var(--c-today);font-weight:600}
+.sp-mini{height:4px;border-radius:3px;background:var(--hover);overflow:hidden;margin-top:7px}
+.sp-mini i{display:block;height:100%;border-radius:3px;background:var(--sw-blue)}
+.sp-mini.full i{background:var(--c-today)}
+.card.done .sp-mini{opacity:.5}
 .sub-grip{width:14px;margin-left:-18px;margin-right:-4px;display:grid;place-items:center;color:var(--faint);cursor:grab;opacity:0;touch-action:none;transition:opacity .15s}
 .sub-row:hover .sub-grip,.sub-sorting .sub-grip{opacity:1}
 .sub-grip:hover{color:var(--text)}
@@ -1066,7 +1078,7 @@ kbd{font:600 10.5px/1 var(--font);padding:2px 5px;border-radius:4px;border:1px s
 <script type="module">
 /* ===================== utilities ===================== */
 const CFG = window.APP_CONFIG || {};
-const BUILD = '2026-10-20a';   // shown in Settings, so you can confirm which version is live
+const BUILD = '2026-10-21a';   // shown in Settings, so you can confirm which version is live
 const FB_URL = 'https://www.gstatic.com/firebasejs/10.12.2/';
 const COLS = ['projects', 'sections', 'tasks', 'events', 'meta', 'members', 'accounts', 'campaigns', 'trash', 'notes'];
 // Collections added after the first release. If the security rules haven't been updated yet,
@@ -2501,11 +2513,17 @@ function taskMeta(t, opts = {}) {
   return bits.length ? `<div class="meta">${bits.join('')}</div>` : '';
 }
 const checkBtn = t => `<button class="check p${t.priority || 4} ${t.done ? 'checked' : ''}" data-action="toggle-task" data-id="${t.id}" title="${t.done ? 'Mark as not done' : 'Complete'}">${ico('check')}</button>`;
+// Progress of a task's sub-tasks — a thin bar on cards and rows, a fuller one inside the task.
+function subProgress(t) { const s = t.subtasks || []; const n = s.filter(x => x.done).length; return { n, total: s.length, pct: s.length ? Math.round((n / s.length) * 100) : 0 }; }
+function subBar(t) {
+  const p = subProgress(t); if (!p.total) return '';
+  return `<div class="sp-mini ${p.n === p.total ? 'full' : ''}" title="${p.n} of ${p.total} sub-tasks done (${p.pct}%)"><i style="width:${p.pct}%"></i></div>`;
+}
 function cardHTML(t) {
   const desc = (t.description || '').trim();
   return `<article class="card ${t.done ? 'done' : ''}" data-task="${t.id}" data-action="open-task" data-id="${t.id}">
     ${checkBtn(t)}
-    <div class="card-body"><div class="card-title">${esc(t.title)}</div>${desc ? `<div class="card-desc">${esc(desc)}</div>` : ''}${taskMeta(t)}</div>
+    <div class="card-body"><div class="card-title">${esc(t.title)}</div>${desc ? `<div class="card-desc">${esc(desc)}</div>` : ''}${taskMeta(t)}${subBar(t)}</div>
   </article>`;
 }
 
@@ -2564,7 +2582,7 @@ function whereHTML(t) {
 function rowHTML(t) {
   const desc = (t.description || '').trim();
   return `<div class="row" data-action="open-task" data-id="${t.id}">${checkBtn(t)}
-    <div class="card-body"><div class="card-title">${esc(t.title)}</div>${desc ? `<div class="card-desc">${esc(desc)}</div>` : ''}${taskMeta(t, { where: whereHTML(t) })}</div></div>`;
+    <div class="card-body"><div class="card-title">${esc(t.title)}</div>${desc ? `<div class="card-desc">${esc(desc)}</div>` : ''}${taskMeta(t, { where: whereHTML(t) })}${subBar(t)}</div></div>`;
 }
 function whoIsOff(day) {
   const out = [];
@@ -3325,7 +3343,7 @@ function openTask(id, def = {}) {
         <div class="tm-title-row">${ex ? checkBtn(ex).replace('data-action="toggle-task"', 'data-m="complete"') : `<span class="check p${d.priority}"></span>`}
           <textarea class="tm-title" rows="1" data-f="title" placeholder="Task name" autofocus maxlength="300">${esc(d.title)}</textarea></div>
         <textarea class="tm-desc" data-f="description" placeholder="Description" rows="2">${esc(d.description)}</textarea>
-        <div class="tm-sec"><h4>${ico('sub', 'i-sm')} Sub-tasks <span data-subcount></span></h4><div data-subs></div>
+        <div class="tm-sec"><h4>${ico('sub', 'i-sm')} Sub-tasks <span data-subcount></span></h4><div class="sp" data-subprog hidden><div class="sp-track"><i></i></div><span class="sp-lbl"></span></div><div data-subs></div>
           <div class="sub-add">${ico('plus', 'i-sm')}<input data-subnew placeholder="Add sub-task (press Enter)" maxlength="200"></div></div>
         ${ex ? `<div class="tm-sec"><h4>${ico('comment', 'i-sm')} Comments</h4><div data-comments></div>
           <div class="comment-box"><textarea class="ta" data-cnew placeholder="Write a comment…" rows="1"></textarea><button class="btn" data-m="comment">Comment</button></div></div>` : ''}
@@ -3368,6 +3386,11 @@ function openTask(id, def = {}) {
       <input class="bare" data-sub-edit="${i}" value="${esc(s.title)}" maxlength="200">
       <button class="icon-btn" data-sub-del="${i}" title="Remove">${ico('x', 'i-sm')}</button></div>`).join('');
     q('[data-subcount]').textContent = d.subtasks.length ? `${d.subtasks.filter(s => s.done).length}/${d.subtasks.length}` : '';
+    const p = subProgress(d), box = q('[data-subprog]');
+    box.hidden = !p.total;
+    box.classList.toggle('full', p.total > 0 && p.n === p.total);
+    box.querySelector('i').style.width = p.pct + '%';
+    box.querySelector('.sp-lbl').textContent = p.n === p.total && p.total ? `All ${p.total} done · 100%` : `${p.n} of ${p.total} done · ${p.pct}%`;
   };
   const renderComments = () => {
     const box = q('[data-comments]'); if (!box) return;
