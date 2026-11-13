@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <!-- Security policy: only this site's own files, the Firebase SDK from gstatic and Google's Firebase APIs may run or be contacted.
      Inline scripts are allowed only by hash (filled in by build.sh), so injected script tags and onerror-style handlers can't run. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-rw43GcXTsCpUvxOf+jvvhLUGBInQBtFeFUuHcwPLPu8=' https://www.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://www.google.com; font-src 'self' data:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com; frame-src https://*.firebaseapp.com; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-D43rECahCbVWEVRi+tRhWvvZnSZpiEqwQZrXC+8zgOY=' https://www.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://www.google.com; font-src 'self' data:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com; frame-src https://*.firebaseapp.com; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Doable</title>
@@ -27,7 +27,7 @@
   --ev-blue:#183a4d; --ev-purple:#3c2e4a; --ev-pink:#4e2d3d; --ev-grey:#2f2f2f;
   --sw-red:#df5452; --sw-orange:#d9853f; --sw-yellow:#c9a13a; --sw-green:#4f9e72; --sw-teal:#2f9e95; --sw-blue:#4a90d0;
   --sw-purple:#9d68d3; --sw-pink:#d15796; --sw-grey:#8a8a87;
-  --ink:#e8e8e6; --paper:#262626; --hair:#121212; --d-black:#0c0c0c; --d-navy:#1d2940; --d-tort:#b9824f; --stub:#bdbdba; --stub-o:.24; --stache:#a9a9a6; --pv-ink:255,255,255;
+  --ink:#e8e8e6; --paper:#262626; --hair:#121212; --d-black:#0c0c0c; --d-apricot:#c98a55; --d-cream:#dccab2; --d-nose:#2a1d17; --d-muzzle:#e9e2d6; --d-brown:#3a2619; --d-cap:#c8bb9f; --d-phones:#0e0e0e; --d-gold:#d0b27a; --d-navy:#1d2940; --d-tort:#b9824f; --stub:#bdbdba; --stub-o:.24; --stache:#a9a9a6; --pv-ink:255,255,255;
   --d-yellow:#6a5622; --d-blue:#21486a; --d-pink:#64304a; --d-green:#285440; --d-purple:#463466; --d-orange:#6b4120;
   --ease:cubic-bezier(.32,.72,0,1); --ease-out:cubic-bezier(.22,.61,.36,1); --dur:.2s;
   --r:8px; --font:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI Variable Text","Segoe UI",Helvetica,"Apple Color Emoji",Arial,sans-serif;
@@ -46,7 +46,7 @@
   --ev-blue:#e7f3f8; --ev-purple:#f4f0f7; --ev-pink:#f9eef3; --ev-grey:#f1f1ef;
   --sw-red:#e0605a; --sw-orange:#df8a3e; --sw-yellow:#d3a43a; --sw-green:#4f9a72; --sw-teal:#2f9e95; --sw-blue:#3b8fd0;
   --sw-purple:#9a6dc4; --sw-pink:#cf5e98; --sw-grey:#9b9a97;
-  --ink:#1f1e1c; --paper:#ffffff; --hair:#1f1e1c; --d-black:#2b2a28; --d-navy:#26324b; --d-tort:#8a5530; --stub:#1f1e1c; --stub-o:.3; --stache:#1f1e1c; --pv-ink:55,53,47;
+  --ink:#1f1e1c; --paper:#ffffff; --hair:#1f1e1c; --d-black:#2b2a28; --d-apricot:#eab07a; --d-cream:#fbefdf; --d-nose:#3a2a22; --d-muzzle:#ffffff; --d-brown:#4a3122; --d-cap:#efe5cf; --d-phones:#2b2a28; --d-gold:#b39058; --d-navy:#26324b; --d-tort:#8a5530; --stub:#1f1e1c; --stub-o:.3; --stache:#1f1e1c; --pv-ink:55,53,47;
   --d-yellow:#fbe7a6; --d-blue:#cfe5f7; --d-pink:#f9d3e2; --d-green:#cfe8d6; --d-purple:#e3d8f6; --d-orange:#fbd9bb;
   color-scheme:light;
 }
@@ -1054,6 +1054,17 @@ button:focus-visible,a:focus-visible,summary:focus-visible,[tabindex]:focus-visi
 .dd .bz{fill:color-mix(in srgb,var(--hair) 72%,var(--paper))}
 .dd-guide{border-radius:50%;background:var(--ev-blue);overflow:hidden}
 .dd-guide .bob{animation:none}
+.dd .fa{fill:var(--d-apricot)}.dd .fc{fill:var(--d-cream)}.dd .nose{fill:var(--d-nose)}.dd .jh{fill:var(--d-brown);stroke:var(--ink);stroke-width:2.1;stroke-linejoin:round}.dd .cap{fill:var(--d-cap)}.dd .hp{fill:var(--d-phones)}
+.dd .wg{fill:none;stroke:var(--d-gold);stroke-width:1.7}.dd .blush{fill:var(--sw-pink);opacity:.22}.dd .mz{fill:var(--d-muzzle)}
+.dd-bailey .bl-ear{transform-box:fill-box;transform-origin:50% 8%;animation:blEar 3.4s ease-in-out infinite}
+.dd-bailey .bl-ear.r{animation-name:blEarR;animation-delay:-1.7s}
+@keyframes blEar{0%,100%{transform:rotate(0)}50%{transform:rotate(4deg)}}
+@keyframes blEarR{0%,100%{transform:rotate(0)}50%{transform:rotate(-4deg)}}
+.gb-fab:hover .dd-bailey .bl-ear.l{animation:blWag .35s ease-in-out infinite alternate}
+.gb-fab:hover .dd-bailey .bl-ear.r{animation:blWagR .35s ease-in-out infinite alternate}
+@keyframes blWag{to{transform:rotate(10deg)}}@keyframes blWagR{to{transform:rotate(-10deg)}}
+.dd-bailey .bl-roll{animation:blRoll 4s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes blRoll{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
 .dd .fx{fill:var(--d-black)}.dd .fn{fill:var(--d-navy)}
 .dd .brd{fill:var(--stub);opacity:var(--stub-o)}
 .dd .ms{fill:var(--stache);stroke:var(--stache);stroke-width:.8;stroke-linejoin:round}
@@ -1126,16 +1137,16 @@ button:focus-visible,a:focus-visible,summary:focus-visible,[tabindex]:focus-visi
 .h-note{margin-top:14px;font-size:13px;color:var(--faint)}
 
 /* hero scene: characters + floating status chips */
-.h-scene{position:relative;display:flex;justify-content:center;align-items:flex-end;gap:clamp(4px,1.6vw,22px);margin:46px auto 0;max-width:900px;padding:0 10px}
-.h-scene .dd{width:clamp(70px,15vw,158px);height:auto;flex:0 1 auto;min-width:0}
-.h-scene .dd:nth-child(2){margin-bottom:6px}.h-scene .dd:nth-child(4){margin-bottom:2px}
+.h-scene{position:relative;display:flex;justify-content:center;align-items:flex-end;gap:clamp(3px,1.2vw,18px);margin:46px auto 0;max-width:980px;padding:0 10px}
+.h-scene .dd{width:clamp(60px,13vw,142px);height:auto;flex:0 1 auto;min-width:0}
+.h-scene .dd:nth-child(2){margin-bottom:6px}.h-scene .dd:nth-child(5){margin-bottom:2px}
 .h-scene .dd:nth-child(odd) .bob{animation-delay:-2s}
 .h-ground{position:absolute;left:4%;width:92%;bottom:-2px;height:10px;overflow:visible}
 .h-ground path{fill:none;stroke:var(--ink);stroke-width:2.3;stroke-linecap:round}
 .h-chip{position:absolute;z-index:2;display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:9px;background:var(--card);box-shadow:var(--shadow);font-size:12.5px;font-weight:600;white-space:nowrap;animation:hChip 6s ease-in-out infinite}
 .h-chip .dot{width:7px;height:7px;border-radius:50%;background:var(--c-today)}
 .h-chip .i{width:14px;height:14px}
-.h-chip.c1{left:0;top:6%}.h-chip.c2{right:0;top:14%;animation-delay:-2s}.h-chip.c3{left:27%;top:-10%;animation-delay:-4s}
+.h-chip.c1{left:0;top:6%}.h-chip.c2{right:0;top:14%;animation-delay:-2s}.h-chip.c3{left:20%;top:-10%;animation-delay:-4s}
 .h-chip.c2 .i{color:var(--c-today)}.h-chip.c3 .i{color:var(--sw-blue)}
 @keyframes hChip{50%{transform:translateY(-8px)}}
 
@@ -1273,7 +1284,7 @@ button:focus-visible,a:focus-visible,summary:focus-visible,[tabindex]:focus-visi
 
 /* guide teaser */
 .h-guide{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;padding:44px;border-radius:20px;background:var(--side);box-shadow:inset 0 0 0 1px var(--line)}
-.h-guide .dd{width:96px;height:96px;margin-bottom:14px}
+.h-guide .dd{width:118px;height:auto;margin-bottom:10px}
 .h-chat{background:var(--bg);border-radius:14px;box-shadow:var(--shadow);padding:16px;display:flex;flex-direction:column;gap:10px;font-size:13.5px}
 .h-chat .q{align-self:flex-end;background:var(--accent);color:#fff;padding:8px 12px;border-radius:14px 14px 4px 14px;max-width:80%}
 .h-chat .a{align-self:flex-start;background:var(--hover);padding:10px 12px;border-radius:14px 14px 14px 4px;max-width:92%;line-height:1.5}
@@ -1299,6 +1310,7 @@ button:focus-visible,a:focus-visible,summary:focus-visible,[tabindex]:focus-visi
 .h-final{text-align:center;padding:110px 0 70px}
 .h-final .h-scene{margin:0 auto 26px;max-width:520px}
 .h-final .h-scene .dd{width:clamp(84px,12vw,120px)}
+.h-final .h-scene .h-final-dog{width:clamp(70px,9.5vw,96px)}
 .h-final h2{font-size:clamp(34px,5vw,56px);letter-spacing:-.04em;line-height:1.05;margin:0;font-weight:750}
 .h-final p{color:var(--muted);font-size:18px;margin:14px auto 0;max-width:520px;line-height:1.55}
 .h-foot{border-top:1px solid var(--line);padding:34px 0 40px;font-size:13.5px;color:var(--muted)}
@@ -1338,7 +1350,7 @@ button:focus-visible,a:focus-visible,summary:focus-visible,[tabindex]:focus-visi
   .h-chip.c3{display:none}
   .h-chip.c1{left:0;top:-6%}.h-chip.c2{right:0;top:-2%}
   .h-scene{gap:4px;padding:0}
-  .h-scene .dd{width:17.5vw}
+  .h-scene .dd{width:15vw}
   .h-sec{padding-top:70px}
   .h-feats,.h-media,.h-stats{grid-template-columns:1fr}
   .h-feat:last-child{grid-column:auto}
@@ -1452,7 +1464,7 @@ if (window.top !== window.self) {
 /* ===================== utilities ===================== */
 const CFG_MISSING = !window.APP_CONFIG;   // config.js didn't load: stop with a clear message instead of guessing
 const CFG = window.APP_CONFIG || {};
-const BUILD = '2026-11-13c';   // shown in Settings, so you can confirm which version is live
+const BUILD = '2026-11-13e';   // shown in Settings, so you can confirm which version is live
 // Firebase Web SDK, pinned to an exact version (updated from 10.12.2). If the CDN can't serve it,
 // the previous version is tried so the app still opens.
 const FB_VERSIONS = ['12.19.0', '10.12.2'];
@@ -2151,7 +2163,7 @@ function renderSidebar(r) {
     <div class="side-group side-tools">
       <button class="nav-item ${r.view === 'archive' ? 'active' : ''}" data-go="#/archive">${ico('archive')}<span class="lbl">Archive</span><span class="cnt">${archN || ''}</span></button>
       <button class="nav-item ${r.view === 'trash' ? 'active' : ''}" data-go="#/trash">${ico('trash')}<span class="lbl">Recently deleted</span><span class="cnt">${trashN || ''}</span></button>
-      <button class="nav-item side-guide" data-guide-open>${ico('help')}<span class="lbl">Guide &amp; FAQ</span><span class="cnt">?</span></button>
+      <button class="nav-item side-guide" data-guide-open>${ico('help')}<span class="lbl">Ask Bailey</span><span class="cnt">?</span></button>
     </div>
     <div class="side-foot">${S.mode === 'local'
       ? `<div class="mode-note"><b>Local mode</b> — data is saved in this browser only. Add your Firebase config (see SETUP) to sync with your team.</div>`
@@ -5225,7 +5237,45 @@ const DD_PROP = {
   laptop: '<path class="pp" d="M34 122h52l6 26H28z"/><path class="ln" d="M24 150h72"/><circle class="ik" cx="60" cy="134" r="2.4"/><circle class="pp" cx="34" cy="148" r="6"/><circle class="pp" cx="86" cy="148" r="6"/>',
 };
 const DD_TINT = { navy: 'fn', black: 'fx', yellow: 'fy', blue: 'fb', pink: 'fk', green: 'fg', purple: 'fp', orange: 'fo' };
-// Mario — the Guide: buzz cut, round glasses, black tee. 'guide' is the head-and-shoulders avatar.
+
+// Joana: long dark-brown hair, beige cap, black over-ear headphones, thin round gold glasses, big smile, black tee.
+const JOANA_HEAD = `<path class="jh" d="M38.5 50c-3.5 22-4.5 44-8.5 70 5 2.4 10.5 1.8 14-.6.6-21 1.2-44 1.6-63zM81.5 50c3.5 22 4.5 44 8.5 70-5 2.4-10.5 1.8-14-.6-.6-21-1.2-44-1.6-63z"/>
+    <path class="ln thin" d="M36 72q-1 16-3 34M84 72q1 16 3 34" style="stroke-width:1.3"/>
+    <ellipse class="pp" cx="60" cy="55" rx="22" ry="25"/>
+    <path class="jh" d="M38.4 50c1.6 6 3 9.6 4.6 12 1.6-6.4 2.2-10 2.4-13zM81.6 50c-1.6 6-3 9.6-4.6 12-1.6-6.4-2.2-10-2.4-13z"/>
+    <path class="cap st" d="M37 47c0-15 10-24.5 23-24.5S83 32 83 47z"/><circle class="cap st" cx="60" cy="22.5" r="2.4"/>
+    <path class="ln thin" d="M60 25v21M49 27q-3 9-3 19M71 27q3 9 3 19" style="stroke-width:1.2"/>
+    <path class="cap st" d="M33.5 46.5c9 4.6 44 4.6 53 0l-1.4 5.4c-9.6 3.6-40.6 3.6-50.2 0z"/>
+    <path class="ln" d="M29 58c-2.4-25 11-38.5 31-38.5S93.4 33 91 58" style="stroke-width:4.4"/>
+    <rect class="hp st" x="24.5" y="49" width="11" height="19" rx="5"/><rect class="hp st" x="84.5" y="49" width="11" height="19" rx="5"/>
+    <path class="ln" d="M47.8 57.2q3.6-3.4 7.2 0M65 57.2q3.6-3.4 7.2 0" style="stroke-width:2.1"/>
+    <g class="wg"><circle cx="51.4" cy="57" r="6.6"/><circle cx="68.6" cy="57" r="6.6"/><path d="M58 56.2q2-1.4 4 0"/></g>
+    <circle cx="45" cy="64.5" r="3" class="blush"/><circle cx="75" cy="64.5" r="3" class="blush"/>
+    <path class="ln" d="M60 60.5l-2 4.4h3.4" style="stroke-width:1.6"/>
+    <path class="pp" d="M51.6 68.2c2.8 7.4 14 7.4 16.8 0z" style="stroke-width:2"/><path class="ln thin" d="M52.6 69.8h14.8" style="stroke-width:1.1"/>`;
+const joana = (kind = 'laptop', cls = '') => doodle(kind, { head: JOANA_HEAD, tint: 'black', cls: 'dd-joana ' + cls });
+// Mario (the owner) appears in the homepage line-up.
+// Bailey — the family dog and Doable's guide: apricot curly coat, long wavy ears, white blaze and muzzle,
+// big dark eyes. { roll: true } gives the homepage version her famous paper-roll hat.
+function bailey(cls = '', o = {}) {
+  const roll = o.roll ? `<g class="bl-roll"><path class="pp mz" d="M47 6v17q13 4.5 26 0V6"/><ellipse class="pp mz" cx="60" cy="6" rx="13" ry="4.4"/><ellipse class="ik" cx="60" cy="6" rx="3.6" ry="1.4"/>
+      <path class="ln thin" d="M51 13q2-3 4 0t4 0M61 17q2-3 4 0t4 0M52 20q2-2.5 4 0" style="stroke-width:1.2"/></g>` : '';
+  return `<svg class="dd dd-bailey ${cls}" viewBox="${o.roll ? '0 -6 120 126' : '0 4 120 116'}" aria-hidden="true"><g class="bob">
+    <path class="fa st" d="M32 120c1-19 11-32 28-32s27 13 28 32"/>
+    <path class="pp mz" d="M48 120c0-13 5-22 12-22s12 9 12 22"/>
+    <path class="ln thin" d="M40 106q2-3 4 0M76 104q2-3 4 0M44 114q2-3 4 0M74 113q2-3 4 0" style="stroke-width:1.4"/>
+    <g class="bl-ear l"><path class="fa st" d="M40 40c-11 1-19 12-19 26 0 10 1 19 5 25 2 4 6 5 9 3 1 3 5 4 7 1 3-5 2-12 3-19 1-10 3-19 0-27z"/><path class="ln thin" d="M29 60q3 4 1 9M34 74q3 4 1 9" style="stroke-width:1.4"/></g>
+    <g class="bl-ear r"><path class="fa st" d="M80 40c11 1 19 12 19 26 0 10-1 19-5 25-2 4-6 5-9 3-1 3-5 4-7 1-3-5-2-12-3-19-1-10-3-19 0-27z"/><path class="ln thin" d="M91 60q-3 4-1 9M86 74q-3 4-1 9" style="stroke-width:1.4"/></g>
+    <path class="fc st" d="M38 52c-3-11 2-22 11-26 3-6 9-8 14-6 6-2 13 1 15 7 9 4 12 14 9 25 3 7 2 15-2 20-3 10-12 16-25 16s-22-6-25-16c-4-5-4-14 3-20z"/>
+    <path class="fa" d="M41 51c-1-9 4-17 12-20 2 6 3 13 3 20-4 4-10 4-15 0zM79 51c1-9-4-17-12-20-2 6-3 13-3 20 4 4 10 4 15 0z"/>
+    <path class="ln thin" d="M50 25q3-4 6-1M58 21q3-4 6 0M66 24q3-3 6 1M46 32q-1-4 2-6M74 32q1-4-2-6" style="stroke-width:1.6"/>
+    <ellipse class="mz" cx="60" cy="70" rx="13.5" ry="10.5"/>
+    <g class="eyes"><circle class="nose" cx="50" cy="55" r="4.3"/><circle class="nose" cx="70" cy="55" r="4.3"/><circle cx="51.4" cy="53.6" r="1.3" fill="#fff"/><circle cx="71.4" cy="53.6" r="1.3" fill="#fff"/></g>
+    <path class="nose" d="M54 64c0-2.6 2.8-3.6 6-3.6s6 1 6 3.6-2.8 5.2-6 5.2-6-2.6-6-5.2z"/>
+    <path class="ln" d="M60 69.4v3.2M54.5 74.5q5.5 3.4 11 0" style="stroke-width:1.9;stroke:var(--d-nose)"/>
+    ${roll}</g></svg>`;
+}
+
 // Drawn from Mario's photo: short dark crop, fuller face, thick brows, round tortoiseshell glasses,
 // moustache and a short boxed beard, navy tee.
 const MARIO_HEAD = `<path class="pp" d="M37.5 54c-6-1.5-7.5 10.5-.5 12"/><path class="pp" d="M82.5 54c6-1.5 7.5 10.5.5 12"/>
@@ -5274,7 +5324,7 @@ const GUIDE = [
     a: '<p>Three ways:</p><ul><li>Press <kbd>Q</kbd> anywhere (outside a text box).</li><li>Click <b>Add task</b> at the top of the sidebar.</li><li>Click <b>+ Add task</b> at the bottom of any section on a board.</li></ul><p>Give it a date, priority, assignee and repeat in the task window. Press <kbd>Enter</kbd> on the title to save.</p>',
     rel: ['subtasks', 'repeat', 'shortcuts'] },
   { id: 'shortcuts', c: 'app', q: 'What keyboard shortcuts are there?', k: 'keys hotkeys keyboard undo search',
-    a: '<ul><li><kbd>Q</kbd> new task</li><li><kbd>/</kbd> search tasks, campaigns and notes</li><li><kbd>?</kbd> open this Guide</li><li><kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Z</kbd> undo the last delete, completion or archive</li><li><kbd>Alt</kbd> + <kbd>↑</kbd>/<kbd>↓</kbd> move a sub-task</li><li><kbd>Esc</kbd> close a window or menu</li></ul>',
+    a: '<ul><li><kbd>Q</kbd> new task</li><li><kbd>/</kbd> search tasks, campaigns and notes</li><li><kbd>?</kbd> ask Bailey (this guide)</li><li><kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Z</kbd> undo the last delete, completion or archive</li><li><kbd>Alt</kbd> + <kbd>↑</kbd>/<kbd>↓</kbd> move a sub-task</li><li><kbd>Esc</kbd> close a window or menu</li></ul>',
     rel: ['undo', 'add-task', 'search'] },
   { id: 'search', c: 'app', q: 'How do I find something quickly?', k: 'search find look up lost',
     a: '<p>Press <kbd>/</kbd> or click <b>Search</b> in the sidebar. It searches tasks, campaigns and Notebook notes at once.</p>', go: 'search', gl: 'Open search', rel: ['shortcuts'] },
@@ -5388,8 +5438,8 @@ function guideFab() {
   let f = document.getElementById('gb-fab');
   if (!f) {
     f = document.createElement('button'); f.id = 'gb-fab'; f.className = 'gb-fab'; f.type = 'button';
-    f.setAttribute('aria-label', 'Open the Doable Guide'); f.title = 'Guide & FAQ  ( ? )';
-    f.innerHTML = `${mario()}<span class="lb">Ask the Guide</span>`;
+    f.setAttribute('aria-label', 'Ask Bailey, the Doable guide'); f.title = 'Ask Bailey  ( ? )';
+    f.innerHTML = `${bailey('dd-guide')}<span class="lb">Ask Bailey</span>`;
     f.addEventListener('click', () => openGuide());
     document.body.appendChild(f);
   }
@@ -5399,9 +5449,9 @@ function openGuide(qid) {
   GB.open = true; guideFab();
   let el = document.getElementById('gb');
   if (!el) {
-    el = document.createElement('section'); el.id = 'gb'; el.className = 'gb'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Doable Guide');
+    el = document.createElement('section'); el.id = 'gb'; el.className = 'gb'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Ask Bailey');
     document.body.appendChild(el);
-    if (!GB.log.length) GB.log.push({ who: 'bot', html: `<p>Hi${S.user && S.user.name && S.user.name !== 'Me' ? ' ' + esc(String(S.user.name).split(' ')[0]) : ''}! I'm the Doable Guide.</p><p>Pick a topic below or type a question. I answer from a built-in set, so nothing you type leaves this browser.</p>`, sugg: GUIDE_START[GB.cat] });
+    if (!GB.log.length) GB.log.push({ who: 'bot', html: `<p>Hi${S.user && S.user.name && S.user.name !== 'Me' ? ' ' + esc(String(S.user.name).split(' ')[0]) : ''}! I'm Bailey, Doable's guide dog.</p><p>Pick a topic below or type a question. I answer from a built-in set, so nothing you type leaves this browser.</p>`, sugg: GUIDE_START[GB.cat] });
     gbPaint();
   }
   if (qid && GUIDE_BY[qid]) gbAsk(qid);
@@ -5424,13 +5474,13 @@ function gbMsgHTML(m, i) {
 }
 function gbPaint() {
   const el = document.getElementById('gb'); if (!el) return;
-  el.innerHTML = `<header class="gb-head">${mario()}<div><b>Doable Guide</b><small>Answers on the app, media and security</small></div><span class="sp"></span>
+  el.innerHTML = `<header class="gb-head">${bailey('dd-guide')}<div><b>Bailey</b><small>Your Doable guide</small></div><span class="sp"></span>
       <button class="icon-btn" data-gb-reset title="Start over">${ico('repeat')}</button><button class="icon-btn" data-gb-close title="Close (Esc)">${ico('x')}</button></header>
     <nav class="gb-cats">${GUIDE_CATS.map(([id, label, icon]) => `<button class="gb-cat ${GB.cat === id ? 'on' : ''}" data-gb-cat="${id}">${ico(icon)}${label}</button>`).join('')}</nav>
     <div class="gb-log" aria-live="polite">${GB.log.map(gbMsgHTML).join('')}</div>
     <div class="gb-auto" role="listbox"></div>
     <form class="gb-form" data-gb-form autocomplete="off"><input name="q" maxlength="200" placeholder="Ask about pacing, invites, archive…" aria-label="Your question"><button title="Ask">${ico('send')}</button></form>
-    <div class="gb-foot">Built-in answers · press <b>?</b> anywhere to open</div>`;
+    <div class="gb-foot">Built-in answers · press <b>?</b> anywhere to ask Bailey</div>`;
   const log = el.querySelector('.gb-log'); log.scrollTop = log.scrollHeight;
 }
 function gbPush(m) { GB.log.push(m); if (GB.log.length > 80) GB.log.splice(1, GB.log.length - 80); }
@@ -5512,7 +5562,7 @@ function homeHTML(signedIn) {
   const name = esc(CFG.appName || 'Doable');
   const dark = document.documentElement.dataset.theme === 'dark';
   const cta = signedIn
-    ? `<button class="h-btn h-primary" data-go="#/">Open my workspace ${ico('arrowRight', 'i-sm')}</button><button class="h-btn h-glass" data-guide-open>${ico('help', 'i-sm')} Ask the Guide</button>`
+    ? `<button class="h-btn h-primary" data-go="#/">Open my workspace ${ico('arrowRight', 'i-sm')}</button><button class="h-btn h-glass" data-guide-open>${ico('help', 'i-sm')} Ask Bailey</button>`
     : `<button class="h-btn h-primary" data-home="up">Get ${name} free ${ico('arrowRight', 'i-sm')}</button><button class="h-btn h-glass" data-home="in">Sign in</button>`;
   // feature cards keep their little animated previews (they play on hover)
   const feat = (cls, icon, kicker, title, text, prev) => `<div class="h-feat ${cls} rv" tabindex="0"><div class="h-prev" aria-hidden="true">${prev}</div><span class="h-fi">${ico(icon)}${kicker}</span><h3>${title}</h3><p>${text}</p></div>`;
@@ -5578,7 +5628,7 @@ function homeHTML(signedIn) {
   return `<div class="home">
     <header class="h-nav"><div class="h-wrap">
       <a class="h-brand" href="#top" data-scroll>${logoMark('h-logo')}${wordmark()}</a>
-      <nav class="h-links"><a href="#tour" data-scroll>Product</a><a href="#media" data-scroll>For media teams</a><a href="#guide" data-scroll>Guide</a><a href="#faq" data-scroll>FAQ</a></nav>
+      <nav class="h-links"><a href="#tour" data-scroll>Product</a><a href="#media" data-scroll>For media teams</a><a href="#guide" data-scroll>Ask Bailey</a><a href="#faq" data-scroll>FAQ</a></nav>
       <div class="h-actions">
         <button class="h-theme" data-home-theme title="${dark ? 'Light' : 'Dark'} mode">${ico(dark ? 'sun' : 'moon')}</button>
         ${signedIn ? `<button class="h-btn h-primary sm" data-go="#/">Open app</button>` : `<button class="h-btn h-ghost sm" data-home="in">Sign in</button><button class="h-btn h-primary sm" data-home="up">Get ${name} free</button>`}
@@ -5586,13 +5636,13 @@ function homeHTML(signedIn) {
     </header>
     <div class="h-wrap" id="top">
       <section class="h-hero">
-        <a class="h-pill" href="#guide" data-scroll><b>New</b> A fresh look, plus a built-in Guide ${ico('arrowRight', 'i-sm')}</a>
+        <a class="h-pill" href="#guide" data-scroll><b>New</b> A fresh look, plus Bailey, your built-in guide ${ico('arrowRight', 'i-sm')}</a>
         <h1>The workspace for <em>media teams<svg viewBox="0 0 300 20" preserveAspectRatio="none"><path pathLength="1" d="M4 14C70 6 160 4 296 10"/></svg></em>.</h1>
         <p class="h-sub">To-dos, campaign tracking, meeting notes and the team calendar in one calm place. Built for agencies running Meta, Snap, TikTok, Search and YouTube.</p>
         <div class="h-cta">${cta}</div>
         <div class="h-note">Free · Syncs live for your whole team · Works on any device</div>
         <div class="h-scene" aria-hidden="true">
-          ${doodle('gauge', { hair: 'curly', tint: 'yellow' })}${doodle('clip', { hair: 'bob', tint: 'blue', glasses: true })}${mario('wave', 'dd-mario')}${doodle('mega', { hair: 'beanie', tint: 'green' })}${doodle('note', { hair: 'bun', tint: 'purple' })}
+          ${doodle('gauge', { hair: 'curly', tint: 'yellow' })}${doodle('clip', { hair: 'bob', tint: 'blue', glasses: true })}${mario('wave', 'dd-mario')}${joana('laptop')}${doodle('mega', { hair: 'beanie', tint: 'green' })}${doodle('note', { hair: 'bun', tint: 'purple' })}
           ${ground}
           <span class="h-chip c1"><span class="dot"></span>Escalade · Live</span>
           <span class="h-chip c2">${ico('okcircle')}Weekly check done</span>
@@ -5653,9 +5703,9 @@ function homeHTML(signedIn) {
 
       <section class="h-sec" id="guide">
         <div class="h-guide rv">
-          <div>${mario('guide', 'h-guide-av')}<h2 class="h-h2" style="font-size:clamp(28px,3.6vw,40px)">Stuck? Ask the Guide.</h2>
+          <div>${bailey('h-guide-av', { roll: true })}<h2 class="h-h2" style="font-size:clamp(28px,3.6vw,40px)">Stuck? Ask Bailey.</h2>
             <p class="h-lead">Instant answers on using ${name}, media maths like pacing and ROAS, and keeping your account safe. It's built in and works offline. Press <b>?</b> anywhere.</p>
-            <div class="h-cta" style="justify-content:flex-start"><button class="h-btn h-blue" data-guide-open>${ico('help', 'i-sm')} Ask the Guide</button></div></div>
+            <div class="h-cta" style="justify-content:flex-start"><button class="h-btn h-blue" data-guide-open>${ico('help', 'i-sm')} Ask Bailey</button></div></div>
           <div class="h-chat rv d2" aria-hidden="true"><span class="q">How do I calculate pacing?</span>
             <span class="a"><b>Pacing</b> = actual spend ÷ expected spend.<br>Expected spend = budget × days elapsed ÷ flight days. Around <code>95–105%</code> is on track.</span>
             <div class="chips"><span>Under-pacing fixes</span><span>CPM, CTR & ROAS formulas</span><span>Weekly check</span></div></div>
@@ -5665,11 +5715,11 @@ function homeHTML(signedIn) {
       <section class="h-sec" id="faq">
         <div class="h-center"><div class="h-eyebrow rv">${ico('help')}FAQ</div><h2 class="h-h2 rv d1">Questions, answered.</h2></div>
         <div class="h-faq rv d2">${faq}</div>
-        <div class="h-faq-more rv"><button class="h-btn h-ghost" data-guide-open>More answers in the Guide ${ico('arrowRight', 'i-sm')}</button></div>
+        <div class="h-faq-more rv"><button class="h-btn h-ghost" data-guide-open>More answers from Bailey ${ico('arrowRight', 'i-sm')}</button></div>
       </section>
 
       <section class="h-final" id="workspaces">
-        <div class="h-scene rv" aria-hidden="true">${doodle('wave', { hair: 'short', tint: 'pink' })}${doodle('laptop', { hair: 'curly', tint: 'blue', glasses: true })}${doodle('wave', { hair: 'bob', tint: 'orange' })}${ground}</div>
+        <div class="h-scene rv" aria-hidden="true">${mario('wave')}${joana('laptop')}${bailey('h-final-dog')}${ground}</div>
         <h2 class="rv d1">Bring your team in.</h2>
         <p class="rv d2">Create your workspace in a minute, then invite teammates by email. Shared workspaces sync live for everyone.</p>
         <div class="h-cta rv d3">${cta}</div>
@@ -5678,7 +5728,7 @@ function homeHTML(signedIn) {
     <footer class="h-foot"><div class="h-wrap">
       <div class="brandcol"><div>${logoMark('h-logo sm')}${wordmark()}</div><span>The workspace for media teams.</span><span style="color:var(--faint);font-size:12.5px">Build ${BUILD}</span></div>
       <div><h6>Product</h6><a href="#tour" data-scroll>To-do boards</a><a href="#tour" data-scroll>Campaign Tracker</a><a href="#tour" data-scroll>Notebook</a><a href="#tour" data-scroll>Dashboard</a></div>
-      <div><h6>Help</h6><button data-guide-open>Guide</button><a href="#faq" data-scroll>FAQ</a><button data-guide-open="m-pacing">Pacing formula</button></div>
+      <div><h6>Help</h6><button data-guide-open>Ask Bailey</button><a href="#faq" data-scroll>FAQ</a><button data-guide-open="m-pacing">Pacing formula</button></div>
       <div><h6>Account</h6>${signedIn ? `<button data-go="#/">Open my workspace</button>` : `<button data-home="in">Sign in</button><button data-home="up">Create an account</button>`}<button data-guide-open="s-who-sees">Privacy &amp; security</button></div>
     </div></footer>
   </div>`;
@@ -5741,7 +5791,7 @@ function switchWorkspace(id) {
 }
 
 const brand = () => `<div class="brand">${logoMark('brand-logo')}${wordmark()}</div>`;
-function authScreen(html) { $('#modals').innerHTML = ''; $('#root').innerHTML = `<div class="auth"><div class="auth-card">${mario('guide', 'auth-doodle')}${brand()}${html}</div></div>`; guideFab(); }
+function authScreen(html) { $('#modals').innerHTML = ''; $('#root').innerHTML = `<div class="auth"><div class="auth-card">${bailey('dd-guide auth-doodle')}${brand()}${html}</div></div>`; guideFab(); }
 const authErr = e => {
   const c = (e && e.code) || '';
   // Same message whether the email exists or the password is wrong, so the form can't be used to find accounts.
